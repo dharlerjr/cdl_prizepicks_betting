@@ -86,15 +86,13 @@ gamemode_kill_lims = {
 # Dictionary of maps to filter out by gamemode 
 maps_to_filter = {
     "Hardpoint": ["Invasion", "Skidrow", "Terminal"],
-    "Search & Destroy": ["Skidrow", "Terminal"]
+    "Search & Destroy": ["Skidrow", "Terminal"], 
+    "Control": []
 }
 
 # Load in data
 cdlDF = load_and_clean_cdl_data()
 cdlDF
-
-# Create a dummy variable for x aesthetic (just an index)
-cdlDF['dummy_x'] = 0
 
 # Score Differentials by Map & Mode
 def team_score_diffs(
@@ -135,7 +133,7 @@ def team_score_diffs(
                 aes(x = "score_diff", fill = "map_name")
             ) + \
                 geom_histogram(binwidth = gamemode_bins[gamemode_input]) + \
-                scale_fill_manual(values = viridis_gamemode_color_scales[gamemode_input][map_input]) + \
+                scale_fill_manual(values = viridis_map_and_mode_colors[gamemode_input][map_input]) + \
                 labs(title = f"{team_input} Distribution of Score Differentials: {map_input} {gamemode_input}", 
                     fill = "Map") + \
                 xlab("Score Differential") + ylab("Count") + \
@@ -208,7 +206,6 @@ def player_kills_overview(
                     legend_text = element_text(size = 8)
                 )
         )
-
 
 # Player Kills vs. Time
 def player_kills_vs_time(
@@ -334,7 +331,7 @@ def player_kills_vs_score_diff(
                 geom_smooth(method = "lowess", color = "dodgerblue") + \
                 geom_vline(xintercept = 0, color = "orange", linetype = "dashed") + \
                 geom_hline(yintercept = cur_line, color = "purple", linetype = "dashed") + \
-                scale_color_manual(values = gamemode_color_scales["Hardpoint"]) + \
+                scale_color_manual(values = gamemode_color_scales[gamemode_input]) + \
                 labs(title = f"{player_input} Kills vs Score Differential: {gamemode_input}", 
                     color = "Map") + \
                 xlab("Score Differential") + ylab("Kills") + \
@@ -354,9 +351,9 @@ def player_kills_vs_score_diff(
                     ~(cdlDF["map_name"].isin(maps_to_filter[gamemode_input])) & \
                     (cdlDF["player"] == player_input) & \
                     (cdlDF["map_name"] == map_input)],
-                aes(x = "score_diff", y = "kills")
+                aes(x = "score_diff", y = "kills", color = "map_name")
             ) + \
-                geom_point(aes(color = "map_name"), size = 2, alpha = 1) + \
+                geom_point(size = 2, alpha = 1) + \
                 geom_smooth(method = "lowess", color = "dodgerblue") + \
                 geom_vline(xintercept = 0, color = "orange", linetype = "dashed") + \
                 geom_hline(yintercept = cur_line, color = "purple", linetype = "dashed") + \

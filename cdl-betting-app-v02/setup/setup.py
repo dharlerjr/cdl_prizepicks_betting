@@ -31,7 +31,7 @@ def load_and_clean_cdl_data():
     cdlDF.drop(["match_day", "deaths", "kd", "plus_minus", "dmg", "series_result"], axis=1)
 
     # Correct Minnesota ROKKR team name
-    cdlDF.replace("Minnesota RØKKR", "Minnesota ROKKR")
+    cdlDF = cdlDF.replace("Minnesota RØKKR", "Minnesota ROKKR")
 
     # Add Map Win/Loss column 
     cdlDF['map_wl'] = ["W" if x == 1 else "L" for x in cdlDF['map_result']]
@@ -84,17 +84,9 @@ def load_and_clean_cdl_data():
 
     # Drop the 'player_lower' column
     cdlDF = cdlDF.drop(columns=['player_lower'])
-
-    # Get rosters
-    rostersDF = cdlDF[['player', 'team']].drop_duplicates()
-    rostersDF = rostersDF.sort_values(by='team')
-    rostersDF.reset_index(drop=True, inplace=True)
-
-    # Get dropped players
-    dropped_players = [
-        "GodRx", "Cammy", "JurNii", "Capsidal", "Afro", "Asim", 
-        "Slasher", "Arcitys", "Vivid", "Owakening", "EriKBooM", "iLLey"
-        ]
+    
+    # Create a dummy variable for x aesthetic (just an index)
+    cdlDF['dummy_x'] = 0
     
     return cdlDF
 
