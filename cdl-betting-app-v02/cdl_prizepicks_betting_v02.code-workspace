@@ -7,5 +7,7 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"workbench.preferredDarkColorTheme": "Default Dark Modern"
+	}
 }

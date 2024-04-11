@@ -2,7 +2,6 @@
 import pandas as pd
 import pandas.io.sql as sqlio
 import numpy as np
-import datetime as dt
 
 # Import psycopg2 
 import psycopg2
@@ -98,3 +97,4 @@ def load_and_clean_cdl_data():
         ]
     
     return cdlDF
+
