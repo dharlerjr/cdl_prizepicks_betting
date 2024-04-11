@@ -486,7 +486,7 @@ kills_overview <-
         geom_jitter(aes(color = map_name), 
                     width = 0.05, height = 0.05, size = 2) +
         geom_boxplot(alpha = 0.5, outlier.alpha = 0) +
-        geom_hline(yintercept = cur_line, lty = 'dashed', color = 'purple') +
+        geom_hline(yintercept = cur_line, lty = "dashed", color = 'purple') +
         labs(title = paste(player_input, gamemode_input, "Kills"),
              color = "Map") +
         xlab("") + ylab("Kills") + 

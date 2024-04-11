@@ -1,11 +1,8 @@
 
-# Set directory ----
-
-setwd("C:/Users/David Harler Jr/OneDrive/Desktop/dataClass/06-cod-analysis/2024.03.12 CDL Stats Visualization/cdl_viz/player-viz-app-v01")
 
 # Source setup & helpers ----
 
-source("00_Setup/00_Setup.R")
+source("setup/setup.R")
 source("helpers.R")
 
 # Load Shiny ----

@@ -8,7 +8,7 @@ import datetime as dt
 import psycopg2
 
 # Import db password from config
-from config import db_password
+from setup.config import db_password
 
 def load_and_clean_cdl_data():
 
