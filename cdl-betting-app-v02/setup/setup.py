@@ -9,13 +9,6 @@ import psycopg2
 # Import db password from config
 from setup.config import db_password
 
-# Dictionary of maps to filter out by gamemode 
-maps_to_filter = {
-    "Hardpoint": ["Invasion", "Skidrow", "Terminal"],
-    "Search & Destroy": ["Skidrow", "Terminal"], 
-    "Control": []
-}
-
 # Function to load and clean cdl data and return as pandas dataframe
 def load_and_clean_cdl_data():
 

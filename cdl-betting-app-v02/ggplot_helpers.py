@@ -5,7 +5,14 @@ from plotnine import ggplot, aes, geom_histogram, geom_point, geom_jitter, geom_
      element_blank, theme
 
 # Import setup
-from setup.setup import load_and_clean_cdl_data, maps_to_filter
+from setup.setup import load_and_clean_cdl_data
+
+# Dictionary of maps to filter out by gamemode 
+maps_to_filter = {
+    "Hardpoint": ["Invasion", "Skidrow", "Terminal"],
+    "Search & Destroy": ["Skidrow", "Terminal"], 
+    "Control": []
+}
 
 # Dictionary of color scales by gamemode 
 gamemode_color_scales = {
