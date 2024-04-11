@@ -12,94 +12,96 @@ import undetected_chromedriver as uc
 import time
 import pandas as pd
 
-# Set Chrome Options, specifically to allow location tracking on PrizePicks
-capabilities = DesiredCapabilities().CHROME
+def scrape_prizepicks():
 
-chrome_options = uc.ChromeOptions()
-chrome_options.add_argument("--incognito")
-chrome_options.add_argument("--disable-infobars")
-chrome_options.add_argument("start-maximized")
-chrome_options.add_argument("--disable-extensions")
-chrome_options.add_argument("--disable-popup-blocking")
+    # Set Chrome Options, specifically to allow location tracking on PrizePicks
+    capabilities = DesiredCapabilities().CHROME
 
-prefs = {
-    'profile.default_content_setting_values':
-    {
-        'notifications': 1,
-        'geolocation': 1
-    },
+    chrome_options = uc.ChromeOptions()
+    chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--disable-infobars")
+    chrome_options.add_argument("start-maximized")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--disable-popup-blocking")
 
-    'profile.managed_default_content_settings':
-    {
-        'geolocation': 1
-    },
-}
+    prefs = {
+        'profile.default_content_setting_values':
+        {
+            'notifications': 1,
+            'geolocation': 1
+        },
 
-chrome_options.add_experimental_option('prefs', prefs)
-capabilities.update(chrome_options.to_capabilities())
+        'profile.managed_default_content_settings':
+        {
+            'geolocation': 1
+        },
+    }
 
-# Open browser
-driver = uc.Chrome(options = chrome_options)
+    chrome_options.add_experimental_option('prefs', prefs)
+    capabilities.update(chrome_options.to_capabilities())
 
-# Visit PrizePicks Website
-driver.get("https://app.prizepicks.com/")
-time.sleep(5)
+    # Open browser
+    driver = uc.Chrome(options = chrome_options)
 
-# Close initial pop-up
-WebDriverWait(driver, 15).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "close")))
-time.sleep(5)
-driver.find_element(By.XPATH, "/html/body/div[3]/div[3]/div/div/button").click()
-time.sleep(5)
-
-# Navigate to COD tab
-driver.find_element(By.XPATH, "//div[@class='name'][normalize-space()='COD']").click()
-time.sleep(5)
-
-# Initilize an empty list to hold the player props
-player_props = []
-
-# Get the stat container and various stats 
-stat_container = WebDriverWait(driver,
-                               1).until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
-categories = driver.find_element(By.CSS_SELECTOR, ".stat-container").text.split('\n')
-
-# Remove Maps 1 - 3 Kills & Maps 1 - 3 Kills (Combo)
-if "MAPS 1-3 Kills (Combo)" in categories:
-    categories.remove("MAPS 1-3 Kills (Combo)")
-if "MAPS 1-3 Kills" in categories:
-    categories.remove("MAPS 1-3 Kills")
-
-# Get player projections
-
-# Loop through categories
-for category in categories:
-    driver.find_element(By.XPATH, f"//div[text()='{category}']").click()
+    # Visit PrizePicks Website
+    driver.get("https://app.prizepicks.com/")
     time.sleep(5)
 
-    # Test print statement
-    print(f"{category}")
-    
-    # Get list of all projections for current category
-    projectionsPP = driver.find_elements(By.ID, "test-projection-li")
+    # Close initial pop-up
+    WebDriverWait(driver, 15).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "close")))
+    time.sleep(5)
+    driver.find_element(By.XPATH, "/html/body/div[3]/div[3]/div/div/button").click()
+    time.sleep(5)
 
-    # Loop through current list of projections
-    for i in range(len(projectionsPP)):
+    # Navigate to COD tab
+    driver.find_element(By.XPATH, "//div[@class='name'][normalize-space()='COD']").click()
+    time.sleep(5)
 
-        # Get line info for each player prop
-        player = projectionsPP[i].find_element(By.ID, "test-player-name").text
-        team_abbr = projectionsPP[i].find_element(By.ID, "test-team-position").text.split(" - ")[0]
-        player_line = float(driver.find_element(
-            By.XPATH, 
-            '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(i + 1) + ']/div[3]/div/div/div/div[1]'
-        ).text)
+    # Initilize an empty list to hold the player props
+    player_props = []
 
-        # Append prop to our list
-        player_props.append({
-            "player": player, 
-            "team_abbr": team_abbr, 
-            "proptype": category, 
-            "player_line": player_line
-        })
+    # Get the stat container and various stats 
+    stat_container = WebDriverWait(driver,
+                                1).until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
+    categories = driver.find_element(By.CSS_SELECTOR, ".stat-container").text.split('\n')
 
-# Convert our list of player props to a dataframe
-props_df = pd.DataFrame(player_props)
+    # Remove Maps 1 - 3 Kills & Maps 1 - 3 Kills (Combo)
+    if "MAPS 1-3 Kills (Combo)" in categories:
+        categories.remove("MAPS 1-3 Kills (Combo)")
+    if "MAPS 1-3 Kills" in categories:
+        categories.remove("MAPS 1-3 Kills")
+
+    # Get player projections
+
+    # Loop through categories
+    for category in categories:
+        driver.find_element(By.XPATH, f"//div[text()='{category}']").click()
+        time.sleep(5)
+
+        # Test print statement
+        print(f"{category}")
+        
+        # Get list of all projections for current category
+        projectionsPP = driver.find_elements(By.ID, "test-projection-li")
+
+        # Loop through current list of projections
+        for i in range(len(projectionsPP)):
+
+            # Get line info for each player prop
+            player = projectionsPP[i].find_element(By.ID, "test-player-name").text
+            team_abbr = projectionsPP[i].find_element(By.ID, "test-team-position").text.split(" - ")[0]
+            player_line = float(driver.find_element(
+                By.XPATH, 
+                '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(i + 1) + ']/div[3]/div/div/div/div[1]'
+            ).text)
+
+            # Append prop to our list
+            player_props.append({
+                "player": player, 
+                "team_abbr": team_abbr, 
+                "proptype": category, 
+                "player_line": player_line
+            })
+
+    # Convert our list of player props to a dataframe
+    return pd.DataFrame(player_props)

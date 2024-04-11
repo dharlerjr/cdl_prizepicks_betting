@@ -20,7 +20,7 @@ Two Shiny applications for betting on CDL player props, primarily on PrizePicks.
   - (1) datatable for each team's previous map results for the selected map and mode combination
 - Packages used...
   - **tidyverse** for data manipulation, exploration, and visualization
-  - **RPostgres** for loading the CDL dataset from a PostgreSQL database into RStudio
+  - **RPostgres** to load the CDL dataset from the PostgreSQL database into an R dataframe
   - **gt** & **gtExtras** for constructing tables to visualize data
   - **RColorBrewer** & **Viridis** for coloring data visualizations
   - **scales** for scaling data-colored columns in gt tables
@@ -35,6 +35,8 @@ Two Shiny applications for betting on CDL player props, primarily on PrizePicks.
 - Packages used...
   - **selenium** to automate a chrome web browser to scrape the PrizePicks website
   - **undetected_chromedriver** to scrape the PrizePicks website undetected
+  - **Psycopg** & **sqlio** to load the CDL dataset from the PostgreSQL database into a Python dataframe
+  - **plotnine** & **ggplot** to create Data Visualizations just as we would if using ggplot in R
   - **Shiny** to build the web app
 - Completed April 2024
 
