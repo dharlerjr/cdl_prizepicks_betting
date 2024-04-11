@@ -109,14 +109,14 @@ def build_team_summaries(cdlDF_input):
     # Team Summaries by Map & Mode
     team_summaries_DF_top = \
         cdlDF_input[["match_id", "team", "map_name", "gamemode", "map_result"]] \
-            .drop_duplicates() \
-            .groupby(["team", "gamemode", "map_name"]) \
-            .agg(
-                wins = ("map_result", lambda x: sum(x)), 
-                losses = ("map_result", lambda x: len(x) - sum(x)), 
-                win_percentage = ("map_result", lambda x: round(sum(x) / len(x), 2))
-            ) \
-            .reset_index()
+        .drop_duplicates() \
+        .groupby(["team", "gamemode", "map_name"]) \
+        .agg(
+            wins = ("map_result", lambda x: sum(x)), 
+            losses = ("map_result", lambda x: len(x) - sum(x)), 
+            win_percentage = ("map_result", lambda x: round(sum(x) / len(x), 2))
+        ) \
+        .reset_index()
     
     # Team Summaries by Mode only
     team_summaries_DF_bottom = \
@@ -148,6 +148,9 @@ def build_team_summaries(cdlDF_input):
 
     # Reorder map_name factor levels
     team_summaries_DF['map_name'] = \
-        pd.Categorical(team_summaries_DF['map_name'], categories = sorted(team_summaries_DF["map_name"].unique()))
+        pd.Categorical(
+            team_summaries_DF['map_name'], 
+            categories = ['6 Star', 'Highrise', 'Invasion', 'Karachi', \
+                          'Rio', 'Sub Base', 'Vista', 'Overall'])
     
     return team_summaries_DF
