@@ -9,6 +9,14 @@ import psycopg2
 # Import db password from config
 from setup.config import db_password
 
+# Dictionary of maps to filter out by gamemode 
+maps_to_filter = {
+    "Hardpoint": ["Invasion", "Skidrow", "Terminal"],
+    "Search & Destroy": ["Skidrow", "Terminal"], 
+    "Control": []
+}
+
+# Function to load and clean cdl data and return as pandas dataframe
 def load_and_clean_cdl_data():
 
     #establishing the connection
@@ -93,3 +101,60 @@ def load_and_clean_cdl_data():
     
     return cdlDF
 
+# Function to create a pandas dataframe of team summaries
+def build_team_summaries(cdlDF_input): 
+    
+    # Filter out removed map and mode combinations from cdlDF
+    cdlDF_input = cdlDF_input[
+        ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Invasion')) &
+        ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Skidrow')) &
+        ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Terminal')) &
+        ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Skidrow')) &
+        ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Terminal')) 
+    ]
+
+    # Team Summaries by Map & Mode
+    team_summaries_DF_top = \
+        cdlDF_input[["match_id", "team", "map_name", "gamemode", "map_result"]] \
+            .drop_duplicates() \
+            .groupby(["team", "gamemode", "map_name"]) \
+            .agg(
+                wins = ("map_result", lambda x: sum(x)), 
+                losses = ("map_result", lambda x: len(x) - sum(x)), 
+                win_percentage = ("map_result", lambda x: round(sum(x) / len(x), 2))
+            ) \
+            .reset_index()
+    
+    # Team Summaries by Mode only
+    team_summaries_DF_bottom = \
+        cdlDF_input[["match_id", "team", "map_name", "gamemode", "map_result"]] \
+        .drop_duplicates() \
+        .groupby(["team", "gamemode"]) \
+        .agg(
+            wins = ("map_result", lambda x: sum(x)), 
+            losses = ("map_result", lambda x: len(x) - sum(x)), 
+            win_percentage = ("map_result", lambda x: round(sum(x) / len(x), 2))
+        ) \
+        .reset_index()
+    
+    # Insert map_name column into team_summaries_DF_bottom
+    # for stacking
+    team_summaries_DF_bottom["map_name"] = "Overall"
+    position = 2
+    team_summaries_DF_bottom.insert(position, "map_name", team_summaries_DF_bottom.pop("map_name"))
+
+    # Concatenate the two DataFrames vertically
+    team_summaries_DF = pd.concat([team_summaries_DF_top, team_summaries_DF_bottom])
+
+    # Reset the index of the stacked DataFrame
+    team_summaries_DF.reset_index(drop = True, inplace = True)
+
+    # Reorder gamemode factor levels
+    team_summaries_DF['gamemode'] = \
+        pd.Categorical(team_summaries_DF['gamemode'], categories = ['Hardpoint', 'Search & Destroy', 'Control'])
+
+    # Reorder map_name factor levels
+    team_summaries_DF['map_name'] = \
+        pd.Categorical(team_summaries_DF['map_name'], categories = sorted(cdlDF["map_name"].unique()) + ["Overall"])
+    
+    return team_summaries_DF
