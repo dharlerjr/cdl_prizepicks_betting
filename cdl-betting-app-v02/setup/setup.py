@@ -148,6 +148,6 @@ def build_team_summaries(cdlDF_input):
 
     # Reorder map_name factor levels
     team_summaries_DF['map_name'] = \
-        pd.Categorical(team_summaries_DF['map_name'], categories = sorted(team_summaries_DF["map_name"].unique()) + ["Overall"])
+        pd.Categorical(team_summaries_DF['map_name'], categories = sorted(team_summaries_DF["map_name"].unique()))
     
     return team_summaries_DF

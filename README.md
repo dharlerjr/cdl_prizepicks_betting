@@ -2,9 +2,7 @@
 
 Two Shiny applications for betting on CDL player props, primarily on PrizePicks. Version 1 coded in R, Version 2 coded in Python. Data from breakingpoint.gg using my [breakingpoint.gg web scraping project](https://github.com/dharlerjr/bp_web_scraping).
 
-## Overview
-
-### Version 1
+## Version 1
 
 - Coded in R
 - User inputs (2) CDL teams in a given match, along with the current gamemode, map name, and a maximum of (8) player kill prop lines they'd like to bet on
@@ -18,27 +16,31 @@ Two Shiny applications for betting on CDL player props, primarily on PrizePicks.
     - Score Differential
   - Each team's distribution of score differentials for selected map and mode combination
   - (1) datatable for each team's previous map results for the selected map and mode combination
-- Packages used...
-  - **tidyverse** for data manipulation, exploration, and visualization
-  - **RPostgres** to load the CDL dataset from the PostgreSQL database into an R dataframe
-  - **gt** & **gtExtras** for constructing tables to visualize data
-  - **RColorBrewer** & **Viridis** for coloring data visualizations
-  - **scales** for scaling data-colored columns in gt tables
-  - **shiny** to build the web app
 - Completed March 2024
 
-### Version 2
+### R Packages
+
+- **tidyverse** for data manipulation, exploration, and visualization
+- **RPostgres** to load the CDL dataset from the PostgreSQL database into an R dataframe
+- **gt** & **gtExtras** for constructing tables to visualize data
+- **RColorBrewer** & **Viridis** for coloring data visualizations
+- **scales** for scaling data-colored columns in gt tables
+- **shiny** to build the web app
+
+## Version 2
 
 - Coded in Python (see below)
 - **User no longer has to manually input player props!!!**
   - Uses undetected_chromedriver (only available in Python to my knowledge) to scrape player prop lines from PrizePicks website (documentation on undetected_chromedriver can be found [here](https://pypi.org/project/undetected-chromedriver/2.1.1/))
-- Packages used...
-  - **selenium** to automate a chrome web browser to scrape the PrizePicks website
-  - **undetected_chromedriver** to scrape the PrizePicks website undetected
-  - **Psycopg** & **sqlio** to load the CDL dataset from the PostgreSQL database into a Python dataframe
-  - **plotnine** & **ggplot** to create Data Visualizations just as we would if using ggplot in R
-  - **Shiny** to build the web app
 - Completed April 2024
+
+### Python Packages
+
+- **selenium** to automate a chrome web browser to scrape the PrizePicks website
+- **undetected_chromedriver** to scrape the PrizePicks website undetected
+- **Psycopg** & **sqlio** to load the CDL dataset from the PostgreSQL database into a Python dataframe
+- **plotnine** & **ggplot** to create Data Visualizations just as we would if using ggplot in R
+- **Shiny** to build the web app
 
 ## Notes
 
