@@ -97,7 +97,7 @@ cdlDF
 cdlDF['dummy_x'] = 0
 
 # Score Differentials by Map & Mode
-def team_score_difs(
+def team_score_diffs(
         team_input: str, gamemode_input: str, map_input = "All"
 ):
     if map_input == "All":
