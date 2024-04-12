@@ -89,8 +89,12 @@ def load_and_clean_cdl_data():
     # Create a dummy variable for x aesthetic (just an index)
     cdlDF['dummy_x'] = 0
 
-    # Reorder factor levels
+    # Reorder map_wl factor levels
     cdlDF['map_wl'] = pd.Categorical(cdlDF['map_wl'], categories = ['W', 'L'])
+
+    # Reorder gamemode factor levels
+    cdlDF['gamemode'] = \
+        pd.Categorical(cdlDF['gamemode'], categories = ['Hardpoint', 'Search & Destroy', 'Control'])
     
     return cdlDF
 
