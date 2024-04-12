@@ -114,7 +114,7 @@ def build_team_summaries(cdlDF_input):
     team_summaries_DF_top = \
         cdlDF_input[["match_id", "team", "map_name", "gamemode", "map_result"]] \
         .drop_duplicates() \
-        .groupby(["team", "gamemode", "map_name"]) \
+        .groupby(["team", "gamemode", "map_name"], observed = True) \
         .agg(
             wins = ("map_result", lambda x: sum(x)), 
             losses = ("map_result", lambda x: len(x) - sum(x)), 
@@ -126,7 +126,7 @@ def build_team_summaries(cdlDF_input):
     team_summaries_DF_bottom = \
         cdlDF_input[["match_id", "team", "map_name", "gamemode", "map_result"]] \
         .drop_duplicates() \
-        .groupby(["team", "gamemode"]) \
+        .groupby(["team", "gamemode"], observed = True) \
         .agg(
             wins = ("map_result", lambda x: sum(x)), 
             losses = ("map_result", lambda x: len(x) - sum(x)), 

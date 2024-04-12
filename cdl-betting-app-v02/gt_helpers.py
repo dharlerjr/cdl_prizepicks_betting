@@ -15,6 +15,12 @@ def team_summaries_gt_fn(team_summaries_input, team_x: str, team_y: str):
             .drop(columns = ["team_x", "team_y"], inplace = False, axis = 1) \
             .sort_values(by = ["gamemode", "map_name"])
     
+    # Get numerical columns
+    numerical_columns = gt_df.select_dtypes(include='number').columns
+
+    # Replace NaN values in numerical columns with 0
+    gt_df[numerical_columns] = gt_df[numerical_columns].fillna(0)
+    
     team_summary_gt_tbl = \
         GT(
             gt_df, 
@@ -37,7 +43,10 @@ def team_summaries_gt_fn(team_summaries_input, team_x: str, team_y: str):
             columns = ["win_percentage_x", "win_percentage_y"], 
             decimals = 0
         ) \
-        .tab_header(title = "Team Summaries") \
+        .fmt_number(
+            columns = ["wins_x", "losses_x", "wins_y", "losses_y"], 
+            decimals = 0
+        ) \
         .opt_align_table_header("center") \
         .tab_spanner(label = team_x, 
                      columns = ["wins_x", "losses_x", "win_percentage_x"]) \
@@ -68,7 +77,7 @@ def h2h_summary_gt_fn(cdlDF_input, team_x: str, team_y: str):
         [(cdlDF_input["team"] == team_x) & \
          (cdlDF_input["opp"] == team_y)] \
          .drop_duplicates() \
-         .groupby("gamemode") \
+         .groupby("gamemode", observed = True) \
          .agg(
             wins_x = ("map_result", lambda x: sum(x)), 
             losses_x = ("map_result", lambda x: len(x) - sum(x)), 
@@ -91,7 +100,7 @@ def h2h_summary_gt_fn(cdlDF_input, team_x: str, team_y: str):
         [(cdlDF_input["team"] == team_x) & \
          (cdlDF_input["opp"] == team_y)] \
          .drop_duplicates() \
-         .groupby(["gamemode", "map_name"]) \
+         .groupby(["gamemode", "map_name"], observed = True) \
          .agg(
             wins_x = ("map_result", lambda x: sum(x)), 
             losses_x = ("map_result", lambda x: len(x) - sum(x)), 
@@ -104,6 +113,12 @@ def h2h_summary_gt_fn(cdlDF_input, team_x: str, team_y: str):
     
     # Concatenate the two DataFrames vertically
     gt_df = pd.concat([h2h_summary_DF_top, h2h_summary_DF_bottom])
+
+    # Get numerical columns
+    numerical_columns = gt_df.select_dtypes(include='number').columns
+
+    # Replace NaN values in numerical columns with 0
+    gt_df[numerical_columns] = gt_df[numerical_columns].fillna(0)
 
     # Reset the index of the stacked DataFrame
     gt_df.reset_index(drop = True, inplace = True)
@@ -145,7 +160,6 @@ def h2h_summary_gt_fn(cdlDF_input, team_x: str, team_y: str):
             columns = ["win_percentage_x", "win_percentage_y"], 
             decimals = 0
         ) \
-        .tab_header(title = "H2H Summary") \
         .opt_align_table_header("center") \
         .tab_spanner(label = team_x, 
                      columns = ["wins_x", "losses_x", "win_percentage_x"]) \
