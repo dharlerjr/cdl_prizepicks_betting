@@ -1,10 +1,11 @@
 
 # Imports
 from setup.setup import *
-from gt_helpers import *
+from
 
-# Import shiny
+# Import shiny and shinyswatch
 from shiny import App, render, ui
+import shinyswatch
 
 # Load and clean cdl dataset
 cdlDF = load_and_clean_cdl_data()
@@ -15,6 +16,9 @@ team_summaries_DF = build_team_summaries(cdlDF_input = cdlDF)
 # Define ui
 app_ui = ui.page_sidebar(   
     ui.sidebar(
+        # Theme picker - start
+        shinyswatch.theme_picker_ui(),
+
         ui.input_select(id = "team_a", label = "Team", selected = "OpTic Texas",
                         choices = sorted(cdlDF['team'].unique())), 
         ui.input_select(id = "team_b", label = "Team", selected = "Atlanta FaZe",
@@ -47,11 +51,8 @@ app_ui = ui.page_sidebar(
 # Define server logic
 def server(input, output, session):
 
-    @render.table
-    def team_summaries_tbl():
-        return team_summaries_gt_fn(
-            team_summaries_DF, input.team_a(), input.team_b()
-            ).as_raw_html
+    ## Theme picker - start
+    shinyswatch.theme_picker_server()
 
 
 app = App(app_ui, server)
