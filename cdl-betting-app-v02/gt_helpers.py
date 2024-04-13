@@ -61,15 +61,6 @@ def team_summaries_gt_fn(team_summaries_input, team_x: str, team_y: str):
 
 # Function to build head-to-head summary gtTable
 def h2h_summary_gt_fn(cdlDF_input, team_x: str, team_y: str):
-    
-    # Filter out removed map and mode combinations from cdlDF
-    cdlDF_input = cdlDF_input[
-        ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Invasion')) &
-        ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Skidrow')) &
-        ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Terminal')) &
-        ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Skidrow')) &
-        ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Terminal')) 
-    ]
 
     # H2H Summary by Mode Only
     h2h_summary_DF_bottom = cdlDF_input \

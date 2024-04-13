@@ -34,6 +34,15 @@ def load_and_clean_cdl_data():
     # Correct Minnesota ROKKR team name
     cdlDF = cdlDF.replace("Minnesota RØKKR", "Minnesota ROKKR")
 
+    # Filter out removed map and mode combinations from cdlDF
+    cdlDF = cdlDF[
+        ~((cdlDF['gamemode'] == 'Hardpoint') & (cdlDF['map_name'] == 'Invasion')) &
+        ~((cdlDF['gamemode'] == 'Hardpoint') & (cdlDF['map_name'] == 'Skidrow')) &
+        ~((cdlDF['gamemode'] == 'Hardpoint') & (cdlDF['map_name'] == 'Terminal')) &
+        ~((cdlDF['gamemode'] == 'Search & Destroy') & (cdlDF['map_name'] == 'Skidrow')) &
+        ~((cdlDF['gamemode'] == 'Search & Destroy') & (cdlDF['map_name'] == 'Terminal')) 
+    ]
+
     # Add Map Win/Loss column 
     cdlDF['map_wl'] = ["W" if x == 1 else "L" for x in cdlDF['map_result']]
 
@@ -100,15 +109,6 @@ def load_and_clean_cdl_data():
 
 # Function to create a pandas dataframe of team summaries
 def build_team_summaries(cdlDF_input): 
-    
-    # Filter out removed map and mode combinations from cdlDF
-    cdlDF_input = cdlDF_input[
-        ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Invasion')) &
-        ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Skidrow')) &
-        ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Terminal')) &
-        ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Skidrow')) &
-        ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Terminal')) 
-    ]
 
     # Team Summaries by Map & Mode
     team_summaries_DF_top = \

@@ -1,7 +1,6 @@
 
 # Imports
 from setup.setup import *
-from
 
 # Import shiny and shinyswatch
 from shiny import App, render, ui
@@ -36,11 +35,9 @@ app_ui = ui.page_sidebar(
     ), 
     ui.layout_columns(
         ui.card(
-            ui.card_header("Team Summaries"), 
             ui.output_table("team_summaries_tbl"),
         ), 
         ui.card(
-            ui.card_header("H2H Summary"), 
             ui.output_table("h2h_summary_tbl"),
         ) 
     ),
