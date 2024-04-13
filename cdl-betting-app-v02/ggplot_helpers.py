@@ -1,8 +1,6 @@
 
 # Import ggplot
-from plotnine import ggplot, aes, geom_histogram, geom_point, geom_jitter, geom_boxplot, geom_hline, geom_vline, \
-    geom_smooth, facet_wrap, scale_color_manual, scale_fill_manual, scale_x_date, labs, xlab, ylab, element_text, \
-     element_blank, theme
+from plotnine import *
 
 # Import setup
 from setup.setup import *

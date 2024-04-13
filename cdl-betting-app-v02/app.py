@@ -12,17 +12,20 @@ cdlDF = load_and_clean_cdl_data()
 # Build team summaries 
 team_summaries_DF = build_team_summaries(cdlDF_input = cdlDF)
 
+# Initialize dataframe of PrizePicks player props
+player_props = pd.DataFrame()
+
 # Define ui
 app_ui = ui.page_sidebar(   
     ui.sidebar(
         # Theme picker - start
         shinyswatch.theme_picker_ui(),
 
+        ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
         ui.input_select(id = "team_a", label = "Team", selected = "OpTic Texas",
                         choices = sorted(cdlDF['team'].unique())), 
         ui.input_select(id = "team_b", label = "Team", selected = "Atlanta FaZe",
                         choices = sorted(cdlDF['team'].unique())), 
-        ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
         ui.input_select(id = "map_num", label = "Map Number", selected = 1,
                         choices = [1, 2, 3]), 
         ui.input_select(id = "gamemode", label = "Gamemode", selected = "Hardpoint",
@@ -34,12 +37,7 @@ app_ui = ui.page_sidebar(
                         choices = ["Time", "Total Score", "Score Differential"])
     ), 
     ui.layout_columns(
-        ui.card(
-            ui.output_table("team_summaries_tbl"),
-        ), 
-        ui.card(
-            ui.output_table("h2h_summary_tbl"),
-        ) 
+        ui.card(ui.output_data_frame("test_team_sums")), 
     ),
     title = "CDL Bets on PrizePicks" 
 )
@@ -51,6 +49,9 @@ def server(input, output, session):
     ## Theme picker - start
     shinyswatch.theme_picker_server()
 
+    @ render.data_frame
+    def test_team_sums():
+        return team_summaries_DF
 
 app = App(app_ui, server)
 
