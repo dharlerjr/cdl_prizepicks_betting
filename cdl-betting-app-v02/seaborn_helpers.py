@@ -1,6 +1,6 @@
 
 # Import seaborn
-from seaborn import *
+import seaborn as sns
 
 # Import setup
 from setup.setup import *
@@ -81,6 +81,96 @@ gamemode_kill_lims = {
   "Control": [0, 45]
 }
 
+# Set seaborn theme
+sns.set_theme(style = "darkgrid")
+
 # Load in data
 cdlDF = load_and_clean_cdl_data()
 cdlDF
+
+# Distribution of Score Differentials by Team, Map & Mode
+def team_score_diffs(team_input: str, gamemode_input: str, map_input = "All"):
+
+    # If user selected all maps    
+    if map_input == "All":
+    
+        # Filter data based on user inputs
+        filtered_df = \
+        cdlDF[(cdlDF['gamemode'] == gamemode_input) & \
+                (cdlDF['team'] == team_input)] \
+                [['match_id', 'map_name', 'score_diff']].drop_duplicates()
+
+        # Plot the faceted histogram
+        p = sns.displot(
+            data = filtered_df,  x = "score_diff", col = "map_name", col_wrap = 3,
+            binwidth = gamemode_binwidths[gamemode_input], height = 3, facet_kws = dict(margin_titles=True),
+            )
+        
+        # Title
+        p.figure.suptitle(f"{team_input} Score Differentials: {gamemode_input}")
+
+        # Set facet titles
+        p.set_titles("{col_name}")
+    
+    # User selected only one map 
+    else:
+
+        # Filter data based on user inputs, including map
+        filtered_df = \
+        cdlDF[(cdlDF['gamemode'] == gamemode_input) & \
+                (cdlDF['team'] == team_input) & \
+                (cdlDF["map_name"] == map_input)] \
+                [['match_id', 'map_name', 'score_diff']].drop_duplicates()
+
+        # Plot the histogram
+        p = sns.displot(
+            data = filtered_df, x = "score_diff", 
+            binwidth = gamemode_binwidths[gamemode_input]
+            )
+        
+        # Title
+        p.figure.suptitle(f"{team_input} Score Differentials: {map_input} {gamemode_input}")
+        
+    # Set axis labels 
+    p.set_axis_labels("Score Differential", "Count")
+
+    # Move title up
+    p.figure.subplots_adjust(top = 0.9)
+        
+    return p
+
+# Distribution of Series Differentials by Team
+def team_series_diffs(team_input: str):
+    pass
+    
+
+    
+
+# Player Kills Overview
+def player_kills_overview(
+        player_input: str, gamemode_input: str, cur_line: float, map_input = "All"
+):
+    # If user selected all maps
+    if map_input == "All":
+
+        # Filter data based on user inputs
+        filtered_df = \
+            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
+            (cdlDF["player"] == player_input)]
+
+    # User selected only one map
+    else:
+
+        # Filter data based on user inputs, including map
+        filtered_df = \
+            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
+            (cdlDF["player"] == player_input) & \
+            (cdlDF["map_name"] == map_input)]
+        
+    # Plot the boxplot
+    sns.boxplot(filtered_df, y =  "kills", fill = False)
+    
+    # Add in points to show each observation
+    sns.stripplot(filtered_df, y = "kills")
+
+

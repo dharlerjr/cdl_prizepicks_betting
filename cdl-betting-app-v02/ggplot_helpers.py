@@ -175,7 +175,7 @@ def gg_player_kills_overview(
                 aes(y = "kills")
             ) + \
                 geom_jitter(
-                    aes(x = "dummy_x", color = "map_wl"), size = 2, width = 0.05, height = 0.05, 
+                    aes(x = "dummy_x", color = "map_wl"), size = 2, wimapsdth = 0.05, height = 0.05, 
                 ) + \
                 geom_boxplot(alpha = 0.5, outlier_alpha = 0) + \
                 geom_hline(yintercept = cur_line, linetype = "dashed", color = 'purple') + \

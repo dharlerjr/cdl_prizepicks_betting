@@ -34,10 +34,10 @@ app_ui = ui.page_sidebar(
                         choices = ["All"] + \
                             sorted([map_name for map_name in cdlDF['map_name'].unique() if map_name != "Skidrow"])), 
         ui.input_select(id = "x_axis", label = "X-Axis", selected = "Time",
-                        choices = ["Time", "Total Score", "Score Differential"])
+                        choices = ["Time", "Score Differential"])
     ), 
     ui.layout_columns(
-        ui.card(ui.output_data_frame("test_team_sums")), 
+        ui.card(ui.output_data_frame("test_team_sums"), height = "400px"), 
     ),
     title = "CDL Bets on PrizePicks" 
 )
@@ -48,10 +48,6 @@ def server(input, output, session):
 
     ## Theme picker - start
     shinyswatch.theme_picker_server()
-
-    @ render.data_frame
-    def test_team_sums():
-        return team_summaries_DF
 
 app = App(app_ui, server)
 

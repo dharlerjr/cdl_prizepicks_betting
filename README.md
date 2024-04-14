@@ -39,7 +39,7 @@ Two Shiny applications for betting on CDL player props, primarily on PrizePicks.
 - **selenium** to automate a chrome web browser to scrape the PrizePicks website
 - **undetected_chromedriver** to scrape the PrizePicks website undetected
 - **Psycopg** & **sqlio** to load the CDL dataset from the PostgreSQL database into a Python dataframe
-- **Seaborn** to create Data Visualizations 
+- **Seaborn** to create Data Visualizations
 - **Shiny** to build the web app
 
 ## Notes
