@@ -99,7 +99,7 @@ def load_and_clean_cdl_data():
     return cdlDF
 
 # Build dataframe of series score differentials
-def build_team_series_summaries(cdlDF_input):
+def build_series_summaries(cdlDF_input):
     series_score_diffs = \
         cdlDF_input[["match_id", "team", "map_num", "gamemode", "map_result"]] \
         .drop_duplicates() \

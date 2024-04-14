@@ -1,6 +1,7 @@
 
-# Import seaborn
+# Import seaborn & matplotlib
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Import setup
 from setup.setup import *
@@ -67,11 +68,10 @@ viridis_map_and_mode_colors = {
   }
 }
 
-# Dictionary of binwidths by gamemode
-gamemode_binwidths = {
-  "Hardpoint": 50, 
-  "Search & Destroy": 1, 
-  "Control": 1
+# Dictionary of bin ranges by gamemode
+gamemode_bin_ranges = {
+    "Search & Destroy": (-6, 6), 
+    "Control": (-3, 3)
 }
 
 # Dictionary of ylims by gamemode 
@@ -88,6 +88,18 @@ sns.set_theme(style = "darkgrid")
 cdlDF = load_and_clean_cdl_data()
 cdlDF
 
+# Build series summaries
+series_score_diffs = build_series_summaries(cdlDF)
+
+# Function to remove all removed map & mode combos from cdlDF, 
+# after building series summaries
+cdlDF = filter_cdldf(cdlDF)
+
+# Build team summaries
+team_summaries_DF = build_team_summaries(cdlDF)
+team_summaries_DF
+
+
 # Distribution of Score Differentials by Team, Map & Mode
 def team_score_diffs(team_input: str, gamemode_input: str, map_input = "All"):
 
@@ -99,12 +111,25 @@ def team_score_diffs(team_input: str, gamemode_input: str, map_input = "All"):
         cdlDF[(cdlDF['gamemode'] == gamemode_input) & \
                 (cdlDF['team'] == team_input)] \
                 [['match_id', 'map_name', 'score_diff']].drop_duplicates()
+        
+        # Initialize facets
+        p = sns.FacetGrid(filtered_df, col = "map_name", col_wrap = 3)
 
-        # Plot the faceted histogram
-        p = sns.displot(
-            data = filtered_df,  x = "score_diff", col = "map_name", col_wrap = 3,
-            binwidth = gamemode_binwidths[gamemode_input], height = 3, facet_kws = dict(margin_titles=True),
-            )
+        # Histogram for Hardpoint
+        if gamemode_input == "Hardpoint":
+          
+          # Plot the faceted histograms
+          p.map_dataframe(
+              sns.histplot, x = "score_diff", 
+              binwidth = 50, binrange = (-150, 150)
+              )
+          
+        # Bar chart for SnD & Control
+        else:
+
+          # Plot the faceted bar charts
+          p.map_dataframe(sns.histplot, x = "score_diff", discrete = True, 
+                          binrange = gamemode_bin_ranges[gamemode_input])
         
         # Title
         p.figure.suptitle(f"{team_input} Score Differentials: {gamemode_input}")
@@ -121,30 +146,51 @@ def team_score_diffs(team_input: str, gamemode_input: str, map_input = "All"):
                 (cdlDF['team'] == team_input) & \
                 (cdlDF["map_name"] == map_input)] \
                 [['match_id', 'map_name', 'score_diff']].drop_duplicates()
+        
+        # Histogram for Hardpoint
+        if gamemode_input == "Hardpoint":
 
-        # Plot the histogram
-        p = sns.displot(
-            data = filtered_df, x = "score_diff", 
-            binwidth = gamemode_binwidths[gamemode_input]
-            )
+          # Plot the histogram
+          p = sns.histplot(
+              data = filtered_df, x = "score_diff", 
+              binwidth = 50, binrange = (-150, 150)
+              )
+        
+        # Bar chart for SnD & Control
+        else:
+           
+          # Plot the bar chart
+          p = sns.histplot(data = filtered_df, x = "score_diff", discrete = True, 
+                           binrange = gamemode_bin_ranges[gamemode_input])
         
         # Title
         p.figure.suptitle(f"{team_input} Score Differentials: {map_input} {gamemode_input}")
-        
-    # Set axis labels 
-    p.set_axis_labels("Score Differential", "Count")
 
     # Move title up
     p.figure.subplots_adjust(top = 0.9)
         
     return p
 
+
 # Distribution of Series Differentials by Team
 def team_series_diffs(team_input: str):
-    pass
-    
 
-    
+    filtered_df = \
+        series_score_diffs[
+            series_score_diffs["team"] == team_input
+            ]
+
+    # Plot the histogram
+    p = sns.histplot(
+        data = filtered_df, x = "series_score_diff", discrete = True
+        )
+        
+    # Title
+    p.figure.suptitle(f"{team_input} Series Differentials")
+
+    # Move title up
+    p.figure.subplots_adjust(top = 0.9)
+
 
 # Player Kills Overview
 def player_kills_overview(
@@ -171,6 +217,6 @@ def player_kills_overview(
     sns.boxplot(filtered_df, y =  "kills", fill = False)
     
     # Add in points to show each observation
-    sns.stripplot(filtered_df, y = "kills")
+    sns.stripplot(filtered_df, y = "kills", jitter = 0.05)
 
 
