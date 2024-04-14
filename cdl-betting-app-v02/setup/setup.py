@@ -121,9 +121,7 @@ def build_series_summaries(cdlDF_input):
 
     return series_score_diffs
 
-# Function to remove all removed map & mode combos from cdlDF, 
-# after building series summaries
-
+# Function to filter cdlDF
 def filter_cdldf(cdlDF_input):
     
     # Remove map & mode combos
@@ -144,6 +142,9 @@ def filter_cdldf(cdlDF_input):
 
     # Update team for "ReeaL"
     cdlDF_input.loc[cdlDF_input['player'] == 'ReeaL', 'team'] = 'Miami Heretics'
+
+    # Change FelonY's player name to Felo to match PrizePicks
+    cdlDF_input.loc[cdlDF_input['player'] == 'FelonY', 'player'] = 'Felo'
 
     return cdlDF_input
 
