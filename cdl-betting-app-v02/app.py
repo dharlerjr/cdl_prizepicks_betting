@@ -40,7 +40,7 @@ team_summaries_DF
 
 # Initialize player props dataframe
 initial_player_props = rostersDF
-initial_player_props["proptype"] = "1"
+initial_player_props["proptype"] = 1
 initial_player_props["player_line"] = 22
 
 # Define ui
@@ -99,7 +99,13 @@ def server(input, output, session):
     @reactive.effect
     @reactive.event(input.scrape)
     def scrape_props():
-        player_props_df.set(scrape_prizepicks())
+        player_props_df.set(
+            pd.merge(
+                scrape_prizepicks(), 
+                rostersDF, 
+                on = 'player', how =  'left'
+            )
+        )
 
     # Reactive calc to translate map num to gamemode
     @reactive.calc
@@ -114,10 +120,9 @@ def server(input, output, session):
             rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
             gamemode(), 
             player_props_df.get()[
-                player_props_df.get()\
-                    (['team'] == input.team_a()) & 
-                    (['proptype'] == input.map_num())] \
-                        .iloc[0]['player_line'],
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[0]['player_line'],
             input.map_name()
         )
 
@@ -130,10 +135,9 @@ def server(input, output, session):
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
                 gamemode(), 
                 player_props_df.get()[
-                    player_props_df.get()\
-                        (['team'] == input.team_a()) & 
-                        (['proptype'] == input.map_num())] \
-                            .iloc[0]['player_line'],
+                    (player_props_df.get()['team'] == input.team_a()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[0]['player_line'],
                 input.map_name()
             )
         else:
@@ -142,10 +146,9 @@ def server(input, output, session):
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
                 gamemode(), 
                 player_props_df.get()[
-                    player_props_df.get()\
-                        (['team'] == input.team_a()) & 
-                        (['proptype'] == input.map_num())] \
-                            .iloc[0]['player_line'],
+                    (player_props_df.get()['team'] == input.team_a()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[0]['player_line'],
                 input.map_name()
             )
     # Player Two Boxplot
@@ -156,10 +159,9 @@ def server(input, output, session):
             rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
             gamemode(), 
             player_props_df.get()[
-                player_props_df.get()\
-                    (['team'] == input.team_a()) & 
-                    (['proptype'] == input.map_num())] \
-                        .iloc[1]['player_line'],
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[1]['player_line'],
             input.map_name()
         )
 
@@ -172,10 +174,9 @@ def server(input, output, session):
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
                 gamemode(), 
                 player_props_df.get()[
-                    player_props_df.get()\
-                        (['team'] == input.team_a()) & 
-                        (['proptype'] == input.map_num())] \
-                            .iloc[1]['player_line'],
+                    (player_props_df.get()['team'] == input.team_a()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[1]['player_line'],
                 input.map_name()
             )
         else:
@@ -184,10 +185,9 @@ def server(input, output, session):
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
                 gamemode(), 
                 player_props_df.get()[
-                    player_props_df.get()\
-                        (['team'] == input.team_a()) & 
-                        (['proptype'] == input.map_num())] \
-                            .iloc[1]['player_line'],
+                    (player_props_df.get()['team'] == input.team_a()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[1]['player_line'],
                 input.map_name()
             )
         
@@ -199,10 +199,9 @@ def server(input, output, session):
             rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
             gamemode(), 
             player_props_df.get()[
-                player_props_df.get()\
-                    (['team'] == input.team_a()) & 
-                    (['proptype'] == input.map_num())] \
-                        .iloc[2]['player_line'],
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[2]['player_line'],
             input.map_name()
         )
 
@@ -215,10 +214,9 @@ def server(input, output, session):
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
                 gamemode(), 
                 player_props_df.get()[
-                    player_props_df.get()\
-                        (['team'] == input.team_a()) & 
-                        (['proptype'] == input.map_num())] \
-                            .iloc[2]['player_line'],
+                    (player_props_df.get()['team'] == input.team_a()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[2]['player_line'],
                 input.map_name()
             )
         else:
@@ -227,10 +225,9 @@ def server(input, output, session):
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
                 gamemode(), 
                 player_props_df.get()[
-                    player_props_df.get()\
-                        (['team'] == input.team_a()) & 
-                        (['proptype'] == input.map_num())] \
-                            .iloc[2]['player_line'],
+                    (player_props_df.get()['team'] == input.team_a()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[2]['player_line'],
                 input.map_name()
             )
         
@@ -242,10 +239,9 @@ def server(input, output, session):
             rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'],  
             gamemode(), 
             player_props_df.get()[
-                player_props_df.get()\
-                    (['team'] == input.team_a()) & 
-                    (['proptype'] == input.map_num())] \
-                        .iloc[3]['player_line'],
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[3]['player_line'],
             input.map_name()
         )
 
@@ -258,10 +254,9 @@ def server(input, output, session):
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'],  
                 gamemode(), 
                 player_props_df.get()[
-                    player_props_df.get()\
-                        (['team'] == input.team_a()) & 
-                        (['proptype'] == input.map_num())] \
-                            .iloc[3]['player_line'],
+                    (player_props_df.get()['team'] == input.team_a()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[3]['player_line'],
                 input.map_name()
             )
         else:
@@ -270,10 +265,9 @@ def server(input, output, session):
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
                 gamemode(), 
                 player_props_df.get()[
-                    player_props_df.get()\
-                        (['team'] == input.team_a()) & 
-                        (['proptype'] == input.map_num())] \
-                            .iloc[3]['player_line'],
+                    (player_props_df.get()['team'] == input.team_a()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[3]['player_line'],
                 input.map_name()
             )
         

@@ -104,4 +104,14 @@ def scrape_prizepicks():
             })
 
     # Convert our list of player props to a dataframe
-    return pd.DataFrame(player_props)
+    player_props_df =  pd.DataFrame(player_props)
+
+    # Set proptype column to int
+    player_props_df['proptype'] = player_props_df['proptype'].astype(int)
+
+    # Set player and team_abbr columns to str
+    player_props_df['player'] = player_props_df['player'].astype(str)
+    player_props_df['team_abbr'] = player_props_df['team_abbr'].astype(str)
+
+    # Return player props
+    return player_props_df
