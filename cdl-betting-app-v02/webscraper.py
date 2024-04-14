@@ -99,7 +99,7 @@ def scrape_prizepicks():
             player_props.append({
                 "player": player, 
                 "team_abbr": team_abbr, 
-                "proptype": category, 
+                "proptype": category.split(" ")[1], 
                 "player_line": player_line
             })
 

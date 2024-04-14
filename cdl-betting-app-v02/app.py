@@ -31,12 +31,12 @@ series_score_diffs = build_series_summaries(cdlDF)
 # after building series summaries
 cdlDF = filter_cdldf(cdlDF)
 
+# Build team rosters
+rostersDF = build_rosters(cdlDF)
+
 # Build team summaries
 team_summaries_DF = build_team_summaries(cdlDF)
 team_summaries_DF
-
-# Initialize dataframe of PrizePicks player props
-player_props = pd.DataFrame()
 
 # Define ui
 app_ui = ui.page_sidebar(   
@@ -58,7 +58,7 @@ app_ui = ui.page_sidebar(
                         choices = ["Time", "Score Differential"])
     ), 
     ui.layout_columns(
-        ui.card(), 
+        ui.card(ui.output_data_frame("player_props"), height="400px"),
         ui.card()
     ),
         ui.layout_columns(
@@ -87,6 +87,20 @@ def server(input, output, session):
     # Theme picker
     shinyswatch.theme_picker_server()
 
+    # Set dataframe of player props for testing
+    player_props_df = reactive.value(pd.DataFrame())
+
+    # Reactive event to update player props dataframe
+    @reactive.effect
+    @reactive.event(input.scrape)
+    def scraped_props():
+        player_props_df.set(scrape_prizepicks())
+    
+    # Render dataframe of player props for testing
+    @render.data_frame()
+    def player_props():
+        return render.DataGrid(player_props_df.get())
+
     # Reactive calc to translate map num to gamemode
     @reactive.calc
     def gamemode():
@@ -96,7 +110,8 @@ def server(input, output, session):
     @render.plot
     def player_1_box():
         return player_kills_overview(
-            cdlDF, "Kenny", gamemode(), 20, input.map_name()
+            cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
+            gamemode(), 20, input.map_name()
         )
 
     # Player One Scatterplot
@@ -104,17 +119,20 @@ def server(input, output, session):
     def player_1_scatter():
         if input.x_axis() == "Time":
             return player_kills_vs_time(
-                cdlDF, "Kenny", gamemode(), 20, input.map_name()
+                cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
+                gamemode(), 20, input.map_name()
             )
         else:
             return player_kills_vs_score_diff(
-                cdlDF, "Kenny", gamemode(), 20, input.map_name()
+                cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
+                gamemode(), 20, input.map_name()
             )
     # Player Two Boxplot
     @render.plot
     def player_2_box():
         return player_kills_overview(
-            cdlDF, "Kenny", gamemode(), 20, input.map_name()
+            cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
+            gamemode(), 20, input.map_name()
         )
 
     # Player Two Scatterplot
@@ -122,18 +140,21 @@ def server(input, output, session):
     def player_2_scatter():
         if input.x_axis() == "Time":
             return player_kills_vs_time(
-                cdlDF, "Kenny", gamemode(), 20, input.map_name()
+                cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
+                gamemode(), 20, input.map_name()
             )
         else:
             return player_kills_vs_score_diff(
-                cdlDF, "Kenny", gamemode(), 20, input.map_name()
+                cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
+                gamemode(), 20, input.map_name()
             )
         
     # Player Three Boxplot
     @render.plot
     def player_3_box():
         return player_kills_overview(
-            cdlDF, "Kenny", gamemode(), 20, input.map_name()
+            cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
+            gamemode(), 20, input.map_name()
         )
 
     # Player Three Scatterplot
@@ -141,18 +162,21 @@ def server(input, output, session):
     def player_3_scatter():
         if input.x_axis() == "Time":
             return player_kills_vs_time(
-                cdlDF, "Kenny", gamemode(), 20, input.map_name()
+                cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
+                gamemode(), 20, input.map_name()
             )
         else:
             return player_kills_vs_score_diff(
-                cdlDF, "Kenny", gamemode(), 20, input.map_name()
+                cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
+                gamemode(), 20, input.map_name()
             )
         
     # Player Four Boxplot
     @render.plot
     def player_4_box():
         return player_kills_overview(
-            cdlDF, "Kenny", gamemode(), 20, input.map_name()
+            cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'],  
+            gamemode(), 20, input.map_name()
         )
 
     # Player Four Scatterplot
@@ -160,12 +184,16 @@ def server(input, output, session):
     def player_4_scatter():
         if input.x_axis() == "Time":
             return player_kills_vs_time(
-                cdlDF, "Kenny", gamemode(), 20, input.map_name()
+                cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'],  
+                gamemode(), 20, input.map_name()
             )
         else:
             return player_kills_vs_score_diff(
-                cdlDF, "Kenny", gamemode(), 20, input.map_name()
+                cdlDF, rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
+                gamemode(), 20, input.map_name()
             )
+        
+    
 
 
 app = App(app_ui, server)
