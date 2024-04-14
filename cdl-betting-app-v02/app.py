@@ -63,24 +63,24 @@ app_ui = ui.page_sidebar(
                         choices = ["Time", "Score Differential"])
     ), 
     ui.layout_columns(
-        ui.card(),
+        ui.card(ui.output_data_frame("player_props")),
         ui.card()
     ),
-        ui.layout_columns(
-        ui.card(ui.output_plot("player_1_box"),), 
-        ui.card(ui.output_plot("player_1_scatter"),)
+    ui.layout_columns(
+        ui.card(ui.output_plot("player_1_box")), 
+        ui.card(ui.output_plot("player_1_scatter"))
     ),
     ui.layout_columns(
-        ui.card(ui.output_plot("player_2_box"),), 
-        ui.card(ui.output_plot("player_2_scatter"),)
+        ui.card(ui.output_plot("player_2_box")), 
+        ui.card(ui.output_plot("player_2_scatter"))
     ),
     ui.layout_columns(
-        ui.card(ui.output_plot("player_3_box"),), 
-        ui.card(ui.output_plot("player_3_scatter"),)
+        ui.card(ui.output_plot("player_3_box")), 
+        ui.card(ui.output_plot("player_3_scatter"))
     ),
     ui.layout_columns(
-        ui.card(ui.output_plot("player_4_box"),), 
-        ui.card(ui.output_plot("player_4_scatter"),)
+        ui.card(ui.output_plot("player_4_box")), 
+        ui.card(ui.output_plot("player_4_scatter"))
     ),
     title = "CDL Bets on PrizePicks" 
 )
@@ -101,11 +101,16 @@ def server(input, output, session):
     def scrape_props():
         player_props_df.set(
             pd.merge(
-                scrape_prizepicks(), 
-                rostersDF, 
+                scrape_prizepicks(),
+                rostersDF.drop(['proptype', 'player_line'], axis=1),
                 on = 'player', how =  'left'
             )
         )
+
+    # Test PrizePicks Player Props Dataframe
+    @render.data_frame
+    def player_props():
+        return render.DataGrid(player_props_df.get())
 
     # Reactive calc to translate map num to gamemode
     @reactive.calc
