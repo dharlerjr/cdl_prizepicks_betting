@@ -1,16 +1,28 @@
 
-# Imports
+# Import setup
 from setup.setup import *
 
 # Import shiny and shinyswatch
 from shiny import App, render, ui
 import shinyswatch
 
-# Load and clean cdl dataset
-cdlDF = load_and_clean_cdl_data()
+# Import helpers
+from seaborn_helpers import *
 
-# Build team summaries 
-team_summaries_DF = build_team_summaries(cdlDF_input = cdlDF)
+# Load in data
+cdlDF = load_and_clean_cdl_data()
+cdlDF
+
+# Build series summaries
+series_score_diffs = build_series_summaries(cdlDF)
+
+# Function to remove all removed map & mode combos from cdlDF, 
+# after building series summaries
+cdlDF = filter_cdldf(cdlDF)
+
+# Build team summaries
+team_summaries_DF = build_team_summaries(cdlDF)
+team_summaries_DF
 
 # Initialize dataframe of PrizePicks player props
 player_props = pd.DataFrame()
@@ -37,7 +49,12 @@ app_ui = ui.page_sidebar(
                         choices = ["Time", "Score Differential"])
     ), 
     ui.layout_columns(
-        ui.card(ui.output_data_frame("test_team_sums"), height = "400px"), 
+        ui.card(), 
+        ui.card()
+    ),
+        ui.layout_columns(
+        ui.card(), 
+        ui.card()
     ),
     title = "CDL Bets on PrizePicks" 
 )

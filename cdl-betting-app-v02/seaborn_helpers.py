@@ -84,24 +84,11 @@ gamemode_kill_lims = {
 # Set seaborn theme
 sns.set_theme(style = "darkgrid")
 
-# Load in data
-cdlDF = load_and_clean_cdl_data()
-cdlDF
-
-# Build series summaries
-series_score_diffs = build_series_summaries(cdlDF)
-
-# Function to remove all removed map & mode combos from cdlDF, 
-# after building series summaries
-cdlDF = filter_cdldf(cdlDF)
-
-# Build team summaries
-team_summaries_DF = build_team_summaries(cdlDF)
-team_summaries_DF
-
-
 # Distribution of Score Differentials by Team, Map & Mode
-def team_score_diffs(team_input: str, gamemode_input: str, map_input = "All"):
+def team_score_diffs(
+        cdlDF: pd.DataFrame, team_input: str, 
+        gamemode_input: str, map_input = "All"
+):
 
     # If user selected all maps    
     if map_input == "All":
@@ -173,7 +160,7 @@ def team_score_diffs(team_input: str, gamemode_input: str, map_input = "All"):
 
 
 # Distribution of Series Differentials by Team
-def team_series_diffs(team_input: str):
+def team_series_diffs(series_score_diffs: pd.DataFrame, team_input: str):
 
     filtered_df = \
         series_score_diffs[
@@ -194,7 +181,8 @@ def team_series_diffs(team_input: str):
 
 # Player Kills Overview
 def player_kills_overview(
-        player_input: str, gamemode_input: str, cur_line: float, map_input = "All"
+        cdlDF: pd.DataFrame, player_input: str, gamemode_input: str, 
+        cur_line: float, map_input = "All"
 ):
     # If user selected all maps
     if map_input == "All":
@@ -219,4 +207,69 @@ def player_kills_overview(
     # Add in points to show each observation
     sns.stripplot(filtered_df, y = "kills", jitter = 0.05)
 
+    # Add current PrizePicks lines
+    plt.axhline(y = cur_line, color = "purple", linestyle = '--')
 
+
+# Player Kills vs. Time
+def player_kills_vs_time(
+        cdlDF: pd.DataFrame, player_input: str,
+          gamemode_input: str, cur_line: float, map_input = "All"
+):
+    
+    # If user selects all maps
+    if map_input == "All":
+        
+        filtered_df = \
+            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
+                (cdlDF["player"] == player_input)]
+
+    # If user selects only one map
+    else:
+
+        filtered_df = \
+            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
+                (cdlDF["player"] == player_input) & \
+                (cdlDF["map_name"] == map_input)]
+        
+    
+    # Create the line chart 
+    sns.scatterplot(
+        filtered_df, x = "match_date", y = "kills"
+        )
+    
+    # Add current PrizePicks lines
+    plt.axhline(y = cur_line, color = "purple", linestyle = '--')
+
+# Player Kills vs Score Diff
+def player_kills_vs_score_diff(
+        cdlDF: pd.DataFrame, player_input: str, 
+        gamemode_input: str, cur_line: float, map_input = "All"
+):
+    
+    # If user selects all maps
+    if map_input == "All":
+        
+        filtered_df = \
+            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
+                (cdlDF["player"] == player_input)]
+
+    # If user selects only one map
+    else:
+
+        filtered_df = \
+            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
+                (cdlDF["player"] == player_input) & \
+                (cdlDF["map_name"] == map_input)]
+        
+    
+    # Create the scatterplot with lowess model
+    sns.regplot(
+        filtered_df, x = "score_diff", y = "kills", lowess = True
+        )
+    
+    # Add current PrizePicks lines
+    plt.axhline(y = cur_line, color = "purple", linestyle = '--')
+
+    # Add vertical line at x = 0
+    plt.axvline(x = 0, color = "orange", linestyle = '--')
