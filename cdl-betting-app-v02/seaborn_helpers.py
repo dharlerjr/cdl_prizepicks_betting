@@ -86,7 +86,7 @@ sns.set_theme(style = "darkgrid")
 
 # Distribution of Score Differentials by Team, Map & Mode
 def team_score_diffs(
-        cdlDF: pd.DataFrame, team_input: str, 
+        cdlDF_input: pd.DataFrame, team_input: str, 
         gamemode_input: str, map_input = "All"
 ):
 
@@ -95,8 +95,8 @@ def team_score_diffs(
     
         # Filter data based on user inputs
         filtered_df = \
-        cdlDF[(cdlDF['gamemode'] == gamemode_input) & \
-                (cdlDF['team'] == team_input)] \
+        cdlDF_input[(cdlDF_input['gamemode'] == gamemode_input) & \
+                (cdlDF_input['team'] == team_input)] \
                 [['match_id', 'map_name', 'score_diff']].drop_duplicates()
         
         # Initialize facets
@@ -129,9 +129,9 @@ def team_score_diffs(
 
         # Filter data based on user inputs, including map
         filtered_df = \
-        cdlDF[(cdlDF['gamemode'] == gamemode_input) & \
-                (cdlDF['team'] == team_input) & \
-                (cdlDF["map_name"] == map_input)] \
+        cdlDF_input[(cdlDF_input['gamemode'] == gamemode_input) & \
+                (cdlDF_input['team'] == team_input) & \
+                (cdlDF_input["map_name"] == map_input)] \
                 [['match_id', 'map_name', 'score_diff']].drop_duplicates()
         
         # Histogram for Hardpoint
@@ -160,11 +160,11 @@ def team_score_diffs(
 
 
 # Distribution of Series Differentials by Team
-def team_series_diffs(series_score_diffs: pd.DataFrame, team_input: str):
+def team_series_diffs(series_score_diffs_input: pd.DataFrame, team_input: str):
 
     filtered_df = \
-        series_score_diffs[
-            series_score_diffs["team"] == team_input
+        series_score_diffs_input[
+            series_score_diffs_input["team"] == team_input
             ]
 
     # Plot the histogram
@@ -181,7 +181,7 @@ def team_series_diffs(series_score_diffs: pd.DataFrame, team_input: str):
 
 # Player Kills Overview
 def player_kills_overview(
-        cdlDF: pd.DataFrame, player_input: str, gamemode_input: str, 
+        cdlDF_input: pd.DataFrame, player_input: str, gamemode_input: str, 
         cur_line: float, map_input = "All"
 ):
     # If user selected all maps
@@ -189,17 +189,17 @@ def player_kills_overview(
 
         # Filter data based on user inputs
         filtered_df = \
-            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-            (cdlDF["player"] == player_input)]
+            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+            (cdlDF_input["player"] == player_input)]
 
     # User selected only one map
     else:
 
         # Filter data based on user inputs, including map
         filtered_df = \
-            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-            (cdlDF["player"] == player_input) & \
-            (cdlDF["map_name"] == map_input)]
+            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+            (cdlDF_input["player"] == player_input) & \
+            (cdlDF_input["map_name"] == map_input)]
         
     # Plot the boxplot
     sns.boxplot(filtered_df, y =  "kills", fill = False)
@@ -213,7 +213,7 @@ def player_kills_overview(
 
 # Player Kills vs. Time
 def player_kills_vs_time(
-        cdlDF: pd.DataFrame, player_input: str,
+        cdlDF_input: pd.DataFrame, player_input: str,
           gamemode_input: str, cur_line: float, map_input = "All"
 ):
     
@@ -221,16 +221,16 @@ def player_kills_vs_time(
     if map_input == "All":
         
         filtered_df = \
-            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                (cdlDF["player"] == player_input)]
+            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                (cdlDF_input["player"] == player_input)]
 
     # If user selects only one map
     else:
 
         filtered_df = \
-            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                (cdlDF["player"] == player_input) & \
-                (cdlDF["map_name"] == map_input)]
+            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                (cdlDF_input["player"] == player_input) & \
+                (cdlDF_input["map_name"] == map_input)]
         
     
     # Create the line chart 
@@ -241,9 +241,10 @@ def player_kills_vs_time(
     # Add current PrizePicks lines
     plt.axhline(y = cur_line, color = "purple", linestyle = '--')
 
+
 # Player Kills vs Score Diff
 def player_kills_vs_score_diff(
-        cdlDF: pd.DataFrame, player_input: str, 
+        cdlDF_input: pd.DataFrame, player_input: str, 
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
     
@@ -251,16 +252,16 @@ def player_kills_vs_score_diff(
     if map_input == "All":
         
         filtered_df = \
-            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                (cdlDF["player"] == player_input)]
+            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                (cdlDF_input["player"] == player_input)]
 
     # If user selects only one map
     else:
 
         filtered_df = \
-            cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                (cdlDF["player"] == player_input) & \
-                (cdlDF["map_name"] == map_input)]
+            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                (cdlDF_input["player"] == player_input) & \
+                (cdlDF_input["map_name"] == map_input)]
         
     
     # Create the scatterplot with lowess model

@@ -9,6 +9,12 @@ import psycopg2
 # Import db password from config
 from setup.config import db_password
 
+# List of players that have been dropped
+dropped_players = [
+    "Afro", "Arcitys", "Asim", "Cammy", "Capsidal", "EriKBooM", 
+    "GodRx", "iLLeY", "JurNii", "Owakening", "SlasheR", "Vivid"
+]
+
 # Function to load and clean cdl data and return as pandas dataframe
 def load_and_clean_cdl_data():
 
@@ -119,7 +125,9 @@ def build_series_summaries(cdlDF_input):
 # after building series summaries
 
 def filter_cdldf(cdlDF_input):
-    return(
+    
+    # Remove map & mode combos
+    cdlDF_input = \
         cdlDF_input[
             ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Invasion')) &
             ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Skidrow')) &
@@ -127,10 +135,25 @@ def filter_cdldf(cdlDF_input):
             ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Skidrow')) &
             ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Terminal')) 
         ]
-    )
+    
+    # Remove dropped players, excluding players who switched teams
+    cdlDF_input = cdlDF_input[~cdlDF_input['player'].isin(dropped_players)]
+
+    # Update team for "Standy"
+    cdlDF_input.loc[cdlDF_input['player'] == 'Standy', 'team'] = 'Minnesota ROKKR'
+
+    # Update team for "ReeaL"
+    cdlDF_input.loc[cdlDF_input['player'] == 'ReeaL', 'team'] = 'Miami Heretics'
+
+    return cdlDF_input
+
+# Funciton to build rosters
+def build_rosters(cdlDF_input: pd.DataFrame):
+    rostersDF = cdlDF_input[["player", "team"]].drop_duplicates().sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
+    return rostersDF
 
 # Function to create a pandas dataframe of team summaries
-def build_team_summaries(cdlDF_input): 
+def build_team_summaries(cdlDF_input: pd.DataFrame): 
 
     # Team Summaries by Map & Mode
     team_summaries_DF_top = \
