@@ -27,16 +27,16 @@ cdlDF
 # Build series summaries
 series_score_diffs = build_series_summaries(cdlDF)
 
+# Build team summaries
+team_summaries_DF = build_team_summaries(cdlDF)
+team_summaries_DF
+
 # Function to remove all removed map & mode combos from cdlDF, 
 # after building series summaries
 cdlDF = filter_cdldf(cdlDF)
 
 # Build team rosters
 rostersDF = build_rosters(cdlDF)
-
-# Build team summaries
-team_summaries_DF = build_team_summaries(cdlDF)
-team_summaries_DF
 
 # Initialize player props dataframe
 initial_player_props = build_intial_props(rostersDF)

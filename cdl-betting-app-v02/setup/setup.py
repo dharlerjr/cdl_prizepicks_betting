@@ -121,40 +121,6 @@ def build_series_summaries(cdlDF_input):
 
     return series_score_diffs
 
-# Function to filter cdlDF
-def filter_cdldf(cdlDF_input):
-    
-    # Remove map & mode combos
-    cdlDF_input = \
-        cdlDF_input[
-            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Invasion')) &
-            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Skidrow')) &
-            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Terminal')) &
-            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Skidrow')) &
-            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Terminal')) 
-        ]
-    
-    # Remove dropped players, excluding players who switched teams
-    cdlDF_input = cdlDF_input[~cdlDF_input['player'].isin(dropped_players)]
-
-    # Update team for "Standy"
-    cdlDF_input.loc[cdlDF_input['player'] == 'Standy', 'team'] = 'Minnesota ROKKR'
-
-    # Update team for "ReeaL"
-    cdlDF_input.loc[cdlDF_input['player'] == 'ReeaL', 'team'] = 'Miami Heretics'
-
-    # Change FelonY's player name to Felo to match PrizePicks
-    cdlDF_input.loc[cdlDF_input['player'] == 'FelonY', 'player'] = 'Felo'
-
-    return cdlDF_input
-
-# Funciton to build rosters
-def build_rosters(cdlDF_input: pd.DataFrame):
-    rostersDF = cdlDF_input[["player", "team"]].drop_duplicates().sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
-    rostersDF = rostersDF.reset_index()
-    rostersDF = rostersDF.drop("index", axis = 1)
-    return rostersDF
-
 # Function to create a pandas dataframe of team summaries
 def build_team_summaries(cdlDF_input: pd.DataFrame): 
 
@@ -194,6 +160,12 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
     # Reset the index of the stacked DataFrame
     team_summaries_DF.reset_index(drop = True, inplace = True)
 
+    # Concatenated dataframe will contain correct totals. However, this 
+    # dataframe will also contain map and mode combinations that are no
+    # longer played. So, after incorporating these combinations into the 
+    # totals, we will drop the five combinations from the dataframe.
+    team_summaries_DF.dropna(inplace=True)
+
     # Reorder gamemode factor levels
     team_summaries_DF['gamemode'] = \
         pd.Categorical(team_summaries_DF['gamemode'], categories = ['Hardpoint', 'Search & Destroy', 'Control'])
@@ -206,6 +178,40 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
                           'Rio', 'Sub Base', 'Vista', 'Overall'])
     
     return team_summaries_DF
+
+# Function to filter cdlDF
+def filter_cdldf(cdlDF_input):
+    
+    # Remove map & mode combos
+    cdlDF_input = \
+        cdlDF_input[
+            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Invasion')) &
+            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Skidrow')) &
+            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Terminal')) &
+            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Skidrow')) &
+            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Terminal')) 
+        ]
+    
+    # Remove dropped players, excluding players who switched teams
+    cdlDF_input = cdlDF_input[~cdlDF_input['player'].isin(dropped_players)]
+
+    # Update team for "Standy"
+    cdlDF_input.loc[cdlDF_input['player'] == 'Standy', 'team'] = 'Minnesota ROKKR'
+
+    # Update team for "ReeaL"
+    cdlDF_input.loc[cdlDF_input['player'] == 'ReeaL', 'team'] = 'Miami Heretics'
+
+    # Change FelonY's player name to Felo to match PrizePicks
+    cdlDF_input.loc[cdlDF_input['player'] == 'FelonY', 'player'] = 'Felo'
+
+    return cdlDF_input
+
+# Funciton to build rosters
+def build_rosters(cdlDF_input: pd.DataFrame):
+    rostersDF = cdlDF_input[["player", "team"]].drop_duplicates().sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
+    rostersDF = rostersDF.reset_index()
+    rostersDF = rostersDF.drop("index", axis = 1)
+    return rostersDF
 
 # Build initial player props
 def build_intial_props(rostersDF_input):
