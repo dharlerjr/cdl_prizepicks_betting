@@ -206,3 +206,18 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
                           'Rio', 'Sub Base', 'Vista', 'Overall'])
     
     return team_summaries_DF
+
+# Build initial player props
+def build_intial_props(rostersDF_input):
+    initial_player_props = pd.DataFrame()
+    initial_player_props["player"] = rostersDF_input["player"]
+    initial_player_props["team"] = rostersDF_input["team"]
+    initial_player_props["proptype"] = 1
+    initial_player_props["player_line"] = 22.0
+    initial_player_props = pd.concat([initial_player_props, initial_player_props, initial_player_props])
+    initial_player_props = initial_player_props.reset_index()
+    initial_player_props = initial_player_props.drop("index", axis = 1)
+    initial_player_props.iloc[48:96, 2] = 2
+    initial_player_props.iloc[96:144, 2] = 3
+    initial_player_props.iloc[48:96, 3] = 6.5
+    return initial_player_props
