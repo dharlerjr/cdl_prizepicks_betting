@@ -132,8 +132,8 @@ cdlDF <- bind_cols(cdlDF, opps) %>%
 
 rostersDF <- cdlDF %>% select(player, team) %>% distinct() %>% arrange(team)
 
-dropped_players <- c("GodRx", "ReeaL", "Afro", "Cammy", 
-                     "JurNii", "Standy", "iLLeY", "Capsidal")
+dropped_players <- c("Afro", "Arcitys", "Asim", "Cammy", "Capsidal", "EriKBooM", 
+                     "GodRx", "iLLeY", "JurNii", "Owakening", "SlasheR", "Vivid")
 
 # Add Major, Week, and online/LAN columns using case_when statements -----------
 
@@ -141,7 +141,8 @@ cdlDF <- cdlDF %>%
   mutate(
     major = case_when(
       match_date <= ymd("2024-01-28")                                      ~ 1, 
-      (match_date >= ymd("2024-02-16") & match_date <= ymd("2024-03-24"))  ~ 2 
+      (match_date >= ymd("2024-02-16") & match_date <= ymd("2024-03-24"))  ~ 2, 
+      match_date >= ymd("2024-04-12")                                      ~ 3
     ), 
     week = case_when(
       match_date <= ymd("2023-12-10")                                      ~ 1,
@@ -152,7 +153,8 @@ cdlDF <- cdlDF %>%
       (match_date >= ymd("2024-02-23") & match_date <= ymd("2024-02-25"))  ~ 2,
       (match_date >= ymd("2024-03-01") & match_date <= ymd("2024-03-03"))  ~ 3,
       (match_date >= ymd("2024-03-08") & match_date <= ymd("2024-03-10"))  ~ 4,
-      (match_date >= ymd("2024-03-15") & match_date <= ymd("2024-03-17"))  ~ 5
+      (match_date >= ymd("2024-03-15") & match_date <= ymd("2024-03-17"))  ~ 5, 
+      match_date >= ymd("2024-04-12")  ~ 1
     ), 
     LAN = if_else(is.na(week), 1, 0)
   )

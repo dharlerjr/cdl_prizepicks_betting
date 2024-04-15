@@ -39,13 +39,23 @@ team_summaries_DF = build_team_summaries(cdlDF)
 team_summaries_DF
 
 # Initialize player props dataframe
-initial_player_props = rostersDF
+initial_player_props = pd.DataFrame()
+initial_player_props["player"] = rostersDF["player"]
+initial_player_props["team"] = rostersDF["team"]
 initial_player_props["proptype"] = 1
-initial_player_props["player_line"] = 22
+initial_player_props["player_line"] = 22.0
+initial_player_props = pd.concat([initial_player_props, initial_player_props, initial_player_props])
+initial_player_props = initial_player_props.reset_index()
+initial_player_props = initial_player_props.drop("index", axis = 1)
+initial_player_props.iloc[48:96, 2] = 2
+initial_player_props.iloc[96:144, 2] = 3
+initial_player_props.iloc[48:96, 3] = 6.5
+
 
 # Define ui
 app_ui = ui.page_sidebar(   
     ui.sidebar(
+
         # Theme picker - start
         shinyswatch.theme_picker_ui(),
 
@@ -63,8 +73,8 @@ app_ui = ui.page_sidebar(
                         choices = ["Time", "Score Differential"])
     ), 
     ui.layout_columns(
-        ui.card(ui.output_data_frame("player_props")),
-        ui.card()
+        ui.card(ui.output_plot("player_1_box")), 
+        ui.card(ui.output_plot("player_1_scatter"))
     ),
     ui.layout_columns(
         ui.card(ui.output_plot("player_1_box")), 
@@ -81,6 +91,12 @@ app_ui = ui.page_sidebar(
     ui.layout_columns(
         ui.card(ui.output_plot("player_4_box")), 
         ui.card(ui.output_plot("player_4_scatter"))
+    ),
+        ui.layout_columns(
+        ui.card(ui.output_plot("team_a_score_diffs"))
+    ),
+    ui.layout_columns(
+        ui.card(ui.output_plot("team_a_series_diffs"))
     ),
     title = "CDL Bets on PrizePicks" 
 )
@@ -107,15 +123,22 @@ def server(input, output, session):
             )
         )
 
-    # Test PrizePicks Player Props Dataframe
-    @render.data_frame
-    def player_props():
-        return render.DataGrid(player_props_df.get())
-
     # Reactive calc to translate map num to gamemode
     @reactive.calc
     def gamemode():
         return map_nums_to_gamemode[input.map_num()]
+    
+    # Team A Score Differentials
+    @render.plot
+    def team_a_score_diffs():
+        return team_score_diffs(
+            cdlDF, input.team_a(), gamemode(), input.map_name()
+        )
+    
+    # Team A Series Differentials
+    @render.plot
+    def team_a_series_diffs():
+        return team_series_diffs(series_score_diffs, input.team_a())
 
     # Player One Boxplot
     @render.plot

@@ -151,6 +151,8 @@ def filter_cdldf(cdlDF_input):
 # Funciton to build rosters
 def build_rosters(cdlDF_input: pd.DataFrame):
     rostersDF = cdlDF_input[["player", "team"]].drop_duplicates().sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
+    rostersDF = rostersDF.reset_index()
+    rostersDF = rostersDF.drop("index", axis = 1)
     return rostersDF
 
 # Function to create a pandas dataframe of team summaries
