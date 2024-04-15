@@ -58,7 +58,7 @@ app_ui = ui.page_sidebar(
 
         # Theme picker - start
         shinyswatch.theme_picker_ui(),
-
+        
         ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
         ui.input_select(id = "team_a", label = "Team", selected = "OpTic Texas",
                         choices = sorted(cdlDF['team'].unique())), 
@@ -104,10 +104,10 @@ app_ui = ui.page_sidebar(
 
 # Define server logic
 def server(input, output, session):
-
-    # Theme picker
+    
+    # Theme picker 
     shinyswatch.theme_picker_server()
-
+    
     # Intialize reactive dataframe of player props
     player_props_df = reactive.value(initial_player_props)
 
