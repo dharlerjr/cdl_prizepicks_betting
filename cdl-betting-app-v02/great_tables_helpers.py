@@ -4,7 +4,9 @@ import pandas as pd
 from great_tables import *
 
 # Function to build team summary gtTable
-def team_summaries_gt_fn(team_summaries_input, team_x: str, team_y: str):
+def team_summaries_gt_fn(
+        team_summaries_input: pd.DataFrame, team_x: str, team_y: str
+    ):
     gt_df = \
         pd.merge(
             team_summaries_input[team_summaries_input["team"] == team_x], 

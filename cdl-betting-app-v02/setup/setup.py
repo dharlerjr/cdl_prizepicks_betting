@@ -176,6 +176,11 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
     # longer played. So, after incorporating these combinations into the 
     # totals, we will drop the five combinations from the dataframe.
     team_summaries_DF.dropna(inplace=True)
+
+    team_summaries_DF = \
+        team_summaries_DF[
+            ~((team_summaries_DF['gamemode'] == 'Hardpoint') & (team_summaries_DF['map_name'] == 'Invasion'))
+        ]
     
     return team_summaries_DF
 
