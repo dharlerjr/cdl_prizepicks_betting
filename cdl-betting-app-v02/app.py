@@ -2,7 +2,11 @@
 
 # Import shiny and shinyswatch
 from shiny import App, reactive, render, ui
+from shiny.types import ImgData
 import shinyswatch
+
+# Import os for filepaths
+import os
 
 # Import setup
 from setup.setup import *
@@ -20,6 +24,22 @@ map_nums_to_gamemode = {
     "3": "Control", 
     "4": "Hardpoint", 
     "5": "Search & Destroy"
+}
+
+# Dictionary of paths to saved team logo images
+team_logos = {
+    "Atlanta FaZe": "\\team_logos\ATL.webp",
+    "Boston Breach": "\\team_logos\BOS.webp",
+    "Carolina Royal Ravens": "\\team_logos\CAR.webp", 
+    "Las Vegas Legion": "\\team_logos\LV.webp",
+    "Los Angeles Guerrillas": "\\team_logos\LAG.webp", 
+    "Los Angeles Thieves": "\\team_logos\LAT.webp", 
+    "Miami Hertics": "\\team_logos\MIA.webp", 
+    "Minnesota ROKKR": "\\team_logos\MIN.webp", 
+    "New York Subliners": "\\team_logos\NYSL.webp",
+    "OpTic Texas": "\\team_logos\TX.webp", 
+    "Seattle Surge": "\\team_logos\SEA.webp", 
+    "Toronto Ultra": "\\team_logos\TOR.webp"
 }
 
 # Load in data
@@ -64,8 +84,18 @@ app_ui = ui.page_sidebar(
                         choices = ["Time", "Score Differential"])
     ), 
     ui.layout_columns(
-        ui.card(ui.output_table("team_summaries")), 
-        ui.card(ui.output_table("h2h_summary"))
+        ui.card(ui.output_image("team_a_logo", 
+                                width = "100px", height = "100px")),
+        ui.card(ui.card_header("Team Summaries"), 
+                ui.output_table("team_summaries")), 
+        ui.card(ui.card_header("H2H Summary"),
+                ui.output_table("h2h_summary")), 
+        ui.card(ui.output_image("team_b_logo", 
+                                width = "100px", height = "100px"))
+    ),
+    ui.layout_columns(
+        ui.navset_card_pill(), 
+        ui.navset_card_pill()
     ),
     ui.layout_columns(
         ui.card(ui.output_plot("player_1_box")), 
@@ -120,6 +150,20 @@ def server(input, output, session):
     @reactive.calc
     def gamemode():
         return map_nums_to_gamemode[input.map_num()]
+    
+    # Team A Logo
+    @render.image
+    def team_a_logo():
+        img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.team_a()], 
+                        "width": "100px", "width": "100px"}
+        return img
+    
+    # Team B Logo
+    @render.image
+    def team_b_logo():
+        img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.team_b()], 
+                        "width": "100px", "width": "100px"}
+        return img
     
     # Team Summaries
     @render.table
