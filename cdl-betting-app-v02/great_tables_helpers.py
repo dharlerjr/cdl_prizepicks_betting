@@ -1,7 +1,12 @@
 
-# Import pandas and great_tables
+# Import pandas 
 import pandas as pd
+
+# Import great_tables 
 from great_tables import *
+
+# Import filter_maps from setup.py
+from setup.setup import filter_maps
 
 # Function to build team summary gtTable
 def team_summaries_gt_fn(
@@ -88,7 +93,7 @@ def h2h_summary_gt_fn(cdlDF_input, team_x: str, team_y: str):
     h2h_summary_DF_bottom.insert(position, "map_name", h2h_summary_DF_bottom.pop("map_name"))
 
     # H2H Summary by Map & Mode
-    h2h_summary_DF_top = cdlDF_input \
+    h2h_summary_DF_top = filter_maps(cdlDF_input) \
         [["match_id", "team", "map_name", "gamemode", "map_result", "opp"]] \
         [(cdlDF_input["team"] == team_x) & \
          (cdlDF_input["opp"] == team_y)] \

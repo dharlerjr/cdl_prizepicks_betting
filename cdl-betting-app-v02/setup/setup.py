@@ -11,7 +11,7 @@ from setup.config import db_password
 
 # List of players that have been dropped
 dropped_players = [
-    "Afro", "Arcitys", "Asim", "Cammy", "Capsidal", "EriKBooM", 
+    "Afro", "Arcitys", "Purj", "Cammy", "Capsidal", "EriKBooM", 
     "GodRx", "iLLeY", "JurNii", "Owakening", "SlasheR", "Vivid"
 ]
 
@@ -184,18 +184,8 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
     
     return team_summaries_DF
 
-# Function to filter cdlDF
-def filter_cdldf(cdlDF_input):
-    
-    # Remove map & mode combos
-    cdlDF_input = \
-        cdlDF_input[
-            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Invasion')) &
-            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Skidrow')) &
-            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Terminal')) &
-            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Skidrow')) &
-            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Terminal')) 
-        ]
+# Function to filter players from cdlDF
+def filter_players(cdlDF_input):
     
     # Remove dropped players, excluding players who switched teams
     cdlDF_input = cdlDF_input[~cdlDF_input['player'].isin(dropped_players)]
@@ -206,19 +196,37 @@ def filter_cdldf(cdlDF_input):
     # Update team for "ReeaL"
     cdlDF_input.loc[cdlDF_input['player'] == 'ReeaL', 'team'] = 'Miami Heretics'
 
+    # Update team for "Asim"
+    cdlDF_input.loc[cdlDF_input['player'] == 'Asim', 'team'] = 'Las Vegas Legion'
+
     # Change FelonY's player name to Felo to match PrizePicks
     cdlDF_input.loc[cdlDF_input['player'] == 'FelonY', 'player'] = 'Felo'
 
     return cdlDF_input
 
-# Funciton to build rosters
+# Function to filter maps from cdlDF
+def filter_maps(cdlDF_input):
+        
+    # Remove map & mode combos
+    cdlDF_input = \
+        cdlDF_input[
+            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Invasion')) &
+            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Skidrow')) &
+            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Terminal')) &
+            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Skidrow')) &
+            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Terminal')) 
+        ]
+    
+    return cdlDF_input
+
+# Funciton to build rosters AFTER players have been filtered
 def build_rosters(cdlDF_input: pd.DataFrame):
     rostersDF = cdlDF_input[["player", "team"]].drop_duplicates().sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
     rostersDF = rostersDF.reset_index()
     rostersDF = rostersDF.drop("index", axis = 1)
     return rostersDF
 
-# Build initial player props
+# Build initial player props for app.py
 def build_intial_props(rostersDF_input):
     initial_player_props = pd.DataFrame()
     initial_player_props["player"] = rostersDF_input["player"]
