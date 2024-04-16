@@ -104,10 +104,10 @@ def load_and_clean_cdl_data():
     
     return cdlDF
 
-# Build dataframe of series score differentials
+# Build dataframe of series scores & differentials
 def build_series_summaries(cdlDF_input):
     series_score_diffs = \
-        cdlDF_input[["match_id", "team", "map_num", "gamemode", "map_result"]] \
+        cdlDF_input[["match_id", "match_date", "team", "map_num", "gamemode", "map_result"]] \
         .drop_duplicates() \
         .groupby(["match_id", "team"], observed = True) \
         .agg(
@@ -116,9 +116,21 @@ def build_series_summaries(cdlDF_input):
         ) \
         .reset_index()
 
+    # Get score differentials
     series_score_diffs["series_score_diff"] = \
         series_score_diffs["map_wins"] - series_score_diffs["map_losses"]
+    
+    # Get opponents
+    opps = series_score_diffs.sort_values(by = ['match_id', 'team'], ascending = [True, False]) \
+        [['team']] \
+        .rename(columns={'team': 'opp'})
+    opps.reset_index(drop=True, inplace=True)
+    opps
 
+    # Bind series_score_diffs & opps
+    series_score_diffs = pd.concat([series_score_diffs, opps], axis=1)
+
+    # Return series_score_diffs
     return series_score_diffs
 
 # Function to filter maps from cdlDF

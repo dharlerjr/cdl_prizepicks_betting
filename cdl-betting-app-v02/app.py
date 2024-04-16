@@ -49,9 +49,9 @@ app_ui = ui.page_sidebar(
         shinyswatch.theme_picker_ui(),
         # Inputs
         ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
-        ui.input_select(id = "team_a", label = "Team", selected = "OpTic Texas",
+        ui.input_select(id = "team_a", label = "Team A", selected = "OpTic Texas",
                         choices = sorted(cdlDF['team'].unique())), 
-        ui.input_select(id = "team_b", label = "Team", selected = "Atlanta FaZe",
+        ui.input_select(id = "team_b", label = "Team B", selected = "Atlanta FaZe",
                         choices = sorted(cdlDF['team'].unique())), 
         ui.input_select(id = "map_num", label = "Map Number", selected = 1,
                         choices = [1, 2, 3, 4, 5]), 
@@ -119,7 +119,7 @@ def server(input, output, session):
     # Team Summaries
     @render.table
     def team_summaries():
-        return team_summaries(team_summaries, input.team_a(), input.team_b())
+        return team_summaries_fn(team_summaries_DF, input.team_a(), input.team_b())
     
     # H2H Summary
     @render.table
