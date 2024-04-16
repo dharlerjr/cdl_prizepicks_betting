@@ -6,6 +6,11 @@ from matplotlib.colors import ListedColormap
 # Import filter_maps from setup
 from setup.setup import filter_maps
 
+
+#########################################
+# Complete, but not implemented in app.py
+#########################################
+
 # Function to build team summary
 def team_summaries_fn(team_summaries_input: pd.DataFrame, team_x: str, team_y: str):
     summary_df = \
@@ -54,6 +59,10 @@ def team_summaries_fn(team_summaries_input: pd.DataFrame, team_x: str, team_y: s
         .highlight_null(color = 'grey')
 
     return summary_df_styler
+
+#########################################
+# Complete, but not implemented in app.py
+#########################################
 
 def h2h_summary_fn(cdlDF_input, team_x: str, team_y: str):
   

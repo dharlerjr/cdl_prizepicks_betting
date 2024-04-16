@@ -94,10 +94,6 @@ app_ui = ui.page_sidebar(
             ui.output_image("team_a_logo", width = "100px", height = "100px"), 
             max_height = "160px"
             ),
-        ui.card(ui.card_header("Team Summaries"), 
-                ui.output_table("team_summaries")), 
-        ui.card(ui.card_header("H2H Summary"),
-                ui.output_table("h2h_summary")), 
         ui.card(
             ui.output_image("team_b_logo", width = "100px", height = "100px"), 
             max_height = "160px"
@@ -216,15 +212,16 @@ def server(input, output, session):
                         "width": "100px", "width": "100px"}
         return img
     
-    # Team Summaries
-    @render.table
-    def team_summaries():
-        return team_summaries_fn(team_summaries_DF, input.team_a(), input.team_b())
+    # Not implemented
+    # # Team Summaries
+    # @render.table
+    # def team_summaries():
+    #     return team_summaries_fn(team_summaries_DF, input.team_a(), input.team_b())
     
-    # H2H Summary
-    @render.table
-    def h2h_summary():
-        return h2h_summary_fn(cdlDF, input.team_a(), input.team_b())
+    # # H2H Summary
+    # @render.table
+    # def h2h_summary():
+    #     return h2h_summary_fn(cdlDF, input.team_a(), input.team_b())
     
     # Team A Series Scoreboard
     @render.data_frame
