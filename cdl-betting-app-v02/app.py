@@ -11,6 +11,7 @@ from setup.setup import *
 from webscraper import *
 from seaborn_helpers import *
 from pandas_stylers_helpers import *
+from df_display_helpers import *
 
 # Dictionary to map map_num to gamemode
 map_nums_to_gamemode = {
@@ -81,10 +82,12 @@ app_ui = ui.page_sidebar(
         ui.card(ui.output_plot("player_4_scatter"))
     ),
     ui.layout_columns(
-        ui.card(ui.output_plot("team_a_score_diffs"))
+        ui.card(ui.output_plot("team_a_score_diffs")), 
+        ui.card(ui.output_data_frame("team_a_kills_scoreboard"))
     ),
     ui.layout_columns(
-        ui.card(ui.output_plot("team_a_series_diffs"))
+        ui.card(ui.output_plot("team_a_series_diffs")), 
+        ui.card(ui.output_data_frame("team_a_series_scoreboard"))
     ),
     title = "CDL Bets on PrizePicks" 
 )
@@ -125,6 +128,27 @@ def server(input, output, session):
     @render.table
     def h2h_summary():
         return h2h_summary_fn(cdlDF, input.team_a(), input.team_b())
+    
+    # Team A Kills Scoreboard
+    @render.data_frame
+    def team_a_kills_scoreboard():
+        return render.DataGrid(
+            build_map_scoreboards(
+                filter_maps(cdlDF), 
+                input.team_a(),
+                gamemode()
+                )
+            )
+    
+    # Team A Series Scoreboard
+    @render.data_frame
+    def team_a_series_scoreboard():
+        return render.DataGrid(
+            build_series_scoreboards(
+                cdlDF, 
+                input.team_a()
+                )
+            )
     
     # Team A Score Differentials
     @render.plot
