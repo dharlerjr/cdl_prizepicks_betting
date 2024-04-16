@@ -1,9 +1,10 @@
 
 
-# Import shiny and shinyswatch
+# Import shiny, shinyswatch, and faicons
 from shiny import App, reactive, render, ui
 from shiny.types import ImgData
 import shinyswatch
+import faicons as fa
 
 # Import os for filepaths
 import os
@@ -40,6 +41,14 @@ team_logos = {
     "OpTic Texas": "\\team_logos\\TX.webp", 
     "Seattle Surge": "\\team_logos\\SEA.webp", 
     "Toronto Ultra": "\\team_logos\\TOR.webp"
+}
+
+# Dictionary of faicons for value boxes
+ICONS = {
+    "crosshairs": fa.icon_svg("crosshairs"), 
+    "percent": fa.icon_svg("percent"), 
+    "swords": fa.icon_svg("swords"), 
+    "headset": fa.icon_svg("headset")
 }
 
 # Load in data
@@ -91,14 +100,39 @@ app_ui = ui.page_sidebar(
     # Team Summaries & Logos
     ui.layout_columns(
         ui.card(
-            ui.output_image("team_a_logo", width = "100px", height = "100px"), 
+            ui.output_image("team_a_logo", width = "80px", height = "100px"), 
             max_height = "160px"
             ),
+        ui.markdown(),
         ui.card(
-            ui.output_image("team_b_logo", width = "100px", height = "100px"), 
+            ui.output_image("team_b_logo", width = "80px", height = "100px"), 
             max_height = "160px"
             ), 
-        col_widths = [2, 4, 4, 2]
+        col_widths = [2, 8, 2]
+    ),
+
+    # Value boxes of Win-Loss Records & Win %s for Selected Teams
+    ui.layout_columns(
+        ui.value_box(
+            title = "Major III Series W-L", 
+            showcase = ICONS["crosshairs"]
+        ), 
+        ui.value_box(
+            title = "Map Win %", 
+            showcase = ICONS["percent"]
+        ), 
+        ui.value_box(
+            title = "H2H Map Record", 
+            showcase = ICONS["swords"]
+        ), 
+        ui.value_box(
+            title = "Map Win %", 
+            showcase = ICONS["percent"]
+        ),
+        ui.value_box(
+            title = "Major III Series W-L", 
+            showcase = ICONS["crosshairs"]
+        )
     ),
 
     # Plots of Player Kills
@@ -109,26 +143,26 @@ app_ui = ui.page_sidebar(
                 "1", 
                 ui.layout_columns(
                     ui.output_plot("player_1_box", width = "200px"), 
-                    ui.output_plot("player_1_scatter", width = "800")
+                    ui.output_plot("player_1_scatter", width = "800px")
                 )
             ), 
             ui.nav_panel(                
                 "2", 
                 ui.layout_columns(
                     ui.output_plot("player_2_box", width = "200px"), 
-                    ui.output_plot("player_2_scatter", width = "800")
+                    ui.output_plot("player_2_scatter", width = "800px")
                 )), 
             ui.nav_panel(                
                 "3", 
                 ui.layout_columns(
                     ui.output_plot("player_3_box", width = "200px"), 
-                    ui.output_plot("player_3_scatter", width = "800")
+                    ui.output_plot("player_3_scatter", width = "800px")
                 )), 
             ui.nav_panel(                
                 "4", 
                 ui.layout_columns(
                     ui.output_plot("player_4_box", width = "200px"), 
-                    ui.output_plot("player_4_scatter", width = "800")
+                    ui.output_plot("player_4_scatter", width = "800px")
                 ))
         ),
         # Team B Card & Tabs
@@ -137,26 +171,26 @@ app_ui = ui.page_sidebar(
                 "1", 
                 ui.layout_columns(
                     ui.output_plot("player_5_box", width = "200px"), 
-                    ui.output_plot("player_5_scatter", width = "800")
+                    ui.output_plot("player_5_scatter", width = "800px")
                 )
             ), 
             ui.nav_panel(                
                 "2", 
                 ui.layout_columns(
                     ui.output_plot("player_6_box", width = "200px"), 
-                    ui.output_plot("player_6_scatter", width = "800")
+                    ui.output_plot("player_6_scatter", width = "800px")
                 )), 
             ui.nav_panel(                
                 "3", 
                 ui.layout_columns(
                     ui.output_plot("player_7_box", width = "200px"), 
-                    ui.output_plot("player_7_scatter", width = "800")
+                    ui.output_plot("player_7_scatter", width = "800px")
                 )), 
             ui.nav_panel(                
                 "4", 
                 ui.layout_columns(
                     ui.output_plot("player_8_box", width = "200px"), 
-                    ui.output_plot("player_8_scatter", width = "800")
+                    ui.output_plot("player_8_scatter", width = "800px")
                 ))
         ),
     ),
@@ -202,14 +236,14 @@ def server(input, output, session):
     @render.image
     def team_a_logo():
         img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.team_a()], 
-                        "width": "100px", "width": "100px"}
+                        "width": "100px", "width": "100px", "image-align": "left"}
         return img
     
     # Team B Logo
     @render.image
     def team_b_logo():
         img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.team_b()], 
-                        "width": "100px", "width": "100px"}
+                        "width": "100px", "width": "100px", "image-align": "right"}
         return img
     
     # Not implemented
