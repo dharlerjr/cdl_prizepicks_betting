@@ -129,6 +129,17 @@ def server(input, output, session):
     def h2h_summary():
         return h2h_summary_fn(cdlDF, input.team_a(), input.team_b())
     
+    # Team A Series Scoreboard
+    @render.data_frame
+    def team_a_series_scoreboard():
+        return render.DataGrid(
+            build_series_scoreboards(
+                series_score_diffs, 
+                input.team_a()
+                ), 
+            filters = True
+            )
+    
     # Team A Kills Scoreboard
     @render.data_frame
     def team_a_kills_scoreboard():
@@ -137,17 +148,8 @@ def server(input, output, session):
                 filter_maps(cdlDF), 
                 input.team_a(),
                 gamemode()
-                )
-            )
-    
-    # Team A Series Scoreboard
-    @render.data_frame
-    def team_a_series_scoreboard():
-        return render.DataGrid(
-            build_series_scoreboards(
-                cdlDF, 
-                input.team_a()
-                )
+                ), 
+            filters = True
             )
     
     # Team A Score Differentials

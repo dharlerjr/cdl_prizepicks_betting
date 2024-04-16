@@ -22,8 +22,8 @@ def build_map_scoreboards(
         cdlDF_input: pd.DataFrame, team_input: str, gamemode_input: str
     ):
     cdlDF_input = \
-        cdlDF_input[(cdlDF_input["team"] == "OpTic Texas") & 
-                    (cdlDF_input["gamemode"] == "Hardpoint")] \
+        cdlDF_input[(cdlDF_input["team"] == team_input) & 
+                    (cdlDF_input["gamemode"] == gamemode_input)] \
             [["match_date", "player", "map_name", "kills", 
               "deaths", "team_score", "opp_score", "opp"]] \
         .reset_index(drop=True) \

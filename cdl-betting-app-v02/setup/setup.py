@@ -2,6 +2,7 @@
 import pandas as pd
 import pandas.io.sql as sqlio
 import numpy as np
+import datetime as dt
 
 # Import psycopg2 
 import psycopg2
@@ -101,6 +102,9 @@ def load_and_clean_cdl_data():
     # Reorder gamemode factor levels
     cdlDF['gamemode'] = \
         pd.Categorical(cdlDF['gamemode'], categories = ['Hardpoint', 'Search & Destroy', 'Control'])
+    
+    # Set match_date datatype
+    cdlDF['match_date'] = pd.to_datetime(cdlDF['match_date'])
     
     return cdlDF
 
