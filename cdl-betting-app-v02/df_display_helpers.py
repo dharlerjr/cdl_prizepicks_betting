@@ -6,12 +6,12 @@ def build_series_scoreboards(series_score_diffs_input: pd.DataFrame, team_input:
 
     series_score_diffs_input = series_score_diffs_input \
         [series_score_diffs_input["team"] == team_input] \
-        [["map_wins", "map_losses", "opp_abbr"]].reset_index(drop=True)
+        [["map_wins", "map_losses", "opp"]].reset_index(drop=True)
 
     series_score_diffs_input = series_score_diffs_input.rename(
         columns = {"map_wins": "Map Wins", 
                    "map_losses": "Map Losses", 
-                    "opp_abbr": "Opponent"}
+                    "opp": "Opponent"}
         )
     return series_score_diffs_input
 

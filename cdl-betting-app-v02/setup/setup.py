@@ -139,8 +139,8 @@ def build_series_summaries(cdlDF_input):
     
     # Get opponents
     opps = series_score_diffs.sort_values(by = ['match_date', 'match_id', 'team'], ascending = [True, True, False]) \
-        [['team_abbr']] \
-        .rename(columns={'team_abbr': 'opp_abbr'})
+        [['team']] \
+        .rename(columns={'team': 'opp'})
     opps.reset_index(drop=True, inplace=True)
     opps
 
