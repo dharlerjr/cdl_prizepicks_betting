@@ -129,7 +129,9 @@ def build_series_summaries(cdlDF_input):
     )
 
     # Arrange by match_date, match_id, and team
-    series_score_diffs.sort_values(by = ['match_date', 'match_id', 'team'], ascending = [True, True, True])
+    series_score_diffs = series_score_diffs.sort_values(
+        by = ['match_date', 'match_id', 'team'], ascending = [True, True, True]
+        )
     
     # Get opponents
     opps = series_score_diffs.sort_values(by = ['match_date', 'match_id', 'team'], ascending = [True, True, False]) \

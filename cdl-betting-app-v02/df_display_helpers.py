@@ -2,10 +2,10 @@
 import pandas as pd
 
 # Function to create dataframe of series results for user-selected team
-def build_series_results(series_score_diffs_input: pd.DataFrame, team_input: str):
+def build_series_scoreboards(series_score_diffs_input: pd.DataFrame, team_input: str):
 
     series_score_diffs_input = series_score_diffs_input \
-        [series_score_diffs_input["team"] == "Atlanta FaZe"] \
+        [series_score_diffs_input["team"] == team_input] \
         [["match_date", "map_wins", "map_losses", "opp"]].reset_index(drop=True)
 
     series_score_diffs_input = series_score_diffs_input.rename(
@@ -16,3 +16,25 @@ def build_series_results(series_score_diffs_input: pd.DataFrame, team_input: str
         )
 
     return series_score_diffs_input
+
+# Function to create dataframe of kills for user-selected team & gamemode
+def build_map_scoreboards(
+        cdlDF_input: pd.DataFrame, team_input: str, gamemode_input: str
+    ):
+    cdlDF_input = \
+        cdlDF_input[(cdlDF_input["team"] == "OpTic Texas") & 
+                    (cdlDF_input["gamemode"] == "Hardpoint")] \
+            [["match_date", "player", "map_name", "kills", 
+              "deaths", "team_score", "opp_score", "opp"]] \
+        .reset_index(drop=True) \
+        .rename(columns = {
+            "match_date": "Date",
+            "player": "Player", 
+            "map_name": "Map", 
+            "kills": "Kills", 
+            "team_score": "Team Score", 
+            "opp_score": "Opponent Score", 
+            "opp": "Opponent"}
+        )
+    
+    return cdlDF_input
