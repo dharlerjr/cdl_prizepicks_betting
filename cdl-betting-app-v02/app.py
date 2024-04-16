@@ -28,18 +28,18 @@ map_nums_to_gamemode = {
 
 # Dictionary of paths to saved team logo images
 team_logos = {
-    "Atlanta FaZe": "\\team_logos\ATL.webp",
-    "Boston Breach": "\\team_logos\BOS.webp",
-    "Carolina Royal Ravens": "\\team_logos\CAR.webp", 
-    "Las Vegas Legion": "\\team_logos\LV.webp",
-    "Los Angeles Guerrillas": "\\team_logos\LAG.webp", 
-    "Los Angeles Thieves": "\\team_logos\LAT.webp", 
-    "Miami Hertics": "\\team_logos\MIA.webp", 
-    "Minnesota ROKKR": "\\team_logos\MIN.webp", 
-    "New York Subliners": "\\team_logos\NYSL.webp",
-    "OpTic Texas": "\\team_logos\TX.webp", 
-    "Seattle Surge": "\\team_logos\SEA.webp", 
-    "Toronto Ultra": "\\team_logos\TOR.webp"
+    "Atlanta FaZe": "\\team_logos\\ATL.webp",
+    "Boston Breach": "\\team_logos\\BOS.webp",
+    "Carolina Royal Ravens": "\\team_logos\\CAR.webp", 
+    "Las Vegas Legion": "\\team_logos\\LV.webp",
+    "Los Angeles Guerrillas": "\\team_logos\\LAG.webp", 
+    "Los Angeles Thieves": "\\team_logos\\LAT.webp", 
+    "Miami Hertics": "\\team_logos\\MIA.webp", 
+    "Minnesota ROKKR": "\\team_logos\\MIN.webp", 
+    "New York Subliners": "\\team_logos\\NYSL.webp",
+    "OpTic Texas": "\\team_logos\\TX.webp", 
+    "Seattle Surge": "\\team_logos\\SEA.webp", 
+    "Toronto Ultra": "\\team_logos\\TOR.webp"
 }
 
 # Load in data
@@ -64,12 +64,16 @@ initial_player_props = build_intial_props(rostersDF)
 
 # Define ui
 app_ui = ui.page_sidebar(   
+
+    # Sidebar
     ui.sidebar(
 
         # Theme picker
         # shinyswatch.theme_picker_ui(),
+
         # Set theme
         shinyswatch.theme.cerulean,
+
         # Inputs
         ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
         ui.input_select(id = "team_a", label = "Team A", selected = "OpTic Texas",
@@ -83,35 +87,82 @@ app_ui = ui.page_sidebar(
         ui.input_select(id = "x_axis", label = "X-Axis", selected = "Time",
                         choices = ["Time", "Score Differential"])
     ), 
+    
+    # Team Summaries & Logos
     ui.layout_columns(
-        ui.card(ui.output_image("team_a_logo", 
-                                width = "100px", height = "100px")),
+        ui.card(
+            ui.output_image("team_a_logo", width = "100px", height = "100px"), 
+            max_height = "160px"
+            ),
         ui.card(ui.card_header("Team Summaries"), 
                 ui.output_table("team_summaries")), 
         ui.card(ui.card_header("H2H Summary"),
                 ui.output_table("h2h_summary")), 
-        ui.card(ui.output_image("team_b_logo", 
-                                width = "100px", height = "100px"))
+        ui.card(
+            ui.output_image("team_b_logo", width = "100px", height = "100px"), 
+            max_height = "160px"
+            ), 
+        col_widths = [2, 4, 4, 2]
     ),
+
+    # Plots of Player Kills
     ui.layout_columns(
-        ui.navset_card_pill(), 
-        ui.navset_card_pill()
-    ),
-    ui.layout_columns(
-        ui.card(ui.output_plot("player_1_box")), 
-        ui.card(ui.output_plot("player_1_scatter"))
-    ),
-    ui.layout_columns(
-        ui.card(ui.output_plot("player_2_box")), 
-        ui.card(ui.output_plot("player_2_scatter"))
-    ),
-    ui.layout_columns(
-        ui.card(ui.output_plot("player_3_box")), 
-        ui.card(ui.output_plot("player_3_scatter"))
-    ),
-    ui.layout_columns(
-        ui.card(ui.output_plot("player_4_box")), 
-        ui.card(ui.output_plot("player_4_scatter"))
+        # Team A Card & Tabs
+        ui.navset_card_pill(
+            ui.nav_panel(
+                "1", 
+                ui.layout_columns(
+                    ui.output_plot("player_1_box", width = "200px"), 
+                    ui.output_plot("player_1_scatter", width = "800")
+                )
+            ), 
+            ui.nav_panel(                
+                "2", 
+                ui.layout_columns(
+                    ui.output_plot("player_2_box", width = "200px"), 
+                    ui.output_plot("player_2_scatter", width = "800")
+                )), 
+            ui.nav_panel(                
+                "3", 
+                ui.layout_columns(
+                    ui.output_plot("player_3_box", width = "200px"), 
+                    ui.output_plot("player_3_scatter", width = "800")
+                )), 
+            ui.nav_panel(                
+                "4", 
+                ui.layout_columns(
+                    ui.output_plot("player_4_box", width = "200px"), 
+                    ui.output_plot("player_4_scatter", width = "800")
+                ))
+        ),
+        # Team B Card & Tabs
+        ui.navset_card_pill(
+            ui.nav_panel(
+                "1", 
+                ui.layout_columns(
+                    ui.output_plot("player_5_box", width = "200px"), 
+                    ui.output_plot("player_5_scatter", width = "800")
+                )
+            ), 
+            ui.nav_panel(                
+                "2", 
+                ui.layout_columns(
+                    ui.output_plot("player_6_box", width = "200px"), 
+                    ui.output_plot("player_6_scatter", width = "800")
+                )), 
+            ui.nav_panel(                
+                "3", 
+                ui.layout_columns(
+                    ui.output_plot("player_7_box", width = "200px"), 
+                    ui.output_plot("player_7_scatter", width = "800")
+                )), 
+            ui.nav_panel(                
+                "4", 
+                ui.layout_columns(
+                    ui.output_plot("player_8_box", width = "200px"), 
+                    ui.output_plot("player_8_scatter", width = "800")
+                ))
+        ),
     ),
     ui.layout_columns(
         ui.card(ui.output_plot("team_a_score_diffs")), 
@@ -251,6 +302,7 @@ def server(input, output, session):
                         .iloc[0]['player_line'],
                 input.map_name()
             )
+    
     # Player Two Boxplot
     @render.plot
     def player_2_box():
@@ -366,6 +418,166 @@ def server(input, output, session):
                 gamemode(), 
                 player_props_df.get()[
                     (player_props_df.get()['team'] == input.team_a()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[3]['player_line'],
+                input.map_name()
+            )
+    
+    # Player Five Boxplot
+    @render.plot
+    def player_5_box():
+        return player_kills_overview(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'],  
+            gamemode(), 
+            player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_b()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[0]['player_line'],
+            input.map_name()
+        )
+
+    # Player Five Scatterplot
+    @render.plot
+    def player_5_scatter():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'],  
+                gamemode(), 
+                player_props_df.get()[
+                    (player_props_df.get()['team'] == input.team_b()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[0]['player_line'],
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
+                gamemode(), 
+                player_props_df.get()[
+                    (player_props_df.get()['team'] == input.team_b()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[0]['player_line'],
+                input.map_name()
+            )
+        
+    # Player Six Boxplot
+    @render.plot
+    def player_6_box():
+        return player_kills_overview(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'],  
+            gamemode(), 
+            player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_b()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[1]['player_line'],
+            input.map_name()
+        )
+
+    # Player Six Scatterplot
+    @render.plot
+    def player_6_scatter():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'],  
+                gamemode(), 
+                player_props_df.get()[
+                    (player_props_df.get()['team'] == input.team_b()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[1]['player_line'],
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
+                gamemode(), 
+                player_props_df.get()[
+                    (player_props_df.get()['team'] == input.team_b()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[1]['player_line'],
+                input.map_name()
+            )
+        
+    # Player Seven Boxplot
+    @render.plot
+    def player_7_box():
+        return player_kills_overview(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'],  
+            gamemode(), 
+            player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_b()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[2]['player_line'],
+            input.map_name()
+        )
+
+    # Player Seven Scatterplot
+    @render.plot
+    def player_7_scatter():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'],  
+                gamemode(), 
+                player_props_df.get()[
+                    (player_props_df.get()['team'] == input.team_b()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[2]['player_line'],
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
+                gamemode(), 
+                player_props_df.get()[
+                    (player_props_df.get()['team'] == input.team_b()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[2]['player_line'],
+                input.map_name()
+            )
+        
+    # Player Eight Boxplot
+    @render.plot
+    def player_8_box():
+        return player_kills_overview(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'],  
+            gamemode(), 
+            player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_b()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[3]['player_line'],
+            input.map_name()
+        )
+
+    # Player Eight Scatterplot
+    @render.plot
+    def player_8_scatter():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'],  
+                gamemode(), 
+                player_props_df.get()[
+                    (player_props_df.get()['team'] == input.team_b()) &
+                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                        .iloc[3]['player_line'],
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
+                gamemode(), 
+                player_props_df.get()[
+                    (player_props_df.get()['team'] == input.team_b()) &
                     (player_props_df.get()['proptype'] == int(input.map_num()))] \
                         .iloc[3]['player_line'],
                 input.map_name()

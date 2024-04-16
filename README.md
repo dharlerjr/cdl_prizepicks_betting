@@ -41,9 +41,11 @@ Two Shiny applications for betting on CDL player props, primarily on PrizePicks.
 - **Psycopg** & **sqlio** to load the CDL dataset from the PostgreSQL database into a Python dataframe
   - **sqlalchemy** would have also been a fantastic options
 - **Seaborn** & **Matplotlib** to create Data Visualizations
-- **Shiny** to build the web app
+- **Shiny** to build the web app and display the reactive dashboard components
+- **Faicons** to add icons to the displayed value boxes
 
 ## Notes
 
-- Team logos not used due to lack of quality and accessiblity
+- Team logos via [Call of Duty Esports Wiki](https://cod-esports.fandom.com/wiki/Call_of_Duty_Esports_Wiki)
 - Version 2 accounts for changes between CDL Seasons 2 & 3 (ie. roster and map pool changes)
+- Version 2 originally included **stylized pandas tables** to display win-loss records, win percentages, head-to-head records, and head-to-head win percentages in two tables similar to the **gt tables** from Version 1. However, these tables were replaced with **shiny value boxes** that display the relevant information in a more clean and concise manner
