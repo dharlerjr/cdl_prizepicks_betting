@@ -67,6 +67,18 @@ cdlDF = filter_players(cdlDF)
 # Build team rosters
 rostersDF = build_rosters(cdlDF)
 
+# Compute CDL Standings for Major III Qualifiers
+current_standings = \
+    cdlDF[(cdlDF["match_date"] >= '2024-04-12')] \
+    [["match_id", "team", "series_result"]] \
+    .drop_duplicates() \
+    .groupby("team") \
+    .agg(
+        wins = ("series_result", lambda x: sum(x)), 
+        losses = ("series_result", lambda x: len(x) - sum(x))
+    ) \
+    .reset_index()
+
 # Initialize player props dataframe
 initial_player_props = build_intial_props(rostersDF)
 
@@ -102,7 +114,7 @@ app_ui = ui.page_sidebar(
             ui.output_image("team_a_logo", width = "80px", height = "100px"), 
             max_height = "160px"
             ),
-        ui.markdown("**vs**"),
+        ui.markdown("** **"),
         ui.card(
             ui.output_image("team_b_logo", width = "80px", height = "100px"), 
             max_height = "160px"
@@ -118,7 +130,7 @@ app_ui = ui.page_sidebar(
             showcase = ICONS["headset"]
         ), 
         ui.value_box(
-            title = "Map Win %", 
+            title = "Map Win % (W-L)", 
             value = ui.output_ui("team_b_map_record"),
             showcase = ICONS["percent"]
         ), 
@@ -128,7 +140,7 @@ app_ui = ui.page_sidebar(
             showcase = ICONS["crosshairs"]
         ), 
         ui.value_box(
-            title = "Map Win %", 
+            title = "Map Win % (W-L)", 
             value = ui.output_ui("team_b_map_record"),
             showcase = ICONS["percent"]
         ),
@@ -253,27 +265,94 @@ def server(input, output, session):
     # Team A Series Record for Major 3 Quals
     @render.ui
     def team_a_series_record():
-        pass
+        queried_df = current_standings[current_standings["team"] == input.team_a()] \
+            .reset_index(drop = True)
+        wins = queried_df.loc[0, "wins"]
+        losses = queried_df.loc[0, "losses"]
+        return f"{wins} - {losses}"
 
     # Team B Series Record for Major 3 Quals
     @render.ui
     def team_b_series_record():
-        pass
+        queried_df = current_standings[current_standings["team"] == input.team_b()] \
+            .reset_index(drop = True)
+        wins = queried_df.loc[0, "wins"]
+        losses = queried_df.loc[0, "losses"]
+        return f"{wins} - {losses}"
     
     # Team A Map Record for User-Selected Map & Mode Combination
     @render.ui
     def team_a_map_record():
-        pass
+        if input.map_name() == "All":
+            queried_df = team_summaries_DF[
+                (team_summaries_DF["team"] == input.team_a()) & 
+                (team_summaries_DF["gamemode"] == gamemode()) & 
+                (team_summaries_DF["map_name"] == "Overall")
+            ].reset_index(drop = True)
+        else:
+            queried_df = team_summaries_DF[
+                (team_summaries_DF["team"] == input.team_a()) & 
+                (team_summaries_DF["gamemode"] == gamemode()) & 
+                (team_summaries_DF["map_name"] == input.map_name())
+            ].reset_index(drop = True)
+        wins = queried_df.loc[0, "wins"]
+        losses = queried_df.loc[0, "losses"]
+        win_percentage = queried_df.loc[0, "win_percentage"]
+        return f"{win_percentage:.0%} ({wins} - {losses})"
 
     # Team B Map Record for User-Selected Map & Mode Combination
     @render.ui
     def team_b_map_record():
-        pass
+        if input.map_name() == "All":
+            queried_df = team_summaries_DF[
+                (team_summaries_DF["team"] == input.team_b()) & 
+                (team_summaries_DF["gamemode"] == gamemode()) & 
+                (team_summaries_DF["map_name"] == "Overall")
+            ].reset_index(drop = True)
+        else:
+            queried_df = team_summaries_DF[
+                (team_summaries_DF["team"] == input.team_b()) & 
+                (team_summaries_DF["gamemode"] == gamemode()) & 
+                (team_summaries_DF["map_name"] == input.map_name())
+            ].reset_index(drop = True)
+        wins = queried_df.loc[0, "wins"]
+        losses = queried_df.loc[0, "losses"]
+        win_percentage = queried_df.loc[0, "win_percentage"]
+        return f"{win_percentage:.0%} ({wins} - {losses})"
 
     # H2H Map Record for User-Selected Map & Mode Combination
     @render.ui
     def team_h2h_map_record():
-        pass
+        if input.map_name() == "All":
+            queried_df = cdlDF \
+                [["match_id", "team", "map_name", "gamemode", "map_result", "opp"]] \
+                [(cdlDF["team"] == "OpTic Texas") & \
+                    (cdlDF["opp"] == "Atlanta FaZe") &
+                    (cdlDF["gamemode"] == "Hardpoint")] \
+                .drop_duplicates() \
+                .groupby("gamemode", observed = True) \
+                .agg(
+                    wins = ("map_result", lambda x: sum(x)), 
+                    losses = ("map_result", lambda x: len(x) - sum(x))
+                    ) \
+                .reset_index()
+        else:
+            queried_df = filter_maps(cdlDF) \
+                [["match_id", "team", "map_name", "gamemode", "map_result", "opp"]] \
+                [(cdlDF["team"] == "Atlanta FaZe") & \
+                    (cdlDF["opp"] == "OpTic Texas") & 
+                    (cdlDF["gamemode"] == "Hardpoint") & 
+                    (cdlDF["map_name"] == "Karachi")] \
+                .drop_duplicates() \
+                .groupby(["gamemode", "map_name"], observed = True) \
+                .agg(
+                    wins = ("map_result", lambda x: sum(x)), 
+                    losses = ("map_result", lambda x: len(x) - sum(x))
+                ) \
+                .reset_index()
+        wins = queried_df.loc[0, "wins"]
+        losses = queried_df.loc[0, "losses"]
+        return f"{wins} - {losses}"
 
     # Not implemented
     # # Team Summaries
