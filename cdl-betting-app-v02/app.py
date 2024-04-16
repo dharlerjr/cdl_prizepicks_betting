@@ -108,13 +108,13 @@ app_ui = ui.page_sidebar(
                         choices = ["Time", "Score Differential"])
     ), 
     
-    # Team Summaries & Logos
+    # Team Logos
     ui.layout_columns(
         ui.card(
             ui.output_image("team_a_logo", width = "80px", height = "100px"), 
             max_height = "160px"
             ),
-        ui.markdown("** **"),
+        ui.markdown("**vs**"),
         ui.card(
             ui.output_image("team_b_logo", width = "80px", height = "100px"), 
             max_height = "160px"
@@ -210,10 +210,12 @@ app_ui = ui.page_sidebar(
                 ))
         ),
     ),
+    # Map Score Differentials & Results
     ui.layout_columns(
         ui.card(ui.output_plot("team_a_score_diffs")), 
         ui.card(ui.output_data_frame("team_a_kills_scoreboard"))
     ),
+    # Series Score Differentials & Results
     ui.layout_columns(
         ui.card(ui.output_plot("team_a_series_diffs")), 
         ui.card(ui.output_data_frame("team_a_series_scoreboard"))
@@ -322,7 +324,7 @@ def server(input, output, session):
 
     # H2H Map Record for User-Selected Map & Mode Combination
     @render.ui
-    def team_h2h_map_record():
+    def h2h_map_record():
         if input.map_name() == "All":
             queried_df = cdlDF \
                 [["match_id", "team", "map_name", "gamemode", "map_result", "opp"]] \
