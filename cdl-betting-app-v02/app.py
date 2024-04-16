@@ -31,9 +31,8 @@ series_score_diffs = build_series_summaries(cdlDF)
 team_summaries_DF = build_team_summaries(cdlDF)
 team_summaries_DF
 
-# Function to remove all removed map & mode combos from cdlDF, 
-# after building series summaries
-cdlDF = filter_cdldf(cdlDF)
+# Filter players
+cdlDF = filter_players(cdlDF)
 
 # Build team rosters
 rostersDF = build_rosters(cdlDF)

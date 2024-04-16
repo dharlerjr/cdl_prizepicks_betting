@@ -1,9 +1,10 @@
 
-# Import ggplot
+# Import pandas & ggplot
+import pandas as pd
 from plotnine import *
 
-# Import setup
-from setup.setup import *
+# Import filter_maps from setup
+from setup.setup import filter_maps
 
 # Dictionary of color scales by gamemode 
 gamemode_color_scales = {
@@ -81,19 +82,17 @@ gamemode_kill_lims = {
   "Control": [0, 45]
 }
 
-# Load in data
-cdlDF = load_and_clean_cdl_data()
-cdlDF
-
 # Score Differentials by Map & Mode
-def gg_team_score_diffs(
+def gg_team_score_diffs(cdlDF_input: pd.DataFrame,
         team_input: str, gamemode_input: str, map_input = "All"
 ):
+    cdlDF_input = filter_maps(cdlDF_input)
+
     if map_input == "All":
         return(
             ggplot(
-                cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                    (cdlDF["team"] == team_input)] \
+                cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                    (cdlDF_input["team"] == team_input)] \
                     [["match_id", "map_name", "score_diff"]].drop_duplicates(),
                 aes(x = "score_diff", fill = "map_name")
             ) + \
@@ -115,9 +114,9 @@ def gg_team_score_diffs(
     else:
         return(
             ggplot(
-                cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                    (cdlDF["team"] == team_input) & \
-                    (cdlDF["map_name"] == map_input)] \
+                cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                    (cdlDF_input["team"] == team_input) & \
+                    (cdlDF_input["map_name"] == map_input)] \
                     [["match_id", "map_name", "score_diff"]].drop_duplicates(),
                 aes(x = "score_diff", fill = "map_name")
             ) + \
@@ -137,14 +136,16 @@ def gg_team_score_diffs(
         )
 
 # Player Kills Overview
-def gg_player_kills_overview(
+def gg_player_kills_overview(cdlDF_input: pd.DataFrame,
         player_input: str, gamemode_input: str, cur_line: float, map_input = "All"
 ):
+    cdlDF_input = filter_maps(cdlDF_input)
+
     if map_input == "All":
         return(
             ggplot(
-                cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                    (cdlDF["player"] == player_input)],
+                cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                    (cdlDF_input["player"] == player_input)],
                 aes(y = "kills")
             ) + \
                 geom_jitter(
@@ -169,9 +170,9 @@ def gg_player_kills_overview(
     else:
         return(
             ggplot(
-                cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                    (cdlDF["player"] == player_input) & \
-                    (cdlDF["map_name"] == map_input)],
+                cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                    (cdlDF_input["player"] == player_input) & \
+                    (cdlDF_input["map_name"] == map_input)],
                 aes(y = "kills")
             ) + \
                 geom_jitter(
@@ -195,14 +196,17 @@ def gg_player_kills_overview(
         )
 
 # Player Kills vs. Time
-def gg_player_kills_vs_time(
+def gg_player_kills_vs_time(cdlDF_input: pd.DataFrame,
         player_input: str, gamemode_input: str, cur_line: float, map_input = "All"
 ):
+    
+    cdlDF_input = filter_maps(cdlDF_input)
+
     if map_input == "All":
         return(
             ggplot(
-                cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                    (cdlDF["player"] == player_input)],
+                cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                    (cdlDF_input["player"] == player_input)],
                 aes(x = "match_date", y = "kills", color = "map_name")
             ) + \
                 geom_point(size = 2) + \
@@ -224,9 +228,9 @@ def gg_player_kills_vs_time(
     else:
         return(
             ggplot(
-                cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                    (cdlDF["player"] == player_input) & \
-                    (cdlDF["map_name"] == map_input)],
+                cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                    (cdlDF_input["player"] == player_input) & \
+                    (cdlDF_input["map_name"] == map_input)],
                 aes(x = "match_date", y = "kills", color = "map_wl")
             ) + \
                 geom_point(size = 2) + \
@@ -247,14 +251,16 @@ def gg_player_kills_vs_time(
         )
 
 # Player Kills vs Total Score
-def gg_player_kills_vs_total(
+def gg_player_kills_vs_total(cdlDF_input: pd.DataFrame,
         player_input: str, gamemode_input: str, cur_line: float, map_input = "All"
 ):
+    cdlDF_input = filter_maps(cdlDF_input)
+
     if map_input == "All":
         return(
             ggplot(
-                cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                    (cdlDF["player"] == player_input)],
+                cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                    (cdlDF_input["player"] == player_input)],
                 aes(x = "total_score", y = "kills", color = "map_wl")
             ) + \
                 geom_point(size = 2) + \
@@ -276,9 +282,9 @@ def gg_player_kills_vs_total(
     else:
         return(
             ggplot(
-                cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                    (cdlDF["player"] == player_input) & 
-                    (cdlDF["map_name"] == map_input)],
+                cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                    (cdlDF_input["player"] == player_input) & 
+                    (cdlDF_input["map_name"] == map_input)],
                 aes(x = "total_score", y = "kills", color = "map_wl")
             ) + \
                 geom_point(size = 2) + \
@@ -299,14 +305,16 @@ def gg_player_kills_vs_total(
         )
 
 # Player Kills vs Score Diff
-def gg_player_kills_vs_score_diff(
+def gg_player_kills_vs_score_diff(cdlDF_input: pd.DataFrame,
         player_input: str, gamemode_input: str, cur_line: float, map_input = "All"
 ):
+    cdlDF_input = filter_maps(cdlDF_input)
+
     if map_input == "All":
         return(
             ggplot(
-                cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                    (cdlDF["player"] == player_input)],
+                cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                    (cdlDF_input["player"] == player_input)],
                 aes(x = "score_diff", y = "kills")
             ) + \
                 geom_point(aes(color = "map_name"), size = 2, alpha = 1) + \
@@ -329,9 +337,9 @@ def gg_player_kills_vs_score_diff(
     else:
         return(
             ggplot(
-                cdlDF[(cdlDF["gamemode"] == gamemode_input) & \
-                    (cdlDF["player"] == player_input) & \
-                    (cdlDF["map_name"] == map_input)],
+                cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
+                    (cdlDF_input["player"] == player_input) & \
+                    (cdlDF_input["map_name"] == map_input)],
                 aes(x = "score_diff", y = "kills", color = "map_name")
             ) + \
                 geom_point(size = 2, alpha = 1) + \

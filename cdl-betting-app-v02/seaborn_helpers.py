@@ -1,10 +1,11 @@
 
-# Import seaborn & matplotlib
+# Import pandas, seaborn & matplotlib
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Import setup
-from setup.setup import *
+# Import filter_maps from setup
+from setup.setup import filter_maps
 
 # Dictionary of color scales by gamemode 
 gamemode_color_scales = {
@@ -89,6 +90,9 @@ def team_score_diffs(
         cdlDF_input: pd.DataFrame, team_input: str, 
         gamemode_input: str, map_input = "All"
 ):
+
+    # Filter maps
+    cdlDF_input = filter_maps(cdlDF_input)
 
     # If user selected all maps    
     if map_input == "All":
@@ -184,6 +188,9 @@ def player_kills_overview(
         cdlDF_input: pd.DataFrame, player_input: str, gamemode_input: str, 
         cur_line: float, map_input = "All"
 ):
+    # Filter maps
+    cdlDF_input = filter_maps(cdlDF_input)
+
     # If user selected all maps
     if map_input == "All":
 
@@ -216,7 +223,10 @@ def player_kills_vs_time(
         cdlDF_input: pd.DataFrame, player_input: str,
           gamemode_input: str, cur_line: float, map_input = "All"
 ):
-    
+
+    # Filter maps
+    cdlDF_input = filter_maps(cdlDF_input)
+
     # If user selects all maps
     if map_input == "All":
         
@@ -247,6 +257,9 @@ def player_kills_vs_score_diff(
         cdlDF_input: pd.DataFrame, player_input: str, 
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
+    
+    # Filter maps
+    cdlDF_input = filter_maps(cdlDF_input)
     
     # If user selects all maps
     if map_input == "All":
