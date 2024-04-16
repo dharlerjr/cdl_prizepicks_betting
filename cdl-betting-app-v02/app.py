@@ -47,7 +47,9 @@ app_ui = ui.page_sidebar(
     ui.sidebar(
 
         # Theme picker
-        shinyswatch.theme_picker_ui(),
+        # shinyswatch.theme_picker_ui(),
+        # Set theme
+        shinyswatch.theme.cerulean,
         # Inputs
         ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
         ui.input_select(id = "team_a", label = "Team A", selected = "OpTic Texas",
@@ -97,7 +99,7 @@ app_ui = ui.page_sidebar(
 def server(input, output, session):
     
     # Theme picker
-    shinyswatch.theme_picker_server()
+    # shinyswatch.theme_picker_server()
 
     # Intialize reactive dataframe of player props
     player_props_df = reactive.value(initial_player_props)
@@ -137,7 +139,8 @@ def server(input, output, session):
                 series_score_diffs, 
                 input.team_a()
                 ), 
-            filters = True
+            filters = True, 
+            summary = False
             )
     
     # Team A Kills Scoreboard
@@ -149,7 +152,8 @@ def server(input, output, session):
                 input.team_a(),
                 gamemode()
                 ), 
-            filters = True
+            filters = True, 
+            summary = False
             )
     
     # Team A Score Differentials

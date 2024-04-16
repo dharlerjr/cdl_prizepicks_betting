@@ -6,12 +6,12 @@ def build_series_scoreboards(series_score_diffs_input: pd.DataFrame, team_input:
 
     series_score_diffs_input = series_score_diffs_input \
         [series_score_diffs_input["team"] == team_input] \
-        [["map_wins", "map_losses", "opp"]].reset_index(drop=True)
+        [["map_wins", "map_losses", "opp_abbr"]].reset_index(drop=True)
 
     series_score_diffs_input = series_score_diffs_input.rename(
         columns = {"map_wins": "Map Wins", 
                    "map_losses": "Map Losses", 
-                    "opp": "Opponent"}
+                    "opp_abbr": "Opponent"}
         )
     return series_score_diffs_input
 
@@ -23,7 +23,7 @@ def build_map_scoreboards(
         cdlDF_input[(cdlDF_input["team"] == team_input) & 
                     (cdlDF_input["gamemode"] == gamemode_input)] \
             [["player", "map_name", "kills", 
-              "deaths", "team_score", "opp_score", "opp"]] \
+              "deaths", "team_score", "opp_score", "opp_abbr"]] \
         .reset_index(drop=True) \
         .rename(columns = {
             "player": "Player", 
@@ -31,7 +31,7 @@ def build_map_scoreboards(
             "kills": "Kills", 
             "team_score": "Team Score", 
             "opp_score": "Opponent Score", 
-            "opp": "Opponent"}
+            "opp_abbr": "Opponent"}
         )
     
     return cdlDF_input
