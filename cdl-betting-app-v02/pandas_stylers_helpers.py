@@ -55,7 +55,7 @@ def team_summaries_fn(team_summaries_input: pd.DataFrame, team_x: str, team_y: s
 
     return summary_df_styler
 
-def h2h_summary_gt_fn(cdlDF_input, team_x: str, team_y: str):
+def h2h_summary_fn(cdlDF_input, team_x: str, team_y: str):
   
   # H2H Summary by Mode Only
   h2h_summary_df_bottom = cdlDF_input \

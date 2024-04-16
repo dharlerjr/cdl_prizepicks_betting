@@ -10,6 +10,7 @@ from setup.setup import *
 # Import webscraper & helpers
 from webscraper import *
 from seaborn_helpers import *
+from pandas_stylers_helpers import *
 
 # Dictionary to map map_num to gamemode
 map_nums_to_gamemode = {
@@ -55,11 +56,14 @@ app_ui = ui.page_sidebar(
         ui.input_select(id = "map_num", label = "Map Number", selected = 1,
                         choices = [1, 2, 3, 4, 5]), 
         ui.input_select(id = "map_name", label = "Map", selected = "All",
-                        choices = ["All"] + \
-                            sorted([map_name for map_name in cdlDF['map_name'].unique() if map_name != "Skidrow"])), 
+                        choices = ["All"] + sorted(filter_maps(cdlDF)['map_name'].unique())), 
         ui.input_select(id = "x_axis", label = "X-Axis", selected = "Time",
                         choices = ["Time", "Score Differential"])
     ), 
+    ui.layout_columns(
+        ui.card(ui.output_table("team_summaries")), 
+        ui.card(ui.output_table("h2h_summary"))
+    ),
     ui.layout_columns(
         ui.card(ui.output_plot("player_1_box")), 
         ui.card(ui.output_plot("player_1_scatter"))
@@ -111,6 +115,16 @@ def server(input, output, session):
     @reactive.calc
     def gamemode():
         return map_nums_to_gamemode[input.map_num()]
+    
+    # Team Summaries
+    @render.table
+    def team_summaries():
+        return team_summaries(team_summaries, input.team_a(), input.team_b())
+    
+    # H2H Summary
+    @render.table
+    def h2h_summary():
+        return h2h_summary_fn(cdlDF, input.team_a(), input.team_b())
     
     # Team A Score Differentials
     @render.plot
