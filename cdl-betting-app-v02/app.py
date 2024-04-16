@@ -47,7 +47,6 @@ team_logos = {
 ICONS = {
     "crosshairs": fa.icon_svg("crosshairs"), 
     "percent": fa.icon_svg("percent"), 
-    "swords": fa.icon_svg("swords"), 
     "headset": fa.icon_svg("headset")
 }
 
@@ -103,7 +102,7 @@ app_ui = ui.page_sidebar(
             ui.output_image("team_a_logo", width = "80px", height = "100px"), 
             max_height = "160px"
             ),
-        ui.markdown(),
+        ui.markdown("**vs**"),
         ui.card(
             ui.output_image("team_b_logo", width = "80px", height = "100px"), 
             max_height = "160px"
@@ -115,23 +114,28 @@ app_ui = ui.page_sidebar(
     ui.layout_columns(
         ui.value_box(
             title = "Major III Series W-L", 
-            showcase = ICONS["crosshairs"]
+            value = ui.output_ui("team_a_series_record"),
+            showcase = ICONS["headset"]
         ), 
         ui.value_box(
             title = "Map Win %", 
+            value = ui.output_ui("team_b_map_record"),
             showcase = ICONS["percent"]
         ), 
         ui.value_box(
             title = "H2H Map Record", 
-            showcase = ICONS["swords"]
+            value = ui.output_ui("h2h_map_record"),
+            showcase = ICONS["crosshairs"]
         ), 
         ui.value_box(
             title = "Map Win %", 
+            value = ui.output_ui("team_b_map_record"),
             showcase = ICONS["percent"]
         ),
         ui.value_box(
             title = "Major III Series W-L", 
-            showcase = ICONS["crosshairs"]
+            value = ui.output_ui("team_b_series_record"),
+            showcase = ICONS["headset"]
         )
     ),
 
@@ -246,6 +250,31 @@ def server(input, output, session):
                         "width": "100px", "width": "100px", "image-align": "right"}
         return img
     
+    # Team A Series Record for Major 3 Quals
+    @render.ui
+    def team_a_series_record():
+        pass
+
+    # Team B Series Record for Major 3 Quals
+    @render.ui
+    def team_b_series_record():
+        pass
+    
+    # Team A Map Record for User-Selected Map & Mode Combination
+    @render.ui
+    def team_a_map_record():
+        pass
+
+    # Team B Map Record for User-Selected Map & Mode Combination
+    @render.ui
+    def team_b_map_record():
+        pass
+
+    # H2H Map Record for User-Selected Map & Mode Combination
+    @render.ui
+    def team_h2h_map_record():
+        pass
+
     # Not implemented
     # # Team Summaries
     # @render.table
