@@ -120,8 +120,16 @@ def build_series_summaries(cdlDF_input):
     series_score_diffs["series_score_diff"] = \
         series_score_diffs["map_wins"] - series_score_diffs["map_losses"]
     
+    # Add match_date column back in
+    series_score_diffs = pd.merge(
+        series_score_diffs, 
+        cdlDF_input[["match_date", "match_id"]].drop_duplicates(),
+        how = "left", 
+        on = "match_id"
+    )
+    
     # Get opponents
-    opps = series_score_diffs.sort_values(by = ['match_id', 'team'], ascending = [True, False]) \
+    opps = series_score_diffs.sort_values(by = ['match_date', 'match_id', 'team'], ascending = [True, True, False]) \
         [['team']] \
         .rename(columns={'team': 'opp'})
     opps.reset_index(drop=True, inplace=True)
