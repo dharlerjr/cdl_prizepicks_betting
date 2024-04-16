@@ -103,8 +103,8 @@ def load_and_clean_cdl_data():
     cdlDF['gamemode'] = \
         pd.Categorical(cdlDF['gamemode'], categories = ['Hardpoint', 'Search & Destroy', 'Control'])
     
-    # Set match_date datatype
-    cdlDF['match_date'] = pd.to_datetime(cdlDF['match_date'])
+    # Convert match_date column to datetime
+    cdlDF["match_date"] = pd.to_datetime(cdlDF['match_date'])
     
     return cdlDF
 
