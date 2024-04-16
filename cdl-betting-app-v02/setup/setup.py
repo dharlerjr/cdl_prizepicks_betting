@@ -121,12 +121,27 @@ def build_series_summaries(cdlDF_input):
 
     return series_score_diffs
 
+# Function to filter maps from cdlDF
+def filter_maps(cdlDF_input):
+        
+    # Remove map & mode combos
+    cdlDF_input = \
+        cdlDF_input[
+            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Invasion')) &
+            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Skidrow')) &
+            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Terminal')) &
+            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Skidrow')) &
+            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Terminal')) 
+        ]
+    
+    return cdlDF_input
+
 # Function to create a pandas dataframe of team summaries
 def build_team_summaries(cdlDF_input: pd.DataFrame): 
 
     # Team Summaries by Map & Mode
-    team_summaries_DF_top = \
-        cdlDF_input[["match_id", "team", "map_name", "gamemode", "map_result"]] \
+    team_summaries_DF_top = filter_maps(cdlDF_input) \
+        [["match_id", "team", "map_name", "gamemode", "map_result"]] \
         .drop_duplicates() \
         .groupby(["team", "gamemode", "map_name"], observed = True) \
         .agg(
@@ -171,17 +186,6 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
             categories = ['6 Star', 'Highrise', 'Invasion', 'Karachi', \
                           'Rio', 'Sub Base', 'Vista', 'Overall'])
     
-    # Concatenated dataframe will contain correct totals. However, this 
-    # dataframe will also contain map and mode combinations that are no
-    # longer played. So, after incorporating these combinations into the 
-    # totals, we will drop the five combinations from the dataframe.
-    team_summaries_DF.dropna(inplace=True)
-
-    team_summaries_DF = \
-        team_summaries_DF[
-            ~((team_summaries_DF['gamemode'] == 'Hardpoint') & (team_summaries_DF['map_name'] == 'Invasion'))
-        ]
-    
     return team_summaries_DF
 
 # Function to filter players from cdlDF
@@ -202,21 +206,6 @@ def filter_players(cdlDF_input):
     # Change FelonY's player name to Felo to match PrizePicks
     cdlDF_input.loc[cdlDF_input['player'] == 'FelonY', 'player'] = 'Felo'
 
-    return cdlDF_input
-
-# Function to filter maps from cdlDF
-def filter_maps(cdlDF_input):
-        
-    # Remove map & mode combos
-    cdlDF_input = \
-        cdlDF_input[
-            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Invasion')) &
-            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Skidrow')) &
-            ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Terminal')) &
-            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Skidrow')) &
-            ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Terminal')) 
-        ]
-    
     return cdlDF_input
 
 # Funciton to build rosters AFTER players have been filtered
