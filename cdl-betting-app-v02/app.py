@@ -105,7 +105,7 @@ app_ui = ui.page_sidebar(
                         choices = ["Time", "Score Differential"])
     ), 
     
-    # First row: Team Logos & Standings
+    # First row: Team Logos, Standings, and Series H2H
     ui.layout_columns(
         ui.card(
             ui.output_image("team_a_logo", width = "100px", height = "100px"), 
@@ -117,6 +117,11 @@ app_ui = ui.page_sidebar(
             showcase = ICONS["headset"]
         ), 
         ui.value_box(
+            title = "Series H2H",
+            value = ui.output_ui("h2h_series_record"),
+            showcase = ICONS["crosshairs"]
+        ), 
+        ui.value_box(
             title = "Series W-L (Major III Qualifiers)", 
             value = ui.output_ui("team_b_series_record"),
             showcase = ICONS["headset"]
@@ -125,8 +130,7 @@ app_ui = ui.page_sidebar(
             ui.output_image("team_b_logo", width = "100px", height = "100px"), 
             max_height = "160px"
             ), 
-        # Col Widths
-        col_widths = [2, 4, 4, 2]
+        # Col Widths: Automatic
     ),
 
     # Second row: Team A Player Kills Plots & Win % Value Box
@@ -245,11 +249,6 @@ app_ui = ui.page_sidebar(
     ui.layout_columns(
         ui.card(ui.output_data_frame("team_a_series_datagrid")),
         ui.card(ui.output_plot("team_a_series_diffs")), 
-        ui.value_box(
-            title = "Series H2H",
-            value = ui.output_ui("h2h_series_record"),
-            showcase = ICONS["crosshairs"]
-        ), 
         ui.card(ui.output_plot("team_b_series_diffs")), 
         ui.card(ui.output_data_frame("team_b_series_datagrid"))
         # Col Widths: Automatic
