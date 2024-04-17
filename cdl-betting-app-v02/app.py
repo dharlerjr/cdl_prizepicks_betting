@@ -92,7 +92,7 @@ app_ui = ui.page_sidebar(
         # Theme picker
         # shinyswatch.theme_picker_ui(),
 
-        # Set theme
+        # Set theme: cerulean
         shinyswatch.theme.cerulean,
 
         # Inputs
@@ -137,7 +137,7 @@ app_ui = ui.page_sidebar(
         ), 
         ui.value_box(
             title = ui.output_ui("h2h_title"),
-            value = "1-1", # ui.output_ui("h2h_map_record")
+            value = ui.output_ui("h2h_map_record"),
             showcase = ICONS["crosshairs"]
         ), 
         ui.value_box(
@@ -353,7 +353,8 @@ def server(input, output, session):
     # H2H Map Record for User-Selected Map & Mode Combination
     @render.ui
     def h2h_map_record():
-        pass
+        return compute_h2h_map_record(cdlDF, input.team_a(), input.team_b(), 
+                                      gamemode(), input.map_name())
 
     # Not implemented
     # # Team Summaries
