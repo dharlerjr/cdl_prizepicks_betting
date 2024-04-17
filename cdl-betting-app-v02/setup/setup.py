@@ -142,7 +142,18 @@ def build_series_summaries(cdlDF_input):
         [['team']] \
         .rename(columns={'team': 'opp'})
     opps.reset_index(drop=True, inplace=True)
-    opps
+
+    # Replace opponents with their team abbreviation
+    team_abbr_combos = cdlDF_input[["team", "team_abbr"]].drop_duplicates().reset_index(drop = True)
+    team_abbr_combos
+    opps = pd.merge(
+        opps, 
+        team_abbr_combos, 
+        left_on = "opp", 
+        right_on = "team",
+        how = "left"
+    )
+    opps = opps["team_abbr"].rename(columns = {"team_abbr": "opp"})
 
     # Bind series_score_diffs & opps
     series_score_diffs = pd.concat([series_score_diffs, opps], axis=1)
