@@ -135,7 +135,7 @@ app_ui = ui.page_sidebar(
             showcase = ICONS["percent"]
         ), 
         ui.value_box(
-            title = "H2H Map Record", 
+            title = ui.output_ui("h2h_title"),
             value = "1-1", # ui.output_ui("h2h_map_record")
             showcase = ICONS["crosshairs"]
         ), 
@@ -284,15 +284,15 @@ def server(input, output, session):
         if input.map_name() == "All":
             return f"{gamemode()} Win {{%}} (W - L)"
         else:
-            return f"{input.map_name()} {gamemode()} Win {{%}} (W - L)"
+            return f"{input.map_name()} {gamemode()} Win % (W - L)"
         
     # Title for Team B Map Record Value Box
     @render.ui
-    def team_a_map_record_title():
+    def team_b_map_record_title():
         if input.map_name() == "All":
             return f"{gamemode()} Win {{%}} (W - L)"
         else:
-            return f"{input.map_name()} {gamemode()} Win {{%}} (W - L)"
+            return f"{input.map_name()} {gamemode()} Win % (W - L)"
         
     # Title for H2H Value Box
     @render.ui
