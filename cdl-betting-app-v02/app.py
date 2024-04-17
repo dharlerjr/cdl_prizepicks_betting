@@ -49,6 +49,10 @@ ICONS = {
     "headset": fa.icon_svg("headset")
 }
 
+
+# Major 3 Qualifiers Start Date (String)
+start_date = '2024-04-12' 
+
 # Load in data
 cdlDF = load_and_clean_cdl_data()
 cdlDF
@@ -117,7 +121,7 @@ app_ui = ui.page_sidebar(
             showcase = ICONS["headset"]
         ), 
         ui.value_box(
-            title = "Series H2H",
+            title = "Series H2H (Overall)",
             value = ui.output_ui("h2h_series_record"),
             showcase = ICONS["crosshairs"]
         ), 
@@ -163,18 +167,20 @@ app_ui = ui.page_sidebar(
                     ui.output_plot("player_4_scatter", width = "800px")
                 ))
         ),
-        # Value box of Map & Mode Win %
-        ui.value_box(
-            title = ui.output_ui("team_a_map_record_title"),
-            value = ui.output_ui("team_a_map_record"),
-            showcase = ICONS["percent"]
-        ), 
-        # Win streak Value Box
-        ui.value_box(
-            title = ui.output_ui("team_a_win_streak_title"),
-            value = ui.output_ui("team_a_win_streak"),
-            showcase = ICONS["crosshairs"]
-        ), 
+        ui.layout_column_wrap(
+            # Value box of Map & Mode Win %
+            ui.value_box(
+                title = ui.output_ui("team_a_map_record_title"),
+                value = ui.output_ui("team_a_map_record"),
+                showcase = ICONS["percent"]
+            ), 
+            # Win streak Value Box
+            ui.value_box(
+                title = ui.output_ui("team_a_win_streak_title"),
+                value = ui.output_ui("team_a_win_streak"),
+                showcase = ICONS["crosshairs"]
+            ), 
+        ),
         # Col Widths
         col_widths = [9, 3]
     ),
@@ -203,18 +209,20 @@ app_ui = ui.page_sidebar(
 
     # Fifth row: Team B Win % Value Box & Player Kills
     ui.layout_columns(
-        # Value box of Map & Mode Win %
-        ui.value_box(
-            title = ui.output_ui("team_b_map_record_title"),
-            value = ui.output_ui("team_b_map_record"),
-            showcase = ICONS["percent"]
-        ), 
-        # Win streak Value Box
-        ui.value_box(
-            title = ui.output_ui("team_b_win_streak_title"),
-            value = ui.output_ui("team_b_win_streak"),
-            showcase = ICONS["crosshairs"]
-        ), 
+        ui.layout_column_wrap(
+            # Value box of Map & Mode Win %
+            ui.value_box(
+                title = ui.output_ui("team_b_map_record_title"),
+                value = ui.output_ui("team_b_map_record"),
+                showcase = ICONS["percent"]
+            ), 
+            # Win streak Value Box
+            ui.value_box(
+                title = ui.output_ui("team_b_win_streak_title"),
+                value = ui.output_ui("team_b_win_streak"),
+                showcase = ICONS["crosshairs"]
+            ), 
+        ),
         # Card with Pill Tabset of Plots
         ui.navset_card_pill(
             ui.nav_panel(
@@ -421,12 +429,12 @@ def server(input, output, session):
     # Team A Win Streak for User-Selected Map & Mode Combination
     @render.ui
     def team_a_win_streak():
-        return compute_win_streak(cdlDF, input.team_a(), gamemode(), input.map_name())
+        return str(compute_win_streak(cdlDF, input.team_a(), gamemode(), input.map_name()))
     
     # Team B Win Streak for User-Selected Map & Mode Combination
     @render.ui
     def team_b_win_streak():
-        return compute_win_streak(cdlDF, input.team_b(), gamemode(), input.map_name())
+        return str(compute_win_streak(cdlDF, input.team_b(), gamemode(), input.map_name()))
 
     # Not implemented
     # # Team Summaries
