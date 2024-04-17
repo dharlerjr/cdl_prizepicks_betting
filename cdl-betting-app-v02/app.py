@@ -153,6 +153,7 @@ app_ui = ui.page_sidebar(
 
     # Plots of Player Kills
     ui.layout_columns(
+
         # Team A Card & Tabs
         ui.navset_card_pill(
             ui.nav_panel(
@@ -181,6 +182,7 @@ app_ui = ui.page_sidebar(
                     ui.output_plot("player_4_scatter", width = "800px")
                 ))
         ),
+
         # Team B Card & Tabs
         ui.navset_card_pill(
             ui.nav_panel(
@@ -210,16 +212,19 @@ app_ui = ui.page_sidebar(
                 ))
         ),
     ),
+
     # Map Score Differentials & Results
     ui.layout_columns(
         ui.card(ui.output_plot("team_a_score_diffs")), 
         ui.card(ui.output_data_frame("team_a_kills_scoreboard"))
     ),
+
     # Series Score Differentials & Results
     ui.layout_columns(
         ui.card(ui.output_plot("team_a_series_diffs")), 
         ui.card(ui.output_data_frame("team_a_series_scoreboard"))
     ),
+
     title = "CDL Bets on PrizePicks" 
 )
 
@@ -282,17 +287,17 @@ def server(input, output, session):
     @render.ui
     def team_a_map_record_title():
         if input.map_name() == "All":
-            return f"{gamemode()} Win {{%}} (W - L)"
+            return f"{gamemode()} \n Win % (W - L)"
         else:
-            return f"{input.map_name()} {gamemode()} Win % (W - L)"
+            return f"{input.map_name()} {gamemode()} \n Win % (W - L)"
         
     # Title for Team B Map Record Value Box
     @render.ui
     def team_b_map_record_title():
         if input.map_name() == "All":
-            return f"{gamemode()} Win {{%}} (W - L)"
+            return f"{gamemode()} \n Win % (W - L)"
         else:
-            return f"{input.map_name()} {gamemode()} Win % (W - L)"
+            return f"{input.map_name()} {gamemode()} \n Win % (W - L)"
         
     # Title for H2H Value Box
     @render.ui
@@ -347,37 +352,7 @@ def server(input, output, session):
     # H2H Map Record for User-Selected Map & Mode Combination
     @render.ui
     def h2h_map_record():
-        queried_df = pd.DataFrame()
-        if input.map_name() == "All":
-            queried_df = cdlDF \
-                [["match_id", "team", "gamemode", "map_result", "opp"]] \
-                [(cdlDF["team"] == "OpTic Texas") & \
-                    (cdlDF["opp"] == "Atlanta FaZe") &
-                    (cdlDF["gamemode"] == "Hardpoint")] \
-                .drop_duplicates() \
-                .groupby("gamemode", observed = True) \
-                .agg(
-                    wins = ("map_result", lambda x: sum(x)), 
-                    losses = ("map_result", lambda x: len(x) - sum(x))
-                    ) \
-                .reset_index()
-        else:
-            queried_df = filter_maps(cdlDF) \
-                [["match_id", "team", "map_name", "gamemode", "map_result", "opp"]] \
-                [(cdlDF["team"] == "Atlanta FaZe") & \
-                    (cdlDF["opp"] == "OpTic Texas") & 
-                    (cdlDF["gamemode"] == "Hardpoint") & 
-                    (cdlDF["map_name"] == "Karachi")] \
-                .drop_duplicates() \
-                .groupby(["gamemode", "map_name"], observed = True) \
-                .agg(
-                    wins = ("map_result", lambda x: sum(x)), 
-                    losses = ("map_result", lambda x: len(x) - sum(x))
-                ) \
-                .reset_index()
-        wins = queried_df.loc[0, "wins"]
-        losses = queried_df.loc[0, "losses"]
-        return f"{wins} - {losses}"
+        pass
 
     # Not implemented
     # # Team Summaries
