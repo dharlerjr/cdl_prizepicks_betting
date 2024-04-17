@@ -46,7 +46,11 @@ team_logos = {
 ICONS = {
     "crosshairs": fa.icon_svg("crosshairs"), 
     "percent": fa.icon_svg("percent"), 
-    "headset": fa.icon_svg("headset")
+    "headset": fa.icon_svg("headset"), 
+    "plus": fa.icon_svg("plus"), 
+    "minus": fa.icon_svg("minus"), 
+    "chev_up": fa.icon_svg("chevron-up"),
+    "chev_down": fa.icon_svg("chevron-down")
 }
 
 
@@ -178,7 +182,7 @@ app_ui = ui.page_sidebar(
             ui.value_box(
                 title = ui.output_ui("team_a_win_streak_title"),
                 value = ui.output_ui("team_a_win_streak"),
-                showcase = ICONS["crosshairs"]
+                showcase = ui.output_ui("change_team_a_win_streak_icon")
             ), 
         ),
         # Col Widths
@@ -220,7 +224,7 @@ app_ui = ui.page_sidebar(
             ui.value_box(
                 title = ui.output_ui("team_b_win_streak_title"),
                 value = ui.output_ui("team_b_win_streak"),
-                showcase = ICONS["crosshairs"]
+                showcase = ui.output_ui("change_team_b_win_streak_icon")
             ), 
         ),
         # Card with Pill Tabset of Plots
@@ -425,16 +429,48 @@ def server(input, output, session):
             return f"{gamemode()} Win Streak"
         else:
             return f"{input.map_name()} {gamemode()} Win Streak"
+        
+    # Compute Team A Win Streak
+    @reactive.calc
+    def compute_team_a_win_streak():
+        return compute_win_streak(cdlDF, input.team_a(), gamemode(), input.map_name())
+    
+    # Compute Team B Win Streak
+    @reactive.calc
+    def compute_team_b_win_streak():
+        return compute_win_streak(cdlDF, input.team_b(), gamemode(), input.map_name())
 
     # Team A Win Streak for User-Selected Map & Mode Combination
     @render.ui
     def team_a_win_streak():
-        return str(compute_win_streak(cdlDF, input.team_a(), gamemode(), input.map_name()))
+        return str(compute_team_a_win_streak())
     
     # Team B Win Streak for User-Selected Map & Mode Combination
     @render.ui
     def team_b_win_streak():
-        return str(compute_win_streak(cdlDF, input.team_b(), gamemode(), input.map_name()))
+        return str(compute_team_b_win_streak())
+    
+    # Change Win Streak Icon Based on Sign of Win Streak
+    @render.ui
+    def change_team_a_win_streak_icon():
+        win_streak = compute_team_a_win_streak()
+        if win_streak > 0:
+            icon = ICONS["plus"]
+        else:
+            icon = ICONS["minus"]
+        icon.add_class(f"text-{('success' if win_streak > 0 else 'danger')}")
+        return icon
+    
+    # Change Win Streak Icon Based on Sign of Win Streak
+    @render.ui
+    def change_team_b_win_streak_icon():
+        win_streak = compute_team_b_win_streak()
+        if win_streak > 0:
+            icon = ICONS["chev_up"]
+        else:
+            icon = ICONS["chev_down"]
+        icon.add_class(f"text-{('success' if win_streak > 0 else 'danger')}")
+        return icon
 
     # Not implemented
     # # Team Summaries
