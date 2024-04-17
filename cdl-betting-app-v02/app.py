@@ -169,6 +169,12 @@ app_ui = ui.page_sidebar(
             value = ui.output_ui("team_a_map_record"),
             showcase = ICONS["percent"]
         ), 
+        # Win streak Value Box
+        ui.value_box(
+            title = ui.output_ui("team_a_win_streak_title"),
+            value = ui.output_ui("team_a_win_streak"),
+            showcase = ICONS["crosshairs"]
+        ), 
         # Col Widths
         col_widths = [9, 3]
     ),
@@ -202,6 +208,12 @@ app_ui = ui.page_sidebar(
             title = ui.output_ui("team_b_map_record_title"),
             value = ui.output_ui("team_b_map_record"),
             showcase = ICONS["percent"]
+        ), 
+        # Win streak Value Box
+        ui.value_box(
+            title = ui.output_ui("team_b_win_streak_title"),
+            value = ui.output_ui("team_b_win_streak"),
+            showcase = ICONS["crosshairs"]
         ), 
         # Card with Pill Tabset of Plots
         ui.navset_card_pill(
@@ -389,6 +401,32 @@ def server(input, output, session):
     @render.ui
     def h2h_series_record():
         return compute_h2h_series_record(cdlDF, input.team_a(), input.team_b())
+    
+    # Title for Team A Win Streak Value Box
+    @render.ui
+    def team_a_win_streak_title():
+        if input.map_name() == "All":
+            return f"{gamemode()} Win Streak"
+        else:
+            return f"{input.map_name()} {gamemode()} Win Streak"
+        
+    # Title for Team B Win Streak Value Box
+    @render.ui
+    def team_b_win_streak_title():
+        if input.map_name() == "All":
+            return f"{gamemode()} Win Streak"
+        else:
+            return f"{input.map_name()} {gamemode()} Win Streak"
+
+    # Team A Win Streak for User-Selected Map & Mode Combination
+    @render.ui
+    def team_a_win_streak():
+        return compute_win_streak(cdlDF, input.team_a(), gamemode(), input.map_name())
+    
+    # Team B Win Streak for User-Selected Map & Mode Combination
+    @render.ui
+    def team_b_win_streak():
+        return compute_win_streak(cdlDF, input.team_b(), gamemode(), input.map_name())
 
     # Not implemented
     # # Team Summaries
