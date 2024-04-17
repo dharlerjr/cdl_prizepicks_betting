@@ -86,13 +86,12 @@ initial_player_props = build_intial_props(rostersDF)
 # Define ui
 app_ui = ui.page_sidebar(   
 
-    # Set theme: cerulean
-    shinyswatch.theme.cerulean,
-
     # Sidebar with Inputs
     ui.sidebar(
         # Theme picker
         # shinyswatch.theme_picker_ui(),
+        # Set theme: cerulean
+        shinyswatch.theme.cerulean,
         # Inputs
         ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
         ui.input_select(id = "team_a", label = "Team A", selected = "OpTic Texas",
@@ -433,7 +432,7 @@ def server(input, output, session):
     
     # Team B Kills Datagrid
     @render.data_frame
-    def team_a_kills_datagrid():
+    def team_b_kills_datagrid():
         return render.DataGrid(
             build_kills_datagrid(
                 filter_maps(cdlDF), 
