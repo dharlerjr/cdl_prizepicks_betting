@@ -184,15 +184,9 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
     # So, we will add those combinations back in manually
     map_and_mode_combos = filter_maps(cdlDF_input)[["gamemode", "map_name"]].drop_duplicates().sort_values(["gamemode", "map_name"]).reset_index(drop = True)
     all_combinations = pd.DataFrame(
-        [(team, gamemode, map_name) for team in sorted(cdlDF['team'].unique()) for _, (gamemode, map_name) in map_and_mode_combos.iterrows()], 
+        [(team, gamemode, map_name) for team in sorted(cdlDF_input['team'].unique()) for _, (gamemode, map_name) in map_and_mode_combos.iterrows()], 
         columns = ['team', 'gamemode', 'map_name']
     )
-
-    # Set datatypes
-    team_summaries_DF_top['wins'] = team_summaries_DF_top['wins'].astype('int64')
-    team_summaries_DF_top['losses'] = team_summaries_DF_top['losses'].astype('int64')
-    team_summaries_DF_top['win_percentage'] = team_summaries_DF_top['win_percentage'].astype('float64')
-
     team_summaries_DF_top = pd.merge(
         team_summaries_DF_top, 
         all_combinations, 
@@ -200,7 +194,10 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
         how = "right"
     ).fillna(0)
 
-    # Set the datatypes
+    # Set datatypes
+    team_summaries_DF_top['wins'] = team_summaries_DF_top['wins'].astype('int64')
+    team_summaries_DF_top['losses'] = team_summaries_DF_top['losses'].astype('int64')
+    team_summaries_DF_top['win_percentage'] = team_summaries_DF_top['win_percentage'].astype('float64')
     
     # Team Summaries by Mode only
     team_summaries_DF_bottom = \
