@@ -382,7 +382,7 @@ def server(input, output, session):
     @render.data_frame
     def team_a_kills_scoreboard():
         return render.DataGrid(
-            build_map_scoreboards(
+            build_kills_scoreboards(
                 filter_maps(cdlDF), 
                 input.team_a(),
                 gamemode()
