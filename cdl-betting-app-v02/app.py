@@ -44,15 +44,14 @@ team_logos = {
 
 # Dictionary of faicons for value boxes
 ICONS = {
-    "crosshairs": fa.icon_svg("crosshairs"), 
-    "percent": fa.icon_svg("percent"), 
-    "headset": fa.icon_svg("headset"), 
+    "crosshairs": fa.icon_svg("crosshairs").add_class("text-primary"), 
+    "percent": fa.icon_svg("percent").add_class("text-primary"), 
+    "headset": fa.icon_svg("headset").add_class("text-primary"), 
     "plus": fa.icon_svg("plus"), 
     "minus": fa.icon_svg("minus"), 
     "chev_up": fa.icon_svg("chevron-up"),
     "chev_down": fa.icon_svg("chevron-down")
 }
-
 
 # Major 3 Qualifiers Start Date (String)
 start_date = '2024-04-12' 
@@ -466,9 +465,9 @@ def server(input, output, session):
     def change_team_b_win_streak_icon():
         win_streak = compute_team_b_win_streak()
         if win_streak > 0:
-            icon = ICONS["chev_up"]
+            icon = ICONS["plus"]
         else:
-            icon = ICONS["chev_down"]
+            icon = ICONS["minus"]
         icon.add_class(f"text-{('success' if win_streak > 0 else 'danger')}")
         return icon
 
