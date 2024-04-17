@@ -44,9 +44,9 @@ team_logos = {
 
 # Dictionary of faicons for value boxes
 ICONS = {
-    "crosshairs": fa.icon_svg("crosshairs").add_class("text-primary"), 
-    "percent": fa.icon_svg("percent").add_class("text-primary"), 
-    "headset": fa.icon_svg("headset").add_class("text-primary"), 
+    "crosshairs": fa.icon_svg("crosshairs"), 
+    "percent": fa.icon_svg("percent"), 
+    "headset": fa.icon_svg("headset"), 
     "plus": fa.icon_svg("plus"), 
     "minus": fa.icon_svg("minus"), 
     "chev_up": fa.icon_svg("chevron-up"),

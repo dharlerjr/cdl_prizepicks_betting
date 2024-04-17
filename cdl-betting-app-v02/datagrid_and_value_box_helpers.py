@@ -152,4 +152,11 @@ def compute_h2h_series_record(cdlDF_input: pd.DataFrame, team_x: str, team_y: st
                 wins = queried_df['series_result'].sum()
                 losses = len(queried_df['series_result'])
                 return f"{wins} - {losses}"
+        
+# Function to compute player over/under %
+def player_over_under_percentage(
+        cdlDF_input: pd.DataFrame, player_input: str, 
+        gamemode_input: str, cur_line: float, map_input = "All"
+):
+     pass
     
