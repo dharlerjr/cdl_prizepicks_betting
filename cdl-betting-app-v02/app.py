@@ -86,15 +86,13 @@ initial_player_props = build_intial_props(rostersDF)
 # Define ui
 app_ui = ui.page_sidebar(   
 
-    # Sidebar
-    ui.sidebar(
+    # Set theme: cerulean
+    shinyswatch.theme.cerulean,
 
+    # Sidebar with Inputs
+    ui.sidebar(
         # Theme picker
         # shinyswatch.theme_picker_ui(),
-
-        # Set theme: cerulean
-        shinyswatch.theme.cerulean,
-
         # Inputs
         ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
         ui.input_select(id = "team_a", label = "Team A", selected = "OpTic Texas",
@@ -109,53 +107,33 @@ app_ui = ui.page_sidebar(
                         choices = ["Time", "Score Differential"])
     ), 
     
-    # Team Logos
+    # First row: Team Logos & Standings
     ui.layout_columns(
         ui.card(
-            ui.output_image("team_a_logo", width = "80px", height = "100px"), 
+            ui.output_image("team_a_logo", width = "100px", height = "100px"), 
             max_height = "160px"
             ),
-        ui.markdown("** **"),
-        ui.card(
-            ui.output_image("team_b_logo", width = "80px", height = "100px"), 
-            max_height = "160px"
-            ), 
-        col_widths = [2, 8, 2]
-    ),
-
-    # Value boxes of Win-Loss Records & Win %s for Selected Teams
-    ui.layout_columns(
         ui.value_box(
             title = "Series W-L (Major III Qualifiers)", 
             value = ui.output_ui("team_a_series_record"),
             showcase = ICONS["headset"]
         ), 
         ui.value_box(
-            title = ui.output_ui("team_a_map_record_title"),
-            value = ui.output_ui("team_a_map_record"),
-            showcase = ICONS["percent"]
-        ), 
-        ui.value_box(
-            title = ui.output_ui("h2h_title"),
-            value = ui.output_ui("h2h_map_record"),
-            showcase = ICONS["crosshairs"]
-        ), 
-        ui.value_box(
-            title = ui.output_ui("team_b_map_record_title"),
-            value = ui.output_ui("team_b_map_record"),
-            showcase = ICONS["percent"]
-        ),
-        ui.value_box(
             title = "Series W-L (Major III Qualifiers)", 
             value = ui.output_ui("team_b_series_record"),
             showcase = ICONS["headset"]
-        )
+        ),
+        ui.card(
+            ui.output_image("team_b_logo", width = "100px", height = "100px"), 
+            max_height = "160px"
+            ), 
+        # Col Widths
+        col_widths = [2, 4, 4, 2]
     ),
 
-    # Plots of Player Kills
+    # Second row: Team A Player Kills Plots & Win % Value Box
     ui.layout_columns(
-
-        # Team A Card & Tabs
+        # Card with Pill Tabset of Plots
         ui.navset_card_pill(
             ui.nav_panel(
                 "1", 
@@ -183,8 +161,47 @@ app_ui = ui.page_sidebar(
                     ui.output_plot("player_4_scatter", width = "800px")
                 ))
         ),
+        # Value box of Map & Mode Win %
+        ui.value_box(
+            title = ui.output_ui("team_a_map_record_title"),
+            value = ui.output_ui("team_a_map_record"),
+            showcase = ICONS["percent"]
+        ), 
+        # Col Widths
+        col_widths = [9, 3]
+    ),
 
-        # Team B Card & Tabs
+    # Third row: Team A Kills Datagrid & Score Differentials
+    ui.layout_columns(
+        # Kills Datagrid
+        ui.card(ui.output_data_frame("team_a_kills_datagrid")),
+        # Histogram of Map & Mode Score Differentials
+        ui.card(ui.output_plot("team_a_score_diffs")), 
+        # Col Widths: Automatic
+    ),
+
+    # Fourth row: H2H Value Box
+    ui.layout_columns(
+        ui.markdown("** **"),
+        ui.value_box(
+            title = ui.output_ui("h2h_title"),
+            value = ui.output_ui("h2h_map_record"),
+            showcase = ICONS["crosshairs"]
+        ), 
+        ui.markdown("** **"), 
+        # Col Widths
+        col_widths = [5, 2, 5]
+    ),
+
+    # Fifth row: Team B Win % Value Box & Player Kills
+    ui.layout_columns(
+        # Value box of Map & Mode Win %
+        ui.value_box(
+            title = ui.output_ui("team_b_map_record_title"),
+            value = ui.output_ui("team_b_map_record"),
+            showcase = ICONS["percent"]
+        ), 
+        # Card with Pill Tabset of Plots
         ui.navset_card_pill(
             ui.nav_panel(
                 "1", 
@@ -212,20 +229,30 @@ app_ui = ui.page_sidebar(
                     ui.output_plot("player_8_scatter", width = "800px")
                 ))
         ),
+        # Col Widths
+        col_widths = [3, 9]
     ),
 
-    # Map Score Differentials & Results
+    # Sixth row: Team B Score Differentials & Kills Datagrid
     ui.layout_columns(
-        ui.card(ui.output_plot("team_a_score_diffs")), 
-        ui.card(ui.output_data_frame("team_a_kills_scoreboard"))
+        # Histogram of Map & Mode Score Differentials
+        ui.card(ui.output_plot("team_b_score_diffs")), 
+        # Kills Datagrid
+        ui.card(ui.output_data_frame("team_b_kills_datagrid")),
+        # Col Widths
+        col_widths = [6, 6]
     ),
 
-    # Series Score Differentials & Results
+    # Seventh row: Series Score Differentials & Results
     ui.layout_columns(
+        ui.card(ui.output_data_frame("team_a_series_datagrid")),
         ui.card(ui.output_plot("team_a_series_diffs")), 
-        ui.card(ui.output_data_frame("team_a_series_scoreboard"))
+        ui.card(ui.output_plot("team_b_series_diffs")), 
+        ui.card(ui.output_data_frame("team_b_series_datagrid"))
+        # Col Widths: Automatic
     ),
 
+    # App Title
     title = "CDL Bets on PrizePicks" 
 )
 
@@ -367,11 +394,11 @@ def server(input, output, session):
     # def h2h_summary():
     #     return h2h_summary_fn(cdlDF, input.team_a(), input.team_b())
     
-    # Team A Series Scoreboard
+    # Team A Series Datagrid
     @render.data_frame
-    def team_a_series_scoreboard():
+    def team_a_series_datagrid():
         return render.DataGrid(
-            build_series_scoreboards(
+            build_series_res_datagrid(
                 series_score_diffs, 
                 input.team_a()
                 ), 
@@ -379,11 +406,23 @@ def server(input, output, session):
             summary = False
             )
     
-    # Team A Kills Scoreboard
+    # Team B Series Datagrid
     @render.data_frame
-    def team_a_kills_scoreboard():
+    def team_b_series_datagrid():
         return render.DataGrid(
-            build_kills_scoreboards(
+            build_series_res_datagrid(
+                series_score_diffs, 
+                input.team_b()
+                ), 
+            filters = True, 
+            summary = False
+            )
+    
+    # Team A Kills Datagrid
+    @render.data_frame
+    def team_a_kills_datagrid():
+        return render.DataGrid(
+            build_kills_datagrid(
                 filter_maps(cdlDF), 
                 input.team_a(),
                 gamemode()
@@ -392,17 +431,42 @@ def server(input, output, session):
             summary = False
             )
     
-    # Team A Score Differentials
+    # Team B Kills Datagrid
+    @render.data_frame
+    def team_a_kills_datagrid():
+        return render.DataGrid(
+            build_kills_datagrid(
+                filter_maps(cdlDF), 
+                input.team_b(),
+                gamemode()
+                ), 
+            filters = True, 
+            summary = False
+            )
+    
+    # Team A Score Differentials Histogram
     @render.plot
     def team_a_score_diffs():
         return team_score_diffs(
             cdlDF, input.team_a(), gamemode(), input.map_name()
         )
     
-    # Team A Series Differentials
+    # Team B Score Differentials Histogram
+    @render.plot
+    def team_b_score_diffs():
+        return team_score_diffs(
+            cdlDF, input.team_b(), gamemode(), input.map_name()
+        )
+
+    # Team A Series Differentials Histogram
     @render.plot
     def team_a_series_diffs():
         return team_series_diffs(series_score_diffs, input.team_a())
+    
+    # Team B Series Differentials Histogram
+    @render.plot
+    def team_b_series_diffs():
+        return team_series_diffs(series_score_diffs, input.team_b())
 
     # Player One Boxplot
     @render.plot

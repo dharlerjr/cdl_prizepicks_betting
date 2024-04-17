@@ -2,7 +2,7 @@
 import pandas as pd
 
 # Function to create dataframe of series results for user-selected team
-def build_series_scoreboards(series_score_diffs_input: pd.DataFrame, team_input: str):
+def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_input: str):
 
     series_score_diffs_input = series_score_diffs_input \
         [series_score_diffs_input["team"] == team_input] \
@@ -16,21 +16,21 @@ def build_series_scoreboards(series_score_diffs_input: pd.DataFrame, team_input:
     return series_score_diffs_input
 
 # Function to create dataframe of kills for user-selected team & gamemode
-def build_kills_scoreboards(
+def build_kills_datagrid(
         cdlDF_input: pd.DataFrame, team_input: str, gamemode_input: str
     ):
     cdlDF_input = \
         cdlDF_input[(cdlDF_input["team"] == team_input) & 
                     (cdlDF_input["gamemode"] == gamemode_input)] \
             [["player", "map_name", "kills", 
-              "deaths", "team_score", "opp_score", "opp_abbr"]] \
+              "deaths", "score_diff", "opp_abbr"]] \
         .reset_index(drop=True) \
         .rename(columns = {
             "player": "Player", 
             "map_name": "Map", 
             "kills": "Kills", 
-            "team_score": "Team Score", 
-            "opp_score": "Opponent Score", 
+            "deaths": "Deaths",
+            "score_diff": "Score Differential", 
             "opp_abbr": "Opponent"}
         )
     
