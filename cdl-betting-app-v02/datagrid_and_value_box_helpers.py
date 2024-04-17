@@ -1,6 +1,9 @@
 
 import pandas as pd
 
+# Major 3 Qualifiers Start Date (String)
+start_date = '2024-04-12' 
+
 # Function to create dataframe of series results for user-selected team
 def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_input: str):
 
@@ -37,7 +40,7 @@ def build_kills_datagrid(
     return cdlDF_input
 
 
-# Function to compute H2H Win - Loss Record for H2H Value Box
+# Function to compute Map H2H Win - Loss Record for Map H2H Value Box
 def compute_h2h_map_record(
         cdlDF_input: pd.DataFrame, team_x: str, team_y: str, 
         gamemode_input: str, map_input = "All"
@@ -75,3 +78,22 @@ def compute_h2h_map_record(
         wins = queried_df.loc[0, "wins"]
         losses = queried_df.loc[0, "losses"]
         return f"{wins} - {losses}"
+    
+# Function to compute Series H2H Win - Loss Record for Series H2H Value Box
+def compute_h2h_series_record(cdlDF_input: pd.DataFrame, team_x: str, team_y: str):
+        queried_df = cdlDF_input[[
+                "match_id", "match_date", "team", "opp", "series_result"
+        ]] \
+                [
+                        (cdlDF_input["match_date"] >= start_date) &
+                        (cdlDF_input["team"] == team_x) &
+                        (cdlDF_input["opp"] == team_y)
+                ] \
+                .drop_duplicates()
+        if queried_df.empty:
+                return "0 - 0"
+        else:
+                wins = queried_df['series_result'].sum()
+                losses = len(queried_df['series_result'])
+                return f"{wins} - {losses}"
+        

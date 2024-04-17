@@ -15,8 +15,7 @@ from setup.setup import *
 # Import webscraper & helpers
 from webscraper import *
 from seaborn_helpers import *
-from pandas_stylers_helpers import *
-from df_display_helpers import *
+from datagrid_and_value_box_helpers import *
 
 # Dictionary to map map_num to gamemode
 map_nums_to_gamemode = {
@@ -70,7 +69,7 @@ cdlDF = filter_maps(cdlDF)
 
 # Compute CDL Standings for Major III Qualifiers
 current_standings = \
-    cdlDF[(cdlDF["match_date"] >= '2024-04-12')] \
+    cdlDF[(cdlDF["match_date"] >= start_date)] \
     [["match_id", "team", "series_result"]] \
     .drop_duplicates() \
     .groupby("team") \
@@ -183,7 +182,7 @@ app_ui = ui.page_sidebar(
     ui.layout_columns(
         ui.markdown("** **"),
         ui.value_box(
-            title = ui.output_ui("h2h_title"),
+            title = ui.output_ui("map_h2h_title"),
             value = ui.output_ui("h2h_map_record"),
             showcase = ICONS["crosshairs"]
         ), 
@@ -246,6 +245,11 @@ app_ui = ui.page_sidebar(
     ui.layout_columns(
         ui.card(ui.output_data_frame("team_a_series_datagrid")),
         ui.card(ui.output_plot("team_a_series_diffs")), 
+        ui.value_box(
+            title = "Series H2H",
+            value = ui.output_ui("h2h_series_record"),
+            showcase = ICONS["crosshairs"]
+        ), 
         ui.card(ui.output_plot("team_b_series_diffs")), 
         ui.card(ui.output_data_frame("team_b_series_datagrid"))
         # Col Widths: Automatic
@@ -328,7 +332,7 @@ def server(input, output, session):
         
     # Title for H2H Value Box
     @render.ui
-    def h2h_title():
+    def map_h2h_title():
         if input.map_name() == "All":
             return f"{gamemode()} H2H"
         else:
@@ -381,6 +385,11 @@ def server(input, output, session):
     def h2h_map_record():
         return compute_h2h_map_record(cdlDF, input.team_a(), input.team_b(), 
                                       gamemode(), input.map_name())
+    
+    # H2H Series Record for User-Selected Map & Mode Combination
+    @render.ui
+    def h2h_series_record():
+        return compute_h2h_series_record(cdlDF, input.team_a(), input.team_b())
 
     # Not implemented
     # # Team Summaries
