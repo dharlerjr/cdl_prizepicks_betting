@@ -91,9 +91,6 @@ def team_score_diffs(
         gamemode_input: str, map_input = "All"
 ):
 
-    # Filter maps
-    cdlDF_input = filter_maps(cdlDF_input)
-
     # If user selected all maps    
     if map_input == "All":
     
@@ -188,8 +185,6 @@ def player_kills_overview(
         cdlDF_input: pd.DataFrame, player_input: str, gamemode_input: str, 
         cur_line: float, map_input = "All"
 ):
-    # Filter maps
-    cdlDF_input = filter_maps(cdlDF_input)
 
     # If user selected all maps
     if map_input == "All":
@@ -224,9 +219,6 @@ def player_kills_vs_time(
           gamemode_input: str, cur_line: float, map_input = "All"
 ):
 
-    # Filter maps
-    cdlDF_input = filter_maps(cdlDF_input)
-
     # If user selects all maps
     if map_input == "All":
         
@@ -257,9 +249,6 @@ def player_kills_vs_score_diff(
         cdlDF_input: pd.DataFrame, player_input: str, 
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
-    
-    # Filter maps
-    cdlDF_input = filter_maps(cdlDF_input)
     
     # If user selects all maps
     if map_input == "All":

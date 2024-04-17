@@ -61,11 +61,12 @@ series_score_diffs = build_series_summaries(cdlDF)
 team_summaries_DF = build_team_summaries(cdlDF)
 team_summaries_DF
 
-# Filter players
+# Filter players from cdlDF & build rosters
 cdlDF = filter_players(cdlDF)
-
-# Build team rosters
 rostersDF = build_rosters(cdlDF)
+
+# Filter maps from cdlDF
+cdlDF = filter_maps(cdlDF)
 
 # Compute CDL Standings for Major III Qualifiers
 current_standings = \
