@@ -140,7 +140,42 @@ app_ui = ui.page_sidebar(
         # Col Widths: Automatic
     ),
 
-    # Second row: Team A Player Kills Plots & Win % Value Box
+    # Second row: Value Boxes containing Map Win %s, Win Streaks, & H2H
+    ui.layout_columns(
+        # Team A Win Streak
+        ui.value_box(
+            title = ui.output_ui("team_a_win_streak_title"),
+            value = ui.output_ui("team_a_win_streak"),
+            showcase = ui.output_ui("change_team_a_win_streak_icon")
+        ), 
+        # Team A Win % 
+        ui.value_box(
+            title = ui.output_ui("team_a_map_record_title"),
+            value = ui.output_ui("team_a_map_record"),
+            showcase = ICONS["percent"]
+        ), 
+        # H2H W - L
+        ui.value_box(
+            title = ui.output_ui("map_h2h_title"),
+            value = ui.output_ui("h2h_map_record"),
+            showcase = ICONS["crosshairs"]
+        ),
+        # Team B Win %
+            ui.value_box(
+                title = ui.output_ui("team_b_map_record_title"),
+                value = ui.output_ui("team_b_map_record"),
+                showcase = ICONS["percent"]
+            ), 
+        # Team B Win Streak
+        ui.value_box(
+            title = ui.output_ui("team_b_win_streak_title"),
+            value = ui.output_ui("team_b_win_streak"),
+            showcase = ui.output_ui("change_team_b_win_streak_icon")
+        )
+        # Col Widths: Automatic  
+    ),
+
+    # Third row: Team A Player Kills Plots & O/U %
     ui.layout_columns(
         # Card with Pill Tabset of Plots
         ui.navset_card_pill(
@@ -148,132 +183,127 @@ app_ui = ui.page_sidebar(
                 "1", 
                 ui.layout_columns(
                     ui.output_plot("player_1_box", width = "200px"), 
-                    ui.output_plot("player_1_scatter", width = "800px")
+                    ui.output_plot("player_1_scatter", width = "800px"), 
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_1_ou"),
+                        showcase = ui.output_ui("player_1_ou_icon")
+                    ),
                 )
             ), 
             ui.nav_panel(                
                 "2", 
                 ui.layout_columns(
                     ui.output_plot("player_2_box", width = "200px"), 
-                    ui.output_plot("player_2_scatter", width = "800px")
-                )), 
+                    ui.output_plot("player_2_scatter", width = "800px"), 
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_2_ou"),
+                        showcase = ui.output_ui("player_2_ou_icon")
+                    )
+                ), 
+            ),
             ui.nav_panel(                
                 "3", 
                 ui.layout_columns(
                     ui.output_plot("player_3_box", width = "200px"), 
-                    ui.output_plot("player_3_scatter", width = "800px")
-                )), 
+                    ui.output_plot("player_3_scatter", width = "800px"),
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_3_ou"),
+                        showcase = ui.output_ui("player_3_ou_icon")
+                    )
+                ), 
+            ),
             ui.nav_panel(                
                 "4", 
                 ui.layout_columns(
                     ui.output_plot("player_4_box", width = "200px"), 
-                    ui.output_plot("player_4_scatter", width = "800px")
-                ))
-        ),
-        ui.layout_column_wrap(
-            # Value box of Map & Mode Win %
-            ui.value_box(
-                title = ui.output_ui("team_a_map_record_title"),
-                value = ui.output_ui("team_a_map_record"),
-                showcase = ICONS["percent"]
-            ), 
-            # Win streak Value Box
-            ui.value_box(
-                title = ui.output_ui("team_a_win_streak_title"),
-                value = ui.output_ui("team_a_win_streak"),
-                showcase = ui.output_ui("change_team_a_win_streak_icon")
-            ), 
-        ),
-        # Col Widths
-        col_widths = [9, 3]
+                    ui.output_plot("player_4_scatter", width = "800px"), 
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_4_ou"),
+                        showcase = ui.output_ui("player_4_ou_icon")
+                    )
+                )
+            )
+        )
+        # Col Widths: Spans Full Page
     ),
 
-    # Third row: Team A Kills Datagrid & Score Differentials
+    # Fourth row: Team B Player Kills Plots & O/U %
     ui.layout_columns(
-        # Kills Datagrid
-        ui.card(ui.output_data_frame("team_a_kills_datagrid")),
-        # Histogram of Map & Mode Score Differentials
-        ui.card(ui.output_plot("team_a_score_diffs")), 
-        # Col Widths: Automatic
-    ),
-
-    # Fourth row: H2H Value Box
-    ui.layout_columns(
-        ui.markdown("** **"),
-        ui.value_box(
-            title = ui.output_ui("map_h2h_title"),
-            value = ui.output_ui("h2h_map_record"),
-            showcase = ICONS["crosshairs"]
-        ), 
-        ui.markdown("** **"), 
-        # Col Widths
-        col_widths = [5, 2, 5]
-    ),
-
-    # Fifth row: Team B Win % Value Box & Player Kills
-    ui.layout_columns(
-        ui.layout_column_wrap(
-            # Value box of Map & Mode Win %
-            ui.value_box(
-                title = ui.output_ui("team_b_map_record_title"),
-                value = ui.output_ui("team_b_map_record"),
-                showcase = ICONS["percent"]
-            ), 
-            # Win streak Value Box
-            ui.value_box(
-                title = ui.output_ui("team_b_win_streak_title"),
-                value = ui.output_ui("team_b_win_streak"),
-                showcase = ui.output_ui("change_team_b_win_streak_icon")
-            ), 
-        ),
         # Card with Pill Tabset of Plots
         ui.navset_card_pill(
             ui.nav_panel(
                 "1", 
                 ui.layout_columns(
                     ui.output_plot("player_5_box", width = "200px"), 
-                    ui.output_plot("player_5_scatter", width = "800px")
+                    ui.output_plot("player_5_scatter", width = "800px"), 
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_5_ou"),
+                        showcase = ui.output_ui("player_5_ou_icon")
+                    )
                 )
             ), 
             ui.nav_panel(                
                 "2", 
                 ui.layout_columns(
                     ui.output_plot("player_6_box", width = "200px"), 
-                    ui.output_plot("player_6_scatter", width = "800px")
-                )), 
+                    ui.output_plot("player_6_scatter", width = "800px"), 
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_6_ou"),
+                        showcase = ui.output_ui("player_6_ou_icon")
+                    )
+                )
+            ), 
             ui.nav_panel(                
                 "3", 
                 ui.layout_columns(
                     ui.output_plot("player_7_box", width = "200px"), 
-                    ui.output_plot("player_7_scatter", width = "800px")
-                )), 
+                    ui.output_plot("player_7_scatter", width = "800px"), 
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_7_ou"),
+                        showcase = ui.output_ui("player_7_ou_icon")
+                    )
+                )
+            ), 
             ui.nav_panel(                
                 "4", 
                 ui.layout_columns(
                     ui.output_plot("player_8_box", width = "200px"), 
-                    ui.output_plot("player_8_scatter", width = "800px")
-                ))
+                    ui.output_plot("player_8_scatter", width = "800px"), 
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_8_ou"),
+                        showcase = ui.output_ui("player_8_ou_icon")
+                    )
+                )
+            )
         ),
-        # Col Widths
-        col_widths = [3, 9]
+        # Col Widths: Spans Full Page
     ),
 
-    # Sixth row: Team B Score Differentials & Kills Datagrid
+    # Fifth row: Map & Mode Differentials & Kills Scoreboards
     ui.layout_columns(
-        # Histogram of Map & Mode Score Differentials
-        ui.card(ui.output_plot("team_b_score_diffs")), 
-        # Kills Datagrid
-        ui.card(ui.output_data_frame("team_b_kills_datagrid")),
+        # Team A Histogram of Map & Mode Score Differentials
+        ui.card(ui.output_plot("team_a_score_diffs")),
+        # Kills Scoreboards
+        ui.card(ui.output_data_frame("team_a_kills_datagrid")),
+        # Team B Histogram of Map & Mode Score Differentials
+        ui.card(ui.output_plot("team_b_score_diffs")),
         # Col Widths
-        col_widths = [6, 6]
-    ),
+        col_widths = [3, 6, 3]
+    ), 
 
-    # Seventh row: Series Score Differentials & Results
+    # Sixth row: Series Score Differentials & Results
     ui.layout_columns(
-        ui.card(ui.output_data_frame("team_a_series_datagrid")),
         ui.card(ui.output_plot("team_a_series_diffs")), 
-        ui.card(ui.output_plot("team_b_series_diffs")), 
-        ui.card(ui.output_data_frame("team_b_series_datagrid"))
+        ui.card(ui.output_data_frame("team_a_series_datagrid")),
+        ui.card(ui.output_plot("team_b_series_diffs"))
         # Col Widths: Automatic
     ),
 
@@ -494,18 +524,6 @@ def server(input, output, session):
             summary = False
             )
     
-    # Team B Series Datagrid
-    @render.data_frame
-    def team_b_series_datagrid():
-        return render.DataGrid(
-            build_series_res_datagrid(
-                series_score_diffs, 
-                input.team_b()
-                ), 
-            filters = True, 
-            summary = False
-            )
-    
     # Team A Kills Datagrid
     @render.data_frame
     def team_a_kills_datagrid():
@@ -513,19 +531,6 @@ def server(input, output, session):
             build_kills_datagrid(
                 filter_maps(cdlDF), 
                 input.team_a(),
-                gamemode()
-                ), 
-            filters = True, 
-            summary = False
-            )
-    
-    # Team B Kills Datagrid
-    @render.data_frame
-    def team_b_kills_datagrid():
-        return render.DataGrid(
-            build_kills_datagrid(
-                filter_maps(cdlDF), 
-                input.team_b(),
                 gamemode()
                 ), 
             filters = True, 

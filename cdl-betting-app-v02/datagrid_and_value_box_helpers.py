@@ -158,5 +158,34 @@ def player_over_under_percentage(
         cdlDF_input: pd.DataFrame, player_input: str, 
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
-     pass
+    # Filter by given inputs
+    if map_input == "All":
+        queried_df = cdlDF_input[
+            (cdlDF_input["player"] == player_input) &
+            (cdlDF_input["gamemode"] == gamemode_input)
+        ]
+    else:
+        queried_df = cdlDF_input[
+            (cdlDF_input["player"] == player_input) &
+            (cdlDF_input["gamemode"] == gamemode_input) &
+            (cdlDF_input["map_name"] == map_input)
+        ]
+    # Get relevant columns and drop duplicates
+    queried_df = queried_df[
+        ["match_id", "kills", "gamemode", "map_name"]
+    ]
+
+    # If the dataframe is empty, return "Never Played"
+    if queried_df.empty:
+        return "Never Played", "Never Played"
+
+    # Compute over & under percentages
+    under_percentage = int(round(((len(queried_df[queried_df['kills'] <= cur_line]) / len(queried_df)) * 100), 0))
+    over_percentage = int(round(((len(queried_df[queried_df['kills'] >= cur_line]) / len(queried_df)) * 100), 0))
+    
+    # Return recommended bet based on percentages
+    if over_percentage >= under_percentage:
+        return "Over", str(over_percentage)
+    else:
+        return "Under", str(under_percentage)
     
