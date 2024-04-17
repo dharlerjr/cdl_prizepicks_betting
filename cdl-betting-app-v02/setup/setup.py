@@ -135,7 +135,7 @@ def build_series_summaries(cdlDF_input):
     # Arrange by match_date, match_id, and team
     series_score_diffs = series_score_diffs.sort_values(
         by = ['match_date', 'match_id', 'team'], ascending = [True, True, True]
-        )
+        ).reset_index(drop=True)
     
     # Get opponents
     opps = series_score_diffs.sort_values(by = ['match_date', 'match_id', 'team'], ascending = [True, True, False]) \
@@ -153,7 +153,7 @@ def build_series_summaries(cdlDF_input):
         right_on = "team",
         how = "left"
     )
-    opps = opps["team_abbr"].rename(columns = {"team_abbr": "opp"})
+    opps = opps[["team_abbr"]].rename(columns = {"team_abbr": "opp"})
 
     # Bind series_score_diffs & opps
     series_score_diffs = pd.concat([series_score_diffs, opps], axis=1)
