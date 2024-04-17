@@ -82,6 +82,10 @@ gamemode_kill_lims = {
   "Control": [0, 45]
 }
 
+# ---------------------------------------
+# Complete, but not implemented in app.py
+# ---------------------------------------
+
 # Score Differentials by Map & Mode
 def gg_team_score_diffs(cdlDF_input: pd.DataFrame,
         team_input: str, gamemode_input: str, map_input = "All"
@@ -132,6 +136,10 @@ def gg_team_score_diffs(cdlDF_input: pd.DataFrame,
                     legend_position = "none", 
                 )
         )
+
+# ---------------------------------------
+# Complete, but not implemented in app.py
+# ---------------------------------------
 
 # Player Kills Overview
 def gg_player_kills_overview(cdlDF_input: pd.DataFrame,
@@ -191,6 +199,10 @@ def gg_player_kills_overview(cdlDF_input: pd.DataFrame,
                 )
         )
 
+# ---------------------------------------
+# Complete, but not implemented in app.py
+# ---------------------------------------
+
 # Player Kills vs. Time
 def gg_player_kills_vs_time(cdlDF_input: pd.DataFrame,
         player_input: str, gamemode_input: str, cur_line: float, map_input = "All"
@@ -243,6 +255,10 @@ def gg_player_kills_vs_time(cdlDF_input: pd.DataFrame,
                 )
         )
 
+# ---------------------------------------
+# Complete, but not implemented in app.py
+# ---------------------------------------
+
 # Player Kills vs Total Score
 def gg_player_kills_vs_total(cdlDF_input: pd.DataFrame,
         player_input: str, gamemode_input: str, cur_line: float, map_input = "All"
@@ -294,6 +310,10 @@ def gg_player_kills_vs_total(cdlDF_input: pd.DataFrame,
                     legend_text = element_text(size = 8)
                 )
         )
+
+# ---------------------------------------
+# Complete, but not implemented in app.py
+# ---------------------------------------
 
 # Player Kills vs Score Diff
 def gg_player_kills_vs_score_diff(cdlDF_input: pd.DataFrame,

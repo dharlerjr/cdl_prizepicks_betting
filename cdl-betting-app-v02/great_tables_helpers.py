@@ -6,6 +6,10 @@ import numpy as np
 # Import great_tables 
 from great_tables import *
 
+# ---------------------------------------
+# Complete, but not implemented in app.py
+# ---------------------------------------
+
 # Function to build team summary gtTable
 def team_summaries_gt_fn(
         team_summaries_input: pd.DataFrame, team_x: str, team_y: str
@@ -73,6 +77,10 @@ def team_summaries_gt_fn(
             table_width = "560px"
         )
     return team_summary_gt_tbl
+
+# ---------------------------------------
+# Complete, but not implemented in app.py
+# ---------------------------------------
 
 # Function to build head-to-head summary gtTable
 def h2h_summary_gt_fn(cdlDF_input, team_x: str, team_y: str):
