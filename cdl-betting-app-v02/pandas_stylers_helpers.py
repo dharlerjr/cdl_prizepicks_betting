@@ -1,11 +1,8 @@
 
 # Import pandas and ListedColormap from matplotllib
 import pandas as pd
+import numpy as np
 from matplotlib.colors import ListedColormap
-
-# Import filter_maps from setup
-from setup.setup import filter_maps
-
 
 # ---------------------------------------
 # Complete, but not implemented in app.py
@@ -13,52 +10,59 @@ from setup.setup import filter_maps
 
 # Function to build team summary
 def team_summaries_fn(team_summaries_input: pd.DataFrame, team_x: str, team_y: str):
-    summary_df = \
-        pd.merge(
-            team_summaries_input[team_summaries_input["team"] == team_x], 
-            team_summaries_input[team_summaries_input["team"] == team_y], 
-            how = "outer", 
-            on = ["gamemode", "map_name"]
-            ) \
-            .drop(columns = ["team_x", "team_y"], inplace = False, axis = 1) \
-            .sort_values(by = ["gamemode", "map_name"])
+  
+  
+  # In build_team_summaries from setup, we replaced all NA values with 0s. 
+  # Here, we will put those NA values back in for styling purposes
+
+  # Identify rows where both 'win' and 'loss' are 0
+  mask = (team_summaries_input['wins'] == 0) & (team_summaries_input['losses'] == 0)
+
+  # Replace win_percentage with NaN where the condition is true
+  team_summaries_input.loc[mask, 'win_percentage'] = np.nan
+  
+  summary_df = \
+    pd.merge(
+      team_summaries_input[team_summaries_input["team"] == team_x], 
+      team_summaries_input[team_summaries_input["team"] == team_y], 
+      how = "outer", 
+      on = ["gamemode", "map_name"]
+    ) \
+    .drop(columns = ["team_x", "team_y"], inplace = False, axis = 1) \
+    .sort_values(by = ["gamemode", "map_name"])
+  
+  # Correct datatypes
+  summary_df['wins_x'] = summary_df['wins_x'].astype('int64')
+  summary_df['losses_x'] = summary_df['losses_x'].astype('int64')
+  summary_df['wins_y'] = summary_df['wins_y'].astype('int64')
+  summary_df['losses_y'] = summary_df['losses_y'].astype('int64')
+  #summary_df['win_percentage_x'] = summary_df['win_percentage_x'].astype('float64')
+  #summary_df['win_percentage_y'] = summary_df['win_percentage_y'].astype('float64')
+
+  # Rename gamemode and map_name columns
+  summary_df = summary_df.rename(columns = {"gamemode": "Gamemode", "map_name": "Map"})
+
+  # Add MultiIndex to Rows
+  summary_df = summary_df.set_index(["Gamemode", "Map"])
+
+  # Add MultiIndex to Columns
+  columns = pd.MultiIndex.from_tuples([
+      (team_x, 'Wins'), (team_x, 'Losses'), (team_x, 'Win %'),
+      (team_y, 'Wins'), (team_y, 'Losses'), (team_y, 'Win %')
+  ])
+  summary_df.columns = columns
     
-    # Fill NA's in wins & losses columns
-    columns_to_fill = ['wins_x', 'losses_x', 'wins_y', 'losses_y']
-    summary_df[columns_to_fill] = summary_df[columns_to_fill].fillna(0)
+  # Style dataframe
+  summary_df_styler = summary_df.style \
+      .format(precision = 2) \
+      .background_gradient(
+          vmin = 0, vmax = 1, axis = 0, 
+          cmap = ListedColormap(["#cb181d", "#cb181d", "#fcae91", "#ffffff", 
+                                  "#bdd7e7", "#2171b5", "#2171b5"]),
+          subset = [(team_x, 'Win %'), (team_y, 'Win %')]) \
+      .highlight_null(color = 'grey')
 
-    # Correct datatypes
-    summary_df['wins_x'] = summary_df['wins_x'].astype('int64')
-    summary_df['losses_x'] = summary_df['losses_x'].astype('int64')
-    summary_df['wins_y'] = summary_df['wins_y'].astype('int64')
-    summary_df['losses_y'] = summary_df['losses_y'].astype('int64')
-    #summary_df['win_percentage_x'] = summary_df['win_percentage_x'].astype('float64')
-    #summary_df['win_percentage_y'] = summary_df['win_percentage_y'].astype('float64')
-
-    # Rename gamemode and map_name columns
-    summary_df = summary_df.rename(columns = {"gamemode": "Gamemode", "map_name": "Map"})
-
-    # Add MultiIndex to Rows
-    summary_df = summary_df.set_index(["Gamemode", "Map"])
-
-    # Add MultiIndex to Columns
-    columns = pd.MultiIndex.from_tuples([
-        (team_x, 'Wins'), (team_x, 'Losses'), (team_x, 'Win %'),
-        (team_y, 'Wins'), (team_y, 'Losses'), (team_y, 'Win %')
-    ])
-    summary_df.columns = columns
-    
-    # Style dataframe
-    summary_df_styler = summary_df.style \
-        .format(precision = 2) \
-        .background_gradient(
-            vmin = 0, vmax = 1, axis = 0, 
-            cmap = ListedColormap(["#cb181d", "#cb181d", "#fcae91", "#ffffff", 
-                                   "#bdd7e7", "#2171b5", "#2171b5"]),
-            subset = [(team_x, 'Win %'), (team_y, 'Win %')]) \
-        .highlight_null(color = 'grey')
-
-    return summary_df_styler
+  return summary_df_styler
 
 # ---------------------------------------
 # Complete, but not implemented in app.py
@@ -90,7 +94,7 @@ def h2h_summary_fn(cdlDF_input, team_x: str, team_y: str):
   h2h_summary_df_bottom.insert(position, "map_name", h2h_summary_df_bottom.pop("map_name"))
 
   # H2H Summary by Map & Mode
-  h2h_summary_df_top = filter_maps(cdlDF_input) \
+  h2h_summary_df_top = cdlDF_input \
     [["match_id", "team", "map_name", "gamemode", "map_result", "opp"]] \
     [(cdlDF_input["team"] == team_x) & \
       (cdlDF_input["opp"] == team_y)] \

@@ -172,7 +172,7 @@ def filter_maps(cdlDF_input):
             ~((cdlDF_input['gamemode'] == 'Hardpoint') & (cdlDF_input['map_name'] == 'Terminal')) &
             ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Skidrow')) &
             ~((cdlDF_input['gamemode'] == 'Search & Destroy') & (cdlDF_input['map_name'] == 'Terminal')) 
-        ]
+        ].reset_index(drop = True)
     
     return cdlDF_input
 
