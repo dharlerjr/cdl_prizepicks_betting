@@ -19,11 +19,11 @@ from datagrid_and_value_box_helpers import *
 
 # Dictionary to map map_num to gamemode
 map_nums_to_gamemode = {
-    "1": "Hardpoint", 
-    "2": "Search & Destroy", 
-    "3": "Control", 
-    "4": "Hardpoint", 
-    "5": "Search & Destroy"
+    1: "Hardpoint", 
+    2: "Search & Destroy", 
+    3: "Control", 
+    4: "Hardpoint", 
+    5: "Search & Destroy"
 }
 
 # Dictionary of paths to saved team logo images
@@ -358,7 +358,7 @@ def server(input, output, session):
     def scrape_props():
         player_props_df.set(
             merge_player_props(
-                player_props_df, 
+                player_props_df(), 
                 scrape_prizepicks(), 
                 rostersDF
             )
@@ -554,7 +554,8 @@ def server(input, output, session):
         return render.DataGrid(
             build_series_res_datagrid(
                 series_score_diffs, 
-                input.team_a()
+                input.team_a(), 
+                input.team_b()
                 ), 
             filters = True, 
             summary = False
@@ -566,13 +567,15 @@ def server(input, output, session):
     def scoreboards():
         return render.DataGrid(
             build_scoreboards(
-                filter_maps(cdlDF), 
+                cdlDF, 
                 input.team_a(),
-                gamemode()
-                ), 
+                input.team_b(),
+                gamemode(), 
+                input.map_name()
+            ), 
             filters = True, 
             summary = False
-            )
+        )
     
     # Team A Score Differentials Histogram
     @render.plot

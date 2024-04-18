@@ -23,31 +23,97 @@ def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_x: st
                        "map_losses": "Map Losses", 
                        "opp": "Opponent"} \
         ) \
-        .sort_values(["match_date", "team_abbr"]) \
+        .sort_values(["Date", "Team"]) \
         .reset_index(drop = True)
     
     return series_score_diffs_input
 
 # Function to create dataframe of kills for user-selected team & gamemode
 def build_scoreboards(
-        cdlDF_input: pd.DataFrame, team_input: str, gamemode_input: str
+        cdlDF_input: pd.DataFrame, team_x: str, team_y: str, gamemode_input: str, map_input = "All"
     ):
-    cdlDF_input = \
-        cdlDF_input[(cdlDF_input["team"] == team_input) & 
-                    (cdlDF_input["gamemode"] == gamemode_input)] \
-            [["player", "map_name", "kills", 
-              "deaths", "score_diff", "opp_abbr"]] \
-        .reset_index(drop=True) \
-        .rename(columns = {
-            "player": "Player", 
-            "map_name": "Map", 
-            "kills": "Kills", 
-            "deaths": "Deaths",
-            "score_diff": "Score Differential", 
-            "opp_abbr": "Opponent"}
-        )
+
+    # Get maps to include based on user input
+    selected_maps = []
+    if map_input == "All":
+        selected_maps = sorted(cdlDF_input['map_name'].unique())
+    else:
+        selected_maps.append(map_input)
+
+    # Create a boolean Series indicating rows containing maps within selected_maps
+    mask = cdlDF_input['map_name'].isin(selected_maps)
+
+    # Reindex the boolean Series to match the DataFrame's index
+    mask = mask.reindex(cdlDF_input.index)
+
+    # Filter cdlDF for maps in selected_maps
+    cdlDF_input = cdlDF_input[mask]
     
-    return cdlDF_input
+    # Get team_x scoreboards
+    team_x_scoreboard = \
+        cdlDF_input[(cdlDF_input["team"] == team_x) & 
+                    (cdlDF_input["gamemode"] == gamemode_input)] \
+            [["match_date", "match_id", "map_name", "team_abbr", "player", "kills", 
+              "deaths", "score_diff", "opp_abbr"]]
+
+    # Get team_y scoreboards
+    team_y_scoreboard = \
+        cdlDF_input[(cdlDF_input["team"] == team_y) & 
+                    (cdlDF_input["gamemode"] == gamemode_input) &
+                    (cdlDF_input["opp"] != team_x)] \
+            [["match_date", "match_id", "map_name", "team_abbr", "player", "kills", 
+              "deaths", "score_diff", "opp_abbr"]]
+    
+    # Combine scoreboards and reset index
+    scoreboards = pd.concat([team_x_scoreboard, team_y_scoreboard], axis=0)
+
+    # Arrange by match_date and match_id
+    scoreboards = scoreboards.sort_values(by = ["match_date", "match_id"], ascending = [False, True]).reset_index(drop=True)
+
+    # Add player data for opposing teams
+
+    # Build dataframe of unique match_ids and opponents
+    matches = scoreboards[["match_id", "opp_abbr"]].drop_duplicates().reset_index(drop=True)
+
+    # # Initialize opponents dataframe
+    opponents = pd.DataFrame()
+
+    # Loop through matches and append player data  
+    for index, row in matches.iterrows():
+        opponents = pd.concat([
+            opponents, 
+            cdlDF_input[
+                (cdlDF_input["match_id"] == row["match_id"]) &
+                (cdlDF_input["team_abbr"] == row["opp_abbr"]) &
+                (cdlDF_input["gamemode"] == "Search & Destroy")
+            ] \
+            [["player", "kills", "deaths"]]
+        ], 
+        axis=0)
+
+    opponents = opponents.reset_index(drop=True)
+
+    # Concatenate scoreboards & opponents 
+    scoreboards = pd.concat([scoreboards, opponents], axis=1)
+
+    # Rename columns
+    scoreboards = scoreboards.rename(columns = {
+        "match_date": "Date", 
+        "match_id": "Match ID", 
+        "map_name": "Map", 
+        "team_abbr": "Team", 
+        "player": "Player",
+        "kills": "Kills", 
+        "deaths": "Deaths", 
+        "score_diff": "Score Differential",
+        "opp_abbr": "Opponent"
+    })
+
+    # Drop Map column if only one map
+    if map_input != "All":
+        scoreboards = scoreboards.drop("Map", axis = 1)
+    
+    return scoreboards
 
 # Function to compute Current Mode or Map/Mode Win Streak
 def compute_win_streak(
