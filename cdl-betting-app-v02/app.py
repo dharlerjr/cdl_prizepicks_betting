@@ -353,7 +353,8 @@ def server(input, output, session):
         player_props_df.set(
             merge_player_props(
                 player_props_df, 
-                scrape_prizepicks()
+                scrape_prizepicks(), 
+                rostersDF
             )
         )
 

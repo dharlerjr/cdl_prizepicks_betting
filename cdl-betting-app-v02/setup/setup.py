@@ -320,13 +320,13 @@ def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame, rosters
         old_props, 
         new_props.drop("team_abbr", axis=1), 
         on=['player', 'prop'], 
-        how = "left", 
+        how = "outer", 
         suffixes=('_initial', '_updated')
     )
 
     # Merge with rosters to get teams and team_abbrs
-    updated_player_props = pd.merge(
-        updated_player_props.drop(["team", "team_abbr"], axis = 1), 
+    new_props = pd.merge(
+        new_props.drop(["team", "team_abbr"], axis = 1), 
         rosters, 
         on = "player", 
         how = "left"
