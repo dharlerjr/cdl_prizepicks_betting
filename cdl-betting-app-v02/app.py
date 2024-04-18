@@ -49,8 +49,8 @@ ICONS = {
     "headset": fa.icon_svg("headset"), 
     "plus": fa.icon_svg("plus"), 
     "minus": fa.icon_svg("minus"), 
-    "chev_up": fa.icon_svg("chevron-up").add_class("text-purple"),
-    "chev_down": fa.icon_svg("chevron-down").add_class("text-purple")
+    "chevron_up": fa.icon_svg("chevron-up").add_class("text-purple"),
+    "chevron_down": fa.icon_svg("chevron-down").add_class("text-purple")
 }
 
 # Major 3 Qualifiers Start Date (String)
@@ -154,7 +154,8 @@ app_ui = ui.page_sidebar(
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_1_ou"),
-                        showcase = ui.output_ui("player_1_ou_icon")
+                        showcase = ui.output_ui("player_1_ou_icon"), 
+                        showcase_layout="left center"
                     )
                 )
             ), 
@@ -166,7 +167,8 @@ app_ui = ui.page_sidebar(
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_2_ou"),
-                        showcase = ui.output_ui("player_2_ou_icon")
+                        showcase = ui.output_ui("player_2_ou_icon"), 
+                        showcase_layout="left center"
                     )
                 ), 
             ),
@@ -178,7 +180,8 @@ app_ui = ui.page_sidebar(
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_3_ou"),
-                        showcase = ui.output_ui("player_3_ou_icon")
+                        showcase = ui.output_ui("player_3_ou_icon"), 
+                        showcase_layout="left center"
                     )
                 ), 
             ),
@@ -190,7 +193,8 @@ app_ui = ui.page_sidebar(
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_4_ou"),
-                        showcase = ui.output_ui("player_4_ou_icon")
+                        showcase = ui.output_ui("player_4_ou_icon"), 
+                        showcase_layout="left center"
                     )
                 )
             ), 
@@ -247,7 +251,8 @@ app_ui = ui.page_sidebar(
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_5_ou"),
-                        showcase = ui.output_ui("player_5_ou_icon")
+                        showcase = ui.output_ui("player_5_ou_icon"), 
+                        showcase_layout="left center"
                     )
                 )
             ), 
@@ -259,7 +264,8 @@ app_ui = ui.page_sidebar(
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_6_ou"),
-                        showcase = ui.output_ui("player_6_ou_icon")
+                        showcase = ui.output_ui("player_6_ou_icon"), 
+                        showcase_layout="left center"
                     )
                 )
             ), 
@@ -271,7 +277,8 @@ app_ui = ui.page_sidebar(
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_7_ou"),
-                        showcase = ui.output_ui("player_7_ou_icon")
+                        showcase = ui.output_ui("player_7_ou_icon"), 
+                        showcase_layout="left center"
                     )
                 )
             ), 
@@ -283,7 +290,8 @@ app_ui = ui.page_sidebar(
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_8_ou"),
-                        showcase = ui.output_ui("player_8_ou_icon")
+                        showcase = ui.output_ui("player_8_ou_icon"), 
+                        showcase_layout="left center"
                     )
                 )
             )
@@ -298,7 +306,7 @@ app_ui = ui.page_sidebar(
         ui.card(ui.output_data_frame("team_a_kills_datagrid")),
         ui.markdown("** **"),
         # Col Widths
-        col_widths = [3, 6, 3], 
+        col_widths = [2, 8, 2], 
         # Row Height
         height = "400px"
     ),
