@@ -138,9 +138,67 @@ app_ui = ui.page_sidebar(
             max_height = "160px"
             ), 
         # Col Widths: Automatic
+        # Row Height
+        height = "180px"
     ),
 
-    # Second row: Value Boxes containing Map Win %s, Win Streaks, & H2H
+    # Second row: Team A Player Kills Plots & O/U %
+    ui.layout_columns(
+        # Card with Pill Tabset of Plots
+        ui.navset_card_pill(
+            ui.nav_panel(
+                "1", 
+                ui.layout_columns(
+                    ui.output_plot("player_1_box", width = "200px"), 
+                    ui.output_plot("player_1_scatter", width = "600px"), 
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_1_ou"),
+                        showcase = ui.output_ui("player_1_ou_icon")
+                    )
+                )
+            ), 
+            ui.nav_panel(                
+                "2", 
+                ui.layout_columns(
+                    ui.output_plot("player_2_box", width = "200px"), 
+                    ui.output_plot("player_2_scatter", width = "600px"), 
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_2_ou"),
+                        showcase = ui.output_ui("player_2_ou_icon")
+                    )
+                ), 
+            ),
+            ui.nav_panel(                
+                "3", 
+                ui.layout_columns(
+                    ui.output_plot("player_3_box", width = "200px"), 
+                    ui.output_plot("player_3_scatter", width = "600px"),
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_3_ou"),
+                        showcase = ui.output_ui("player_3_ou_icon")
+                    )
+                ), 
+            ),
+            ui.nav_panel(                
+                "4", 
+                ui.layout_columns(
+                    ui.output_plot("player_4_box", width = "200px"), 
+                    ui.output_plot("player_4_scatter", width = "600px"), 
+                    ui.value_box(
+                        title = "O/U", 
+                        value = ui.output_ui("player_4_ou"),
+                        showcase = ui.output_ui("player_4_ou_icon")
+                    )
+                )
+            ), 
+        )
+        # Col Widths: Spans Full Page
+    ),
+
+    # Third row: Value Boxes containing Map Win %s, Win Streaks, & H2H
     ui.layout_columns(
         # Team A Win Streak
         ui.value_box(
@@ -171,64 +229,10 @@ app_ui = ui.page_sidebar(
             title = ui.output_ui("team_b_win_streak_title"),
             value = ui.output_ui("team_b_win_streak"),
             showcase = ui.output_ui("change_team_b_win_streak_icon")
-        )
+        ),
         # Col Widths: Automatic  
-    ),
-
-    # Third row: Team A Player Kills Plots & O/U %
-    ui.layout_columns(
-        # Card with Pill Tabset of Plots
-        ui.navset_card_pill(
-            ui.nav_panel(
-                "1", 
-                ui.layout_columns(
-                    ui.output_plot("player_1_box", width = "200px"), 
-                    ui.output_plot("player_1_scatter", width = "800px"), 
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_1_ou"),
-                        showcase = ui.output_ui("player_1_ou_icon")
-                    ),
-                )
-            ), 
-            ui.nav_panel(                
-                "2", 
-                ui.layout_columns(
-                    ui.output_plot("player_2_box", width = "200px"), 
-                    ui.output_plot("player_2_scatter", width = "800px"), 
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_2_ou"),
-                        showcase = ui.output_ui("player_2_ou_icon")
-                    )
-                ), 
-            ),
-            ui.nav_panel(                
-                "3", 
-                ui.layout_columns(
-                    ui.output_plot("player_3_box", width = "200px"), 
-                    ui.output_plot("player_3_scatter", width = "800px"),
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_3_ou"),
-                        showcase = ui.output_ui("player_3_ou_icon")
-                    )
-                ), 
-            ),
-            ui.nav_panel(                
-                "4", 
-                ui.layout_columns(
-                    ui.output_plot("player_4_box", width = "200px"), 
-                    ui.output_plot("player_4_scatter", width = "800px"), 
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_4_ou"),
-                        showcase = ui.output_ui("player_4_ou_icon")
-                    )
-                )
-            )
-        )
-        # Col Widths: Spans Full Page
+        # Row Height
+        height = "180px"
     ),
 
     # Fourth row: Team B Player Kills Plots & O/U %
@@ -239,7 +243,7 @@ app_ui = ui.page_sidebar(
                 "1", 
                 ui.layout_columns(
                     ui.output_plot("player_5_box", width = "200px"), 
-                    ui.output_plot("player_5_scatter", width = "800px"), 
+                    ui.output_plot("player_5_scatter", width = "600px"), 
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_5_ou"),
@@ -251,7 +255,7 @@ app_ui = ui.page_sidebar(
                 "2", 
                 ui.layout_columns(
                     ui.output_plot("player_6_box", width = "200px"), 
-                    ui.output_plot("player_6_scatter", width = "800px"), 
+                    ui.output_plot("player_6_scatter", width = "600px"), 
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_6_ou"),
@@ -263,7 +267,7 @@ app_ui = ui.page_sidebar(
                 "3", 
                 ui.layout_columns(
                     ui.output_plot("player_7_box", width = "200px"), 
-                    ui.output_plot("player_7_scatter", width = "800px"), 
+                    ui.output_plot("player_7_scatter", width = "600px"), 
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_7_ou"),
@@ -275,7 +279,7 @@ app_ui = ui.page_sidebar(
                 "4", 
                 ui.layout_columns(
                     ui.output_plot("player_8_box", width = "200px"), 
-                    ui.output_plot("player_8_scatter", width = "800px"), 
+                    ui.output_plot("player_8_scatter", width = "600px"), 
                     ui.value_box(
                         title = "O/U", 
                         value = ui.output_ui("player_8_ou"),
@@ -287,24 +291,37 @@ app_ui = ui.page_sidebar(
         # Col Widths: Spans Full Page
     ),
 
-    # Fifth row: Map & Mode Differentials & Kills Scoreboards
+    # Fifth row: Kills Scoreboards
+    ui.layout_columns(
+        ui.markdown("** **"),
+        # Kills Scoreboards
+        ui.card(ui.output_data_frame("team_a_kills_datagrid")),
+        ui.markdown("** **"),
+        # Col Widths
+        col_widths = [3, 6, 3], 
+        # Row Height
+        height = "400px"
+    ),
+
+    # Sixth row: Map & Mode Differentials
     ui.layout_columns(
         # Team A Histogram of Map & Mode Score Differentials
         ui.card(ui.output_plot("team_a_score_diffs")),
-        # Kills Scoreboards
-        ui.card(ui.output_data_frame("team_a_kills_datagrid")),
         # Team B Histogram of Map & Mode Score Differentials
         ui.card(ui.output_plot("team_b_score_diffs")),
-        # Col Widths
-        col_widths = [3, 6, 3]
+        # Col Widths: Automatic
+        # Row Height
+        height = "400px"
     ), 
 
-    # Sixth row: Series Score Differentials & Results
+    # Seventh row: Series Score Differentials & Results
     ui.layout_columns(
         ui.card(ui.output_plot("team_a_series_diffs")), 
         ui.card(ui.output_data_frame("team_a_series_datagrid")),
-        ui.card(ui.output_plot("team_b_series_diffs"))
+        ui.card(ui.output_plot("team_b_series_diffs")),
         # Col Widths: Automatic
+        # Row Height
+        height = "300px"
     ),
 
     # App Title
