@@ -49,8 +49,8 @@ ICONS = {
     "headset": fa.icon_svg("headset"), 
     "plus": fa.icon_svg("plus"), 
     "minus": fa.icon_svg("minus"), 
-    "chev_up": fa.icon_svg("chevron-up"),
-    "chev_down": fa.icon_svg("chevron-down")
+    "chev_up": fa.icon_svg("chevron-up").add_class("text-purple"),
+    "chev_down": fa.icon_svg("chevron-down").add_class("text-purple")
 }
 
 # Major 3 Qualifiers Start Date (String)
@@ -578,6 +578,70 @@ def server(input, output, session):
     def team_b_series_diffs():
         return team_series_diffs(series_score_diffs, input.team_b())
 
+    # Player One Line
+    @reactive.Calc
+    def player_1_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[0]['player_line']
+    
+    # Player Two Line
+    @reactive.Calc
+    def player_2_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[1]['player_line']
+    
+    # Player Three Line
+    @reactive.Calc
+    def player_3_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[2]['player_line']
+    
+    # Player Four Line
+    @reactive.Calc
+    def player_4_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[3]['player_line']
+    
+    # Player Five Line
+    @reactive.Calc
+    def player_5_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[4]['player_line']
+    
+    # Player Six Line
+    @reactive.Calc
+    def player_6_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[5]['player_line']
+    
+    # Player Seven Line
+    @reactive.Calc
+    def player_7_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[6]['player_line']
+    
+    # Player Eight Line
+    @reactive.Calc
+    def player_8_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                    .iloc[7]['player_line']
+
     # Player One Boxplot
     @render.plot
     def player_1_box():
@@ -585,10 +649,7 @@ def server(input, output, session):
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
             gamemode(), 
-            player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[0]['player_line'],
+            player_1_line(),
             input.map_name()
         )
 
@@ -600,10 +661,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_a()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[0]['player_line'],
+                player_1_line(),
                 input.map_name()
             )
         else:
@@ -611,10 +669,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_a()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[0]['player_line'],
+                player_1_line(),
                 input.map_name()
             )
     
@@ -625,10 +680,7 @@ def server(input, output, session):
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
             gamemode(), 
-            player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[1]['player_line'],
+            player_2_line(),
             input.map_name()
         )
 
@@ -640,10 +692,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_a()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[1]['player_line'],
+                player_2_line(),
                 input.map_name()
             )
         else:
@@ -651,10 +700,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_a()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[1]['player_line'],
+                player_2_line(),
                 input.map_name()
             )
         
@@ -665,10 +711,7 @@ def server(input, output, session):
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
             gamemode(), 
-            player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[2]['player_line'],
+            player_3_line(),
             input.map_name()
         )
 
@@ -680,10 +723,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_a()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[2]['player_line'],
+                player_3_line(),
                 input.map_name()
             )
         else:
@@ -691,10 +731,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_a()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[2]['player_line'],
+                player_3_line(),
                 input.map_name()
             )
         
@@ -705,10 +742,7 @@ def server(input, output, session):
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'],  
             gamemode(), 
-            player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[3]['player_line'],
+            player_4_line(),
             input.map_name()
         )
 
@@ -720,10 +754,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'],  
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_a()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[3]['player_line'],
+                player_4_line(),
                 input.map_name()
             )
         else:
@@ -731,10 +762,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_a()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[3]['player_line'],
+                player_4_line(),
                 input.map_name()
             )
     
@@ -745,10 +773,7 @@ def server(input, output, session):
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'],  
             gamemode(), 
-            player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[0]['player_line'],
+            player_5_line(),
             input.map_name()
         )
 
@@ -760,10 +785,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'],  
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_b()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[0]['player_line'],
+                player_5_line(),
                 input.map_name()
             )
         else:
@@ -771,10 +793,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_b()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[0]['player_line'],
+                player_5_line(),
                 input.map_name()
             )
         
@@ -785,10 +804,7 @@ def server(input, output, session):
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'],  
             gamemode(), 
-            player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[1]['player_line'],
+            player_6_line(),
             input.map_name()
         )
 
@@ -800,10 +816,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'],  
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_b()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[1]['player_line'],
+                player_6_line(),
                 input.map_name()
             )
         else:
@@ -811,10 +824,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_b()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[1]['player_line'],
+                player_6_line(),
                 input.map_name()
             )
         
@@ -825,10 +835,7 @@ def server(input, output, session):
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'],  
             gamemode(), 
-            player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[2]['player_line'],
+            player_7_line(),
             input.map_name()
         )
 
@@ -840,10 +847,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'],  
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_b()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[2]['player_line'],
+                player_7_line(),
                 input.map_name()
             )
         else:
@@ -851,10 +855,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_b()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[2]['player_line'],
+                player_7_line(),
                 input.map_name()
             )
         
@@ -865,10 +866,7 @@ def server(input, output, session):
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'],  
             gamemode(), 
-            player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[3]['player_line'],
+            player_8_line(),
             input.map_name()
         )
 
@@ -880,10 +878,7 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'],  
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_b()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[3]['player_line'],
+                player_8_line(),
                 input.map_name()
             )
         else:
@@ -891,12 +886,241 @@ def server(input, output, session):
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
                 gamemode(), 
-                player_props_df.get()[
-                    (player_props_df.get()['team'] == input.team_b()) &
-                    (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                        .iloc[3]['player_line'],
+                player_8_line(),
                 input.map_name()
             )
+    
+    # Player One O/U 
+    @render.ui
+    def player_1_ou():
+        over_under, percentage = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
+            gamemode(), 
+            player_1_line(), 
+            input.map_name()
+        )
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+    
+    # Player Two O/U 
+    @render.ui
+    def player_2_ou():
+        over_under, percentage = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'], 
+            gamemode(), 
+            player_2_line(), 
+            input.map_name()
+        )
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Three O/U 
+    @render.ui
+    def player_3_ou():
+        over_under, percentage = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'], 
+            gamemode(), 
+            player_3_line(), 
+            input.map_name()
+        )
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Four O/U 
+    @render.ui
+    def player_4_ou():
+        over_under, percentage = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
+            gamemode(), 
+            player_4_line(), 
+            input.map_name()
+        )
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Five O/U 
+    @render.ui
+    def player_5_ou():
+        over_under, percentage = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
+            gamemode(), 
+            player_5_line(), 
+            input.map_name()
+        )
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Six O/U 
+    @render.ui
+    def player_6_ou():
+        over_under, percentage = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
+            gamemode(), 
+            player_6_line(), 
+            input.map_name()
+        )
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Seven O/U 
+    @render.ui
+    def player_7_ou():
+        over_under, percentage = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
+            gamemode(), 
+            player_7_line(), 
+            input.map_name()
+        )
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Eight O/U 
+    @render.ui
+    def player_8_ou():
+        over_under, percentage = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
+            gamemode(), 
+            player_8_line(), 
+            input.map_name()
+        )
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+    
+    # Player One O/U Icon
+    @render.ui
+    def player_1_ou_icon():
+        over_under = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
+            gamemode(), 
+            player_1_line(), 
+            input.map_name()
+        )[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Two O/U Icon
+    @render.ui
+    def player_2_ou_icon():
+        over_under = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'], 
+            gamemode(), 
+            player_2_line(), 
+            input.map_name()
+        )[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Three O/U Icon
+    @render.ui
+    def player_3_ou_icon():
+        over_under = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'], 
+            gamemode(), 
+            player_3_line(), 
+            input.map_name()
+        )[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Four O/U Icon
+    @render.ui
+    def player_4_ou_icon():
+        over_under = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
+            gamemode(), 
+            player_4_line(), 
+            input.map_name()
+        )[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Five O/U Icon
+    @render.ui
+    def player_5_ou_icon():
+        over_under = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
+            gamemode(), 
+            player_5_line(), 
+            input.map_name()
+        )[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Six O/U Icon
+    @render.ui
+    def player_6_ou_icon():
+        over_under = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
+            gamemode(), 
+            player_6_line(), 
+            input.map_name()
+        )[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Seven O/U Icon
+    @render.ui
+    def player_7_ou_icon():
+        over_under = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
+            gamemode(), 
+            player_7_line(), 
+            input.map_name()
+        )[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Eight O/U Icon
+    @render.ui
+    def player_8_ou_icon():
+        over_under = player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
+            gamemode(), 
+            player_8_line(), 
+            input.map_name()
+        )[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
         
 
 app = App(app_ui, server)
