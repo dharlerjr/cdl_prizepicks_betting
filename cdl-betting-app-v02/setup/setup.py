@@ -282,25 +282,38 @@ def build_rosters(cdlDF_input: pd.DataFrame):
 
 # Build initial player props for app.py
 def build_intial_props(rostersDF_input):
+
+    # Initialize dataframe and build columns
     initial_player_props = pd.DataFrame()
     initial_player_props["player"] = rostersDF_input["player"]
     initial_player_props["team"] = rostersDF_input["team"]
     initial_player_props["team_abbr"] = rostersDF_input["team_abbr"]
     initial_player_props["prop"] = 1
     initial_player_props["line"] = 22.0
+
+    # Add more rows for props 2 & 3
     initial_player_props = pd.concat([initial_player_props, initial_player_props, initial_player_props])
-    initial_player_props = initial_player_props.reset_index()
-    initial_player_props = initial_player_props.drop("index", axis = 1)
+    initial_player_props = initial_player_props.reset_index(drop = True)
+
+    # Add props 2 & 3 and arbitrary lines
     initial_player_props.iloc[48:96, 3] = 2
-    initial_player_props.iloc[96:144, 3] = 3
     initial_player_props.iloc[48:96, 4] = 6.5
+    initial_player_props.iloc[96:144, 3] = 3
+
+    # Set type in to int
     initial_player_props["prop"] = initial_player_props["prop"].astype(int)
-    initial_player_props = \
-        initial_player_props.sort_values(["prop", "team", "player"]).reset_index(drop=True)
+
+    # Sort
+    initial_player_props["player_lower"] = initial_player_props['player'].str.lower()
+    initial_player_props = initial_player_props.sort_values(by = ["prop", "team_abbr", "player_lower"])
+    initial_player_props = initial_player_props.drop("player_lower", axis = 1)
+
+    # Drop index & return
+    initial_player_props = initial_player_props.reset_index(drop=True)
     return initial_player_props
 
 # Merge player_props_df for app.py 
-def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame):
+def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame, rosters: pd.DataFrame):
     
     # Merge old props with new props
     new_props = pd.merge(
@@ -310,6 +323,14 @@ def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame):
         how = "left", 
         suffixes=('_initial', '_updated')
     )
+
+    # Merge with rosters to get teams and team_abbrs
+    updated_player_props = pd.merge(
+        updated_player_props.drop(["team", "team_abbr"], axis = 1), 
+        rosters, 
+        on = "player", 
+        how = "left"
+)
 
     # Fill in missing values from new_props with corresponding values from old_props
     new_props['line'] = new_props['line_updated'].fillna(new_props['line_initial'])
