@@ -114,7 +114,7 @@ def scrape_prizepicks():
     player_props_df['team_abbr'] = player_props_df['team_abbr'].astype(str)
 
     # Sort player_props_df by player & team
-    player_props_df = player_props_df.sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
+    player_props_df = player_props_df.sort_values(by = ["proptype", "team_abbr", "player"], key = lambda x: x.str.lower())
 
     # Return player props
     return player_props_df

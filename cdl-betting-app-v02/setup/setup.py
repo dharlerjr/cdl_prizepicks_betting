@@ -253,23 +253,29 @@ def filter_players(cdlDF_input):
     # Remove dropped players, excluding players who switched teams
     cdlDF_input = cdlDF_input[~cdlDF_input['player'].isin(dropped_players)]
 
-    # Update team for "Standy"
+    # Update team info for "Standy"
     cdlDF_input.loc[cdlDF_input['player'] == 'Standy', 'team'] = 'Minnesota ROKKR'
+    cdlDF_input.loc[cdlDF_input['player'] == 'Standy', 'team_abbr'] = 'MIN'
+    cdlDF_input.loc[cdlDF_input['player'] == 'Standy', 'team_icon'] = 'ROKKR'
 
-    # Update team for "ReeaL"
+    # Update team info for "ReeaL"
     cdlDF_input.loc[cdlDF_input['player'] == 'ReeaL', 'team'] = 'Miami Heretics'
+    cdlDF_input.loc[cdlDF_input['player'] == 'ReeaL', 'team_abbr'] = 'MIA'
+    cdlDF_input.loc[cdlDF_input['player'] == 'ReeaL', 'team_icon'] = 'Heretics'
 
-    # Update team for "Asim"
+    # Update team info for "Asim"
     cdlDF_input.loc[cdlDF_input['player'] == 'Asim', 'team'] = 'Las Vegas Legion'
+    cdlDF_input.loc[cdlDF_input['player'] == 'Asim', 'team_abbr'] = 'LV'
+    cdlDF_input.loc[cdlDF_input['player'] == 'Asim', 'team_icon'] = 'Legion'
 
-    # Change FelonY's player name to Felo to match PrizePicks
-    cdlDF_input.loc[cdlDF_input['player'] == 'FelonY', 'player'] = 'Felo'
+    # Change FelonY's player name to FeLo to match PrizePicks
+    cdlDF_input.loc[cdlDF_input['player'] == 'FelonY', 'player'] = 'FeLo'
 
     return cdlDF_input
 
 # Funciton to build rosters AFTER players have been filtered
 def build_rosters(cdlDF_input: pd.DataFrame):
-    rostersDF = cdlDF_input[["player", "team"]].drop_duplicates().sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
+    rostersDF = cdlDF_input[["player", "team", "team_abbr"]].drop_duplicates().sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
     rostersDF = rostersDF.reset_index()
     rostersDF = rostersDF.drop("index", axis = 1)
     return rostersDF
@@ -279,12 +285,41 @@ def build_intial_props(rostersDF_input):
     initial_player_props = pd.DataFrame()
     initial_player_props["player"] = rostersDF_input["player"]
     initial_player_props["team"] = rostersDF_input["team"]
+    initial_player_props["team_abbr"] = rostersDF_input["team_abbr"]
     initial_player_props["proptype"] = 1
     initial_player_props["player_line"] = 22.0
     initial_player_props = pd.concat([initial_player_props, initial_player_props, initial_player_props])
     initial_player_props = initial_player_props.reset_index()
     initial_player_props = initial_player_props.drop("index", axis = 1)
-    initial_player_props.iloc[48:96, 2] = 2
-    initial_player_props.iloc[96:144, 2] = 3
-    initial_player_props.iloc[48:96, 3] = 6.5
+    initial_player_props.iloc[48:96, 3] = 2
+    initial_player_props.iloc[96:144, 3] = 3
+    initial_player_props.iloc[48:96, 4] = 6.5
+    initial_player_props["proptype"] = initial_player_props["proptype"].astype(int)
+    initial_player_props = \
+        initial_player_props.sort_values(["proptype", "team", "player"]).reset_index(drop=True)
     return initial_player_props
+
+# Merge player_props_df for app.py 
+def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame):
+    
+    # Merge old props with new props
+    new_props = pd.merge(
+        old_props, 
+        new_props.drop("team_abbr", axis=1), 
+        on=['player', 'proptype'], 
+        how = "left", 
+        suffixes=('_initial', '_updated')
+    )
+
+    # Fill in missing values from new_props with corresponding values from old_props
+    new_props['player_line'] = new_props['player_line_updated'].fillna(new_props['player_line_initial'])
+
+    # Drop the redundant columns
+    new_props = new_props.drop([
+        'player_line_initial', 'player_line_updated'], 
+        axis=1
+        )
+
+    # Reset index & return
+    new_props = new_props.sort_values(["proptype", "team", "player"]).reset_index(drop=True)
+    return new_props

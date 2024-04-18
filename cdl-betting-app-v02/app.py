@@ -351,10 +351,9 @@ def server(input, output, session):
     @reactive.event(input.scrape)
     def scrape_props():
         player_props_df.set(
-            pd.merge(
-                scrape_prizepicks(),
-                rostersDF.drop(['proptype', 'player_line'], axis=1),
-                on = 'player', how =  'left'
+            merge_player_props(
+                player_props_df, 
+                scrape_prizepicks()
             )
         )
 
