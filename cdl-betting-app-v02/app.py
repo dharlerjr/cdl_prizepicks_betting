@@ -309,7 +309,7 @@ app_ui = ui.page_sidebar(
     ui.layout_columns(
         ui.markdown("** **"),
         # Kills Scoreboards
-        ui.card(ui.output_data_frame("team_a_kills_datagrid")),
+        ui.card(ui.output_data_frame("scoreboards")),
         ui.markdown("** **"),
         # Col Widths
         col_widths = [2, 8, 2], 
@@ -331,7 +331,7 @@ app_ui = ui.page_sidebar(
     # Seventh row: Series Score Differentials & Results
     ui.layout_columns(
         ui.card(ui.output_plot("team_a_series_diffs")), 
-        ui.card(ui.output_data_frame("team_a_series_datagrid")),
+        ui.card(ui.output_data_frame("series_datagrid")),
         ui.card(ui.output_plot("team_b_series_diffs")),
         # Col Widths: Automatic
         # Row Height
@@ -550,7 +550,7 @@ def server(input, output, session):
     
     # Team A Series Datagrid
     @render.data_frame
-    def team_a_series_datagrid():
+    def series_datagrid():
         return render.DataGrid(
             build_series_res_datagrid(
                 series_score_diffs, 
@@ -560,11 +560,12 @@ def server(input, output, session):
             summary = False
             )
     
-    # Team A Kills Datagrid
+    # Datagrid of Player Kills and Map Results for Selected Teams
+    # Aka. Scoreboards
     @render.data_frame
-    def team_a_kills_datagrid():
+    def scoreboards():
         return render.DataGrid(
-            build_kills_datagrid(
+            build_scoreboards(
                 filter_maps(cdlDF), 
                 input.team_a(),
                 gamemode()

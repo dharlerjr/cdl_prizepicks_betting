@@ -116,7 +116,7 @@ def build_series_summaries(cdlDF_input):
     series_score_diffs = \
         cdlDF_input[["match_id", "match_date", "team", "team_abbr", "map_num", "gamemode", "map_result"]] \
         .drop_duplicates() \
-        .groupby(["match_id", "team"], observed = True) \
+        .groupby(["match_id", "team", "team_abbr"], observed = True) \
         .agg(
             map_wins = ("map_result", lambda x: sum(x)), 
             map_losses = ("map_result", lambda x: len(x) - sum(x)), 
@@ -135,28 +135,18 @@ def build_series_summaries(cdlDF_input):
         on = "match_id"
     )
 
-    # Arrange by match_date, match_id, and team
+    # Arrange by match_date, match_id, and team & reset index
     series_score_diffs = series_score_diffs.sort_values(
         by = ['match_date', 'match_id', 'team'], ascending = [True, True, True]
         ).reset_index(drop=True)
     
     # Get opponents
     opps = series_score_diffs.sort_values(by = ['match_date', 'match_id', 'team'], ascending = [True, True, False]) \
-        [['team']] \
-        .rename(columns={'team': 'opp'})
-    opps.reset_index(drop=True, inplace=True)
+        [['team_abbr']] \
+        .rename(columns = {"team_abbr": "opp"}) \
+        .reset_index(drop=True) 
 
-    # Replace opponents with their team abbreviation
-    team_abbr_combos = cdlDF_input[["team", "team_abbr"]].drop_duplicates().reset_index(drop = True)
-    team_abbr_combos
-    opps = pd.merge(
-        opps, 
-        team_abbr_combos, 
-        left_on = "opp", 
-        right_on = "team",
-        how = "left"
-    )
-    opps = opps[["team_abbr"]].rename(columns = {"team_abbr": "opp"})
+    opps
 
     # Bind series_score_diffs & opps
     series_score_diffs = pd.concat([series_score_diffs, opps], axis=1)

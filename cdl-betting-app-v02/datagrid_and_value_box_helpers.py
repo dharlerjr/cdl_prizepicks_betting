@@ -4,21 +4,32 @@ import pandas as pd
 from setup.setup import changed_players
 
 # Function to create dataframe of series results for user-selected team
-def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_input: str):
+def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_x: str, team_y: str):
 
-    series_score_diffs_input = series_score_diffs_input \
-        [series_score_diffs_input["team"] == team_input] \
-        [["map_wins", "map_losses", "opp"]].reset_index(drop=True)
-
-    series_score_diffs_input = series_score_diffs_input.rename(
-        columns = {"map_wins": "Map Wins", 
-                   "map_losses": "Map Losses", 
-                    "opp": "Opponent"}
-        )
+    team_x_series = series_score_diffs_input \
+        [series_score_diffs_input["team"] == team_x] \
+        [["match_date", "match_id", "team_abbr", "map_wins", "map_losses", "opp"]]
+    
+    team_y_series = series_score_diffs_input \
+        [series_score_diffs_input["team"] == team_y] \
+        [["match_date", "match_id", "team_abbr", "map_wins", "map_losses", "opp"]]
+    
+    series_score_diffs_input = pd.concat([team_x_series, team_y_series], axis = 0) \
+        .rename(
+            columns = {"match_date": "Date",
+                       "match_id": "Match ID",
+                       "team_abbr": "Team",
+                       "map_wins": "Map Wins", 
+                       "map_losses": "Map Losses", 
+                       "opp": "Opponent"} \
+        ) \
+        .sort_values(["match_date", "team_abbr"]) \
+        .reset_index(drop = True)
+    
     return series_score_diffs_input
 
 # Function to create dataframe of kills for user-selected team & gamemode
-def build_kills_datagrid(
+def build_scoreboards(
         cdlDF_input: pd.DataFrame, team_input: str, gamemode_input: str
     ):
     cdlDF_input = \
@@ -39,8 +50,6 @@ def build_kills_datagrid(
     return cdlDF_input
 
 # Function to compute Current Mode or Map/Mode Win Streak
-# Function to compute Map H2H Win - Loss Record for Map H2H Value Box
-# Function to compute Map H2H Win - Loss Record for Map H2H Value Box
 def compute_win_streak(
           cdlDF_input: pd.DataFrame, team_input: str, 
           gamemode_input: str, map_input = "All"
