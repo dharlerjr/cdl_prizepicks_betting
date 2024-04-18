@@ -63,6 +63,9 @@ cdlDF
 # Build series summaries
 series_score_diffs = build_series_summaries(cdlDF)
 
+# Filter maps from cdlDF
+cdlDF = filter_maps(cdlDF)
+
 # Build team summaries
 team_summaries_DF = build_team_summaries(cdlDF)
 team_summaries_DF
@@ -70,9 +73,6 @@ team_summaries_DF
 # Filter players from cdlDF & build rosters
 cdlDF = filter_players(cdlDF)
 rostersDF = build_rosters(cdlDF)
-
-# Filter maps from cdlDF
-cdlDF = filter_maps(cdlDF)
 
 # Compute CDL Standings for Major III Qualifiers
 current_standings = \
@@ -592,7 +592,7 @@ def server(input, output, session):
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_a()) &
                 (player_props_df.get()['prop'] == int(input.map_num()))] \
-                    .iloc[0]['player_line']
+                    .iloc[0]['line']
     
     # Player Two Line
     @reactive.Calc
@@ -600,7 +600,7 @@ def server(input, output, session):
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_a()) &
                 (player_props_df.get()['prop'] == int(input.map_num()))] \
-                    .iloc[1]['player_line']
+                    .iloc[1]['line']
     
     # Player Three Line
     @reactive.Calc
@@ -608,7 +608,7 @@ def server(input, output, session):
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_a()) &
                 (player_props_df.get()['prop'] == int(input.map_num()))] \
-                    .iloc[2]['player_line']
+                    .iloc[2]['line']
     
     # Player Four Line
     @reactive.Calc
@@ -616,7 +616,7 @@ def server(input, output, session):
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_a()) &
                 (player_props_df.get()['prop'] == int(input.map_num()))] \
-                    .iloc[3]['player_line']
+                    .iloc[3]['line']
     
     # Player Five Line
     @reactive.Calc
@@ -624,7 +624,7 @@ def server(input, output, session):
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_b()) &
                 (player_props_df.get()['prop'] == int(input.map_num()))] \
-                    .iloc[0]['player_line']
+                    .iloc[0]['line']
     
     # Player Six Line
     @reactive.Calc
@@ -632,7 +632,7 @@ def server(input, output, session):
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_b()) &
                 (player_props_df.get()['prop'] == int(input.map_num()))] \
-                    .iloc[1]['player_line']
+                    .iloc[1]['line']
     
     # Player Seven Line
     @reactive.Calc
@@ -640,7 +640,7 @@ def server(input, output, session):
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_b()) &
                 (player_props_df.get()['prop'] == int(input.map_num()))] \
-                    .iloc[2]['player_line']
+                    .iloc[2]['line']
     
     # Player Eight Line
     @reactive.Calc
@@ -648,7 +648,7 @@ def server(input, output, session):
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_b()) &
                 (player_props_df.get()['prop'] == int(input.map_num()))] \
-                    .iloc[3]['player_line']
+                    .iloc[3]['line']
 
     # Player One Boxplot
     @render.plot

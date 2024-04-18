@@ -1,6 +1,8 @@
 
 import pandas as pd
 
+from setup.setup import changed_players
+
 # Function to create dataframe of series results for user-selected team
 def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_input: str):
 
@@ -102,6 +104,9 @@ def compute_h2h_map_record(
         cdlDF_input: pd.DataFrame, team_x: str, team_y: str, 
         gamemode_input: str, map_input = "All"
 ):
+    
+    cdlDF_input = cdlDF_input[~cdlDF_input['player'].isin(changed_players)]
+
     if map_input == "All":
         queried_df = cdlDF_input \
             [["match_id", "team", "map_name", "gamemode", "map_result", "opp"]] \
@@ -138,7 +143,10 @@ def compute_h2h_map_record(
     
 # Function to compute Series H2H Win - Loss Record for Series H2H Value Box
 def compute_h2h_series_record(cdlDF_input: pd.DataFrame, team_x: str, team_y: str):
-        queried_df = cdlDF_input[[
+        
+        queried_df = cdlDF_input[~cdlDF_input['player'].isin(changed_players)]
+        
+        queried_df = queried_df[[
                 "match_id", "match_date", "team", "opp", "series_result"
         ]] \
                 [
@@ -150,7 +158,7 @@ def compute_h2h_series_record(cdlDF_input: pd.DataFrame, team_x: str, team_y: st
                 return "0 - 0"
         else:
                 wins = queried_df['series_result'].sum()
-                losses = len(queried_df['series_result'])
+                losses = len(queried_df['series_result']) - wins
                 return f"{wins} - {losses}"
         
 # Function to compute player over/under %

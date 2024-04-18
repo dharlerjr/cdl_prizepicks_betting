@@ -16,6 +16,9 @@ dropped_players = [
     "GodRx", "iLLeY", "JurNii", "Owakening", "SlasheR", "Vivid"
 ]
 
+# List of players who changed teams
+changed_players = ["Asim", "Standy", "ReeaL"]
+
 # Function to load and clean cdl data and return as pandas dataframe
 def load_and_clean_cdl_data():
 
