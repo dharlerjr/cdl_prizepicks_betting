@@ -45,8 +45,18 @@ def compute_win_streak(
           cdlDF_input: pd.DataFrame, team_input: str, 
           gamemode_input: str, map_input = "All"
 ):
+    
+    # Create a boolean Series indicating rows containing players from the changed_players list
+    mask = cdlDF_input['player'].isin(changed_players)
+
+    # Reindex the boolean Series to match the DataFrame's index
+    mask = mask.reindex(cdlDF_input.index)
+
+    # Create a DataFrame without rows containing players from the changed_players list
+    queried_df = cdlDF_input[~mask]
+
     # Get relevant columns and drop duplicates
-    queried_df = cdlDF_input[
+    queried_df = queried_df[
         ["match_id", "match_date", "team", "gamemode", "map_name", "map_result"]
     ] \
      .drop_duplicates()
@@ -105,14 +115,21 @@ def compute_h2h_map_record(
         gamemode_input: str, map_input = "All"
 ):
     
-    cdlDF_input = cdlDF_input[~cdlDF_input['player'].isin(changed_players)]
+    # Create a boolean Series indicating rows containing players from the changed_players list
+    mask = cdlDF_input['player'].isin(changed_players)
+
+    # Reindex the boolean Series to match the DataFrame's index
+    mask = mask.reindex(cdlDF_input.index)
+
+    # Create a DataFrame without rows containing players from the changed_players list
+    queried_df = cdlDF_input[~mask]
 
     if map_input == "All":
-        queried_df = cdlDF_input \
+        queried_df = queried_df \
             [["match_id", "team", "map_name", "gamemode", "map_result", "opp"]] \
-            [(cdlDF_input["team"] == team_x) & \
-                (cdlDF_input["opp"] == team_y) &
-                (cdlDF_input["gamemode"] == gamemode_input)] \
+            [(queried_df["team"] == team_x) & \
+                (queried_df["opp"] == team_y) &
+                (queried_df["gamemode"] == gamemode_input)] \
             .drop_duplicates() \
             .groupby("gamemode", observed = True) \
             .agg(
@@ -121,12 +138,12 @@ def compute_h2h_map_record(
                 ) \
             .reset_index()
     else:
-        queried_df = cdlDF_input \
+        queried_df = queried_df \
             [["match_id", "team", "map_name", "gamemode", "map_result", "opp"]] \
-            [(cdlDF_input["team"] == team_x) & \
-                (cdlDF_input["opp"] == team_y) & 
-                (cdlDF_input["gamemode"] == gamemode_input) & 
-                (cdlDF_input["map_name"] == map_input)] \
+            [(queried_df["team"] == team_x) & \
+                (queried_df["opp"] == team_y) & 
+                (queried_df["gamemode"] == gamemode_input) & 
+                (queried_df["map_name"] == map_input)] \
             .drop_duplicates() \
             .groupby(["gamemode", "map_name"], observed = True) \
             .agg(
@@ -144,14 +161,21 @@ def compute_h2h_map_record(
 # Function to compute Series H2H Win - Loss Record for Series H2H Value Box
 def compute_h2h_series_record(cdlDF_input: pd.DataFrame, team_x: str, team_y: str):
         
-        queried_df = cdlDF_input[~cdlDF_input['player'].isin(changed_players)]
+        # Create a boolean Series indicating rows containing players from the changed_players list
+        mask = cdlDF_input['player'].isin(changed_players)
+
+        # Reindex the boolean Series to match the DataFrame's index
+        mask = mask.reindex(cdlDF_input.index)
+
+        # Create a DataFrame without rows containing players from the changed_players list
+        queried_df = cdlDF_input[~mask]
         
         queried_df = queried_df[[
                 "match_id", "match_date", "team", "opp", "series_result"
         ]] \
                 [
-                    (cdlDF_input["team"] == team_x) &
-                    (cdlDF_input["opp"] == team_y)
+                    (queried_df["team"] == team_x) &
+                    (queried_df["opp"] == team_y)
                 ] \
                 .drop_duplicates()
         if queried_df.empty:
