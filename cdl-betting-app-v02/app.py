@@ -614,33 +614,33 @@ def server(input, output, session):
     @reactive.Calc
     def player_5_line():
         return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['team'] == input.team_b()) &
                 (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[4]['player_line']
+                    .iloc[0]['player_line']
     
     # Player Six Line
     @reactive.Calc
     def player_6_line():
         return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['team'] == input.team_b()) &
                 (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[5]['player_line']
+                    .iloc[1]['player_line']
     
     # Player Seven Line
     @reactive.Calc
     def player_7_line():
         return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['team'] == input.team_b()) &
                 (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[6]['player_line']
+                    .iloc[2]['player_line']
     
     # Player Eight Line
     @reactive.Calc
     def player_8_line():
         return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['team'] == input.team_b()) &
                 (player_props_df.get()['proptype'] == int(input.map_num()))] \
-                    .iloc[7]['player_line']
+                    .iloc[3]['player_line']
 
     # Player One Boxplot
     @render.plot
