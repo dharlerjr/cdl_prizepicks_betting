@@ -114,7 +114,7 @@ def load_and_clean_cdl_data():
 # Build dataframe of series scores & differentials
 def build_series_summaries(cdlDF_input):
     series_score_diffs = \
-        cdlDF_input[["match_id", "match_date", "team", "map_num", "gamemode", "map_result"]] \
+        cdlDF_input[["match_id", "match_date", "team", "team_abbr", "map_num", "gamemode", "map_result"]] \
         .drop_duplicates() \
         .groupby(["match_id", "team"], observed = True) \
         .agg(
