@@ -286,17 +286,17 @@ def build_intial_props(rostersDF_input):
     initial_player_props["player"] = rostersDF_input["player"]
     initial_player_props["team"] = rostersDF_input["team"]
     initial_player_props["team_abbr"] = rostersDF_input["team_abbr"]
-    initial_player_props["proptype"] = 1
-    initial_player_props["player_line"] = 22.0
+    initial_player_props["prop"] = 1
+    initial_player_props["line"] = 22.0
     initial_player_props = pd.concat([initial_player_props, initial_player_props, initial_player_props])
     initial_player_props = initial_player_props.reset_index()
     initial_player_props = initial_player_props.drop("index", axis = 1)
     initial_player_props.iloc[48:96, 3] = 2
     initial_player_props.iloc[96:144, 3] = 3
     initial_player_props.iloc[48:96, 4] = 6.5
-    initial_player_props["proptype"] = initial_player_props["proptype"].astype(int)
+    initial_player_props["prop"] = initial_player_props["prop"].astype(int)
     initial_player_props = \
-        initial_player_props.sort_values(["proptype", "team", "player"]).reset_index(drop=True)
+        initial_player_props.sort_values(["prop", "team", "player"]).reset_index(drop=True)
     return initial_player_props
 
 # Merge player_props_df for app.py 
@@ -306,20 +306,26 @@ def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame):
     new_props = pd.merge(
         old_props, 
         new_props.drop("team_abbr", axis=1), 
-        on=['player', 'proptype'], 
+        on=['player', 'prop'], 
         how = "left", 
         suffixes=('_initial', '_updated')
     )
 
     # Fill in missing values from new_props with corresponding values from old_props
-    new_props['player_line'] = new_props['player_line_updated'].fillna(new_props['player_line_initial'])
+    new_props['line'] = new_props['line_updated'].fillna(new_props['line_initial'])
 
     # Drop the redundant columns
-    new_props = new_props.drop([
-        'player_line_initial', 'player_line_updated'], 
-        axis=1
-        )
+    new_props = new_props.drop(['line_initial', 'line_updated'], axis=1)
+
+    # Add player_lower column for sorting
+    new_props["player_lower"] = new_props['player'].str.lower()
+
+    # Sort new_props by prop, team, and player_lower
+    new_props = new_props.sort_values(by = ["prop", "team_abbr", "player_lower"])
+
+    # Drop the player_lower column
+    new_props = new_props.drop("player_lower", axis = 1)
 
     # Reset index & return
-    new_props = new_props.sort_values(["proptype", "team", "player"]).reset_index(drop=True)
+    new_props = new_props.reset_index(drop=True)
     return new_props

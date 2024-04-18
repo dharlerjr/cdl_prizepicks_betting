@@ -99,22 +99,31 @@ def scrape_prizepicks():
             player_props.append({
                 "player": player, 
                 "team_abbr": team_abbr, 
-                "proptype": category.split(" ")[1], 
-                "player_line": player_line
+                "prop": category.split(" ")[1], 
+                "line": player_line
             })
 
     # Convert our list of player props to a dataframe
     player_props_df =  pd.DataFrame(player_props)
 
     # Set proptype column to int
-    player_props_df['proptype'] = player_props_df['proptype'].astype(int)
+    player_props_df['prop'] = player_props_df['prop'].astype(int)
 
     # Set player and team_abbr columns to str
     player_props_df['player'] = player_props_df['player'].astype(str)
     player_props_df['team_abbr'] = player_props_df['team_abbr'].astype(str)
 
-    # Sort player_props_df by player & team
-    player_props_df = player_props_df.sort_values(by = ["proptype", "team_abbr", "player"], key = lambda x: x.str.lower())
+    # Add player_lower column for sorting
+    player_props_df["player_lower"] = player_props_df['player'].str.lower()
+
+    # Sort player_props_df by prop, team, and player_lower
+    player_props_df = player_props_df.sort_values(by = ["prop", "team_abbr", "player_lower"])
+
+    # Drop the player_lower column
+    player_props_df = player_props_df.drop("player_lower", axis = 1)
+
+    # Reset index & return
+    player_props_df = player_props_df.reset_index(drop=True)
 
     # Return player props
     return player_props_df

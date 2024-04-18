@@ -590,7 +590,7 @@ def server(input, output, session):
     def player_1_line():
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                (player_props_df.get()['prop'] == int(input.map_num()))] \
                     .iloc[0]['player_line']
     
     # Player Two Line
@@ -598,7 +598,7 @@ def server(input, output, session):
     def player_2_line():
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                (player_props_df.get()['prop'] == int(input.map_num()))] \
                     .iloc[1]['player_line']
     
     # Player Three Line
@@ -606,7 +606,7 @@ def server(input, output, session):
     def player_3_line():
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                (player_props_df.get()['prop'] == int(input.map_num()))] \
                     .iloc[2]['player_line']
     
     # Player Four Line
@@ -614,7 +614,7 @@ def server(input, output, session):
     def player_4_line():
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                (player_props_df.get()['prop'] == int(input.map_num()))] \
                     .iloc[3]['player_line']
     
     # Player Five Line
@@ -622,7 +622,7 @@ def server(input, output, session):
     def player_5_line():
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                (player_props_df.get()['prop'] == int(input.map_num()))] \
                     .iloc[0]['player_line']
     
     # Player Six Line
@@ -630,7 +630,7 @@ def server(input, output, session):
     def player_6_line():
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                (player_props_df.get()['prop'] == int(input.map_num()))] \
                     .iloc[1]['player_line']
     
     # Player Seven Line
@@ -638,7 +638,7 @@ def server(input, output, session):
     def player_7_line():
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                (player_props_df.get()['prop'] == int(input.map_num()))] \
                     .iloc[2]['player_line']
     
     # Player Eight Line
@@ -646,7 +646,7 @@ def server(input, output, session):
     def player_8_line():
         return player_props_df.get()[
                 (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['proptype'] == int(input.map_num()))] \
+                (player_props_df.get()['prop'] == int(input.map_num()))] \
                     .iloc[3]['player_line']
 
     # Player One Boxplot
