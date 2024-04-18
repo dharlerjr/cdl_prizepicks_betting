@@ -34,7 +34,7 @@ team_logos = {
     "Las Vegas Legion": "\\team_logos\\LV.webp",
     "Los Angeles Guerrillas": "\\team_logos\\LAG.webp", 
     "Los Angeles Thieves": "\\team_logos\\LAT.webp", 
-    "Miami Hertics": "\\team_logos\\MIA.webp", 
+    "Miami Heretics": "\\team_logos\\MIA.webp", 
     "Minnesota ROKKR": "\\team_logos\\MIN.webp", 
     "New York Subliners": "\\team_logos\\NYSL.webp",
     "OpTic Texas": "\\team_logos\\TX.webp", 
