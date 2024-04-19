@@ -4,15 +4,18 @@ import pandas as pd
 # Function to create dataframe of series results for user-selected team
 def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_x: str, team_y: str):
 
-    team_x_series = series_score_diffs_input \
-        [series_score_diffs_input["team"] == team_x] \
+    # Create a copy of series_score_diffs_input
+    queried_df = series_score_diffs_input.copy()
+
+    team_x_series = queried_df \
+        [queried_df["team"] == team_x] \
         [["match_date", "match_id", "team_abbr", "map_wins", "map_losses", "opp"]]
     
-    team_y_series = series_score_diffs_input \
-        [series_score_diffs_input["team"] == team_y] \
+    team_y_series = queried_df \
+        [queried_df["team"] == team_y] \
         [["match_date", "match_id", "team_abbr", "map_wins", "map_losses", "opp"]]
     
-    series_score_diffs_input = pd.concat([team_x_series, team_y_series], axis = 0) \
+    queried_df = pd.concat([team_x_series, team_y_series], axis = 0) \
         .rename(
             columns = {"match_date": "Date",
                        "match_id": "Match ID",
@@ -24,7 +27,7 @@ def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_x: st
         .sort_values(["Date", "Team"]) \
         .reset_index(drop = True)
     
-    return series_score_diffs_input
+    return queried_df
 
 # Function to create dataframe of kills for user-selected team & gamemode
 # Function to create dataframe of kills for user-selected team & gamemode
@@ -39,27 +42,30 @@ def build_scoreboards(
     else:
         selected_maps.append(map_input)
 
+    # Create a copy of cdlDF_input
+    cdlDF_copy = cdlDF_input.copy()
+
     # Create a boolean Series indicating rows containing maps within selected_maps
-    mask = cdlDF_input['map_name'].isin(selected_maps)
+    mask = cdlDF_copy['map_name'].isin(selected_maps)
 
     # Reindex the boolean Series to match the DataFrame's index
-    mask = mask.reindex(cdlDF_input.index)
+    mask = mask.reindex(cdlDF_copy.index)
 
     # Filter cdlDF for maps in selected_maps
-    cdlDF_input = cdlDF_input[mask]
+    cdlDF_copy = cdlDF_copy[mask]
     
     # Get team_x scoreboards
     team_x_scoreboard = \
-        cdlDF_input[(cdlDF_input["team"] == team_x) & 
-                    (cdlDF_input["gamemode"] == gamemode_input)] \
+        cdlDF_copy[(cdlDF_copy["team"] == team_x) & 
+                    (cdlDF_copy["gamemode"] == gamemode_input)] \
             [["match_date", "match_id", "map_name", "map_num", "team_abbr", "player", "kills", 
               "deaths", "score_diff", "opp_abbr"]]
 
     # Get team_y scoreboards
     team_y_scoreboard = \
-        cdlDF_input[(cdlDF_input["team"] == team_y) & 
-                    (cdlDF_input["gamemode"] == gamemode_input) &
-                    (cdlDF_input["opp"] != team_x)] \
+        cdlDF_copy[(cdlDF_copy["team"] == team_y) & 
+                    (cdlDF_copy["gamemode"] == gamemode_input) &
+                    (cdlDF_copy["opp"] != team_x)] \
             [["match_date", "match_id", "map_name", "map_num", "team_abbr", "player", "kills", 
               "deaths", "score_diff", "opp_abbr"]]
     
@@ -122,8 +128,11 @@ def compute_win_streak(
           cdlDF_input: pd.DataFrame, team_input: str, 
           gamemode_input: str, map_input = "All"
 ):
+    # Create a copy of cdlDF_input
+    queried_df = cdlDF_input.copy()
+
     # Get relevant columns and drop duplicates
-    queried_df = cdlDF_input[
+    queried_df = queried_df[
         ["match_id", "match_date", "team", "gamemode", "map_name", "map_result", "map_num"]
     ] \
      .drop_duplicates()
@@ -181,12 +190,16 @@ def compute_h2h_map_record(
         cdlDF_input: pd.DataFrame, team_x: str, team_y: str, 
         gamemode_input: str, map_input = "All"
 ):
+    
+    # Create a copy of cdlDF_input
+    queried_df = cdlDF_input.copy()
+
     if map_input == "All":
-        queried_df = cdlDF_input \
+        queried_df = queried_df \
             [["match_id", "team", "map_name", "gamemode", "map_result", "opp"]] \
-            [(cdlDF_input["team"] == team_x) & \
-                (cdlDF_input["opp"] == team_y) &
-                (cdlDF_input["gamemode"] == gamemode_input)] \
+            [(queried_df["team"] == team_x) & \
+                (queried_df["opp"] == team_y) &
+                (queried_df["gamemode"] == gamemode_input)] \
             .drop_duplicates() \
             .groupby("gamemode", observed = True) \
             .agg(
@@ -195,12 +208,12 @@ def compute_h2h_map_record(
                 ) \
             .reset_index()
     else:
-        queried_df = cdlDF_input \
+        queried_df = queried_df \
             [["match_id", "team", "map_name", "gamemode", "map_result", "opp"]] \
-            [(cdlDF_input["team"] == team_x) & \
-                (cdlDF_input["opp"] == team_y) & 
-                (cdlDF_input["gamemode"] == gamemode_input) & 
-                (cdlDF_input["map_name"] == map_input)] \
+            [(queried_df["team"] == team_x) & \
+                (queried_df["opp"] == team_y) & 
+                (queried_df["gamemode"] == gamemode_input) & 
+                (queried_df["map_name"] == map_input)] \
             .drop_duplicates() \
             .groupby(["gamemode", "map_name"], observed = True) \
             .agg(
@@ -217,37 +230,41 @@ def compute_h2h_map_record(
     
 # Function to compute Series H2H Win - Loss Record for Series H2H Value Box
 def compute_h2h_series_record(cdlDF_input: pd.DataFrame, team_x: str, team_y: str):
-        queried_df = cdlDF_input[[
-                "match_id", "match_date", "team", "opp", "series_result"
-        ]] \
-                [
-                    (cdlDF_input["team"] == team_x) &
-                    (cdlDF_input["opp"] == team_y)
-                ] \
-                .drop_duplicates()
-        if queried_df.empty:
-                return "0 - 0"
-        else:
-                wins = queried_df['series_result'].sum()
-                losses = len(queried_df['series_result']) - wins
-                return f"{wins} - {losses}"
+        
+    # Create a copy of cdlDF_input
+    queried_df = cdlDF_input.copy()
+        
+    queried_df = queried_df \
+        [["match_id", "match_date", "team", "opp", "series_result"]] \
+        [(queried_df["team"] == team_x) & (queried_df["opp"] == team_y)] \
+        .drop_duplicates()
+    if queried_df.empty:
+            return "0 - 0"
+    else:
+            wins = queried_df['series_result'].sum()
+            losses = len(queried_df['series_result']) - wins
+            return f"{wins} - {losses}"
         
 # Function to compute player over/under %
 def player_over_under_percentage(
         cdlDF_input: pd.DataFrame, player_input: str, 
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
+    
+    # Create a copy of cdlDF_input
+    queried_df = cdlDF_input.copy()
+
     # Filter by given inputs
     if map_input == "All":
-        queried_df = cdlDF_input[
-            (cdlDF_input["player"] == player_input) &
-            (cdlDF_input["gamemode"] == gamemode_input)
+        queried_df = queried_df[
+            (queried_df["player"] == player_input) &
+            (queried_df["gamemode"] == gamemode_input)
         ]
     else:
-        queried_df = cdlDF_input[
-            (cdlDF_input["player"] == player_input) &
-            (cdlDF_input["gamemode"] == gamemode_input) &
-            (cdlDF_input["map_name"] == map_input)
+        queried_df = queried_df[
+            (queried_df["player"] == player_input) &
+            (queried_df["gamemode"] == gamemode_input) &
+            (queried_df["map_name"] == map_input)
         ]
     
     # Get relevant columns and drop duplicates
@@ -274,17 +291,21 @@ def player_over_under_streak(
         cdlDF_input: pd.DataFrame, player_input: str, 
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
+    
+    # Create a copy of cdlDF_input
+    queried_df = cdlDF_input.copy()
+
     # Filter by given inputs
     if map_input == "All":
-        queried_df = cdlDF_input[
-            (cdlDF_input["player"] == player_input) &
-            (cdlDF_input["gamemode"] == gamemode_input)
+        queried_df = queried_df[
+            (queried_df["player"] == player_input) &
+            (queried_df["gamemode"] == gamemode_input)
         ]
     else:
-        queried_df = cdlDF_input[
-            (cdlDF_input["player"] == player_input) &
-            (cdlDF_input["gamemode"] == gamemode_input) &
-            (cdlDF_input["map_name"] == map_input)
+        queried_df = queried_df[
+            (queried_df["player"] == player_input) &
+            (queried_df["gamemode"] == gamemode_input) &
+            (queried_df["map_name"] == map_input)
         ]
     
     # Get relevant columns and drop duplicates

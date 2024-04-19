@@ -125,7 +125,7 @@ def build_series_summaries(cdlDF_input):
             map_wins = ("map_result", lambda x: sum(x)), 
             map_losses = ("map_result", lambda x: len(x) - sum(x)), 
         ) \
-        .reset_index()
+        .reset_index().copy()
 
     # Get score differentials
     series_score_diffs["series_score_diff"] = \
@@ -176,8 +176,11 @@ def filter_maps(cdlDF_input):
 # Function to create a pandas dataframe of team summaries
 def build_team_summaries(cdlDF_input: pd.DataFrame): 
 
+    # Create a copy of cdlDF_input to avoid mutating the original
+    queried_df = cdlDF_input.copy()
+
     # Team Summaries by Map & Mode
-    team_summaries_DF_top = filter_maps(cdlDF_input) \
+    team_summaries_DF_top = filter_maps(queried_df) \
         [["match_id", "team", "map_name", "gamemode", "map_result"]] \
         .drop_duplicates() \
         .groupby(["team", "gamemode", "map_name"], observed = True) \
@@ -190,9 +193,9 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
 
     # Some teams have not played every map & mode combination 
     # So, we will add those combinations back in manually
-    map_and_mode_combos = filter_maps(cdlDF_input)[["gamemode", "map_name"]].drop_duplicates().sort_values(["gamemode", "map_name"]).reset_index(drop = True)
+    map_and_mode_combos = filter_maps(queried_df)[["gamemode", "map_name"]].drop_duplicates().sort_values(["gamemode", "map_name"]).reset_index(drop = True)
     all_combinations = pd.DataFrame(
-        [(team, gamemode, map_name) for team in sorted(cdlDF_input['team'].unique()) for _, (gamemode, map_name) in map_and_mode_combos.iterrows()], 
+        [(team, gamemode, map_name) for team in sorted(queried_df['team'].unique()) for _, (gamemode, map_name) in map_and_mode_combos.iterrows()], 
         columns = ['team', 'gamemode', 'map_name']
     )
     team_summaries_DF_top = pd.merge(
@@ -209,7 +212,7 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
     
     # Team Summaries by Mode only
     team_summaries_DF_bottom = \
-        cdlDF_input[["match_id", "team", "map_name", "gamemode", "map_result"]] \
+        queried_df[["match_id", "team", "map_name", "gamemode", "map_result"]] \
         .drop_duplicates() \
         .groupby(["team", "gamemode"], observed = True) \
         .agg(
@@ -246,12 +249,20 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
 
 # Funciton to build rosters AFTER players have been filtered
 def build_rosters(cdlDF_input: pd.DataFrame):
-    rostersDF = cdlDF_input[["player", "team", "team_abbr"]].drop_duplicates().sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
+    
+    # Create a copy of cdlDF_input to avoid mutating the original
+    queried_df = cdlDF_input.copy()
+
+    # Build rosters
+    rostersDF = queried_df[["player", "team", "team_abbr"]].drop_duplicates().sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
+
     # Remove dropped players, excluding players who switched teams
     rostersDF = rostersDF[~rostersDF['player'].isin(dropped_players)]
+
     # Filter for players who changed teams
     for player, old_team in changed_players.items():
         rostersDF = rostersDF[~((rostersDF['player'] == player) & (rostersDF['team_abbr'] == old_team))]
+
     # Reset index & return
     rostersDF = rostersDF.reset_index(drop=True)
     return rostersDF
@@ -259,11 +270,14 @@ def build_rosters(cdlDF_input: pd.DataFrame):
 # Build initial player props for app.py
 def build_intial_props(rostersDF_input):
 
+    # Create a copy of rostersDF_input to avoid mutating the original
+    queried_df = rostersDF_input.copy()
+
     # Initialize dataframe and build columns
     initial_player_props = pd.DataFrame()
-    initial_player_props["player"] = rostersDF_input["player"]
-    initial_player_props["team"] = rostersDF_input["team"]
-    initial_player_props["team_abbr"] = rostersDF_input["team_abbr"]
+    initial_player_props["player"] = queried_df["player"]
+    initial_player_props["team"] = queried_df["team"]
+    initial_player_props["team_abbr"] = queried_df["team_abbr"]
     initial_player_props["prop"] = 1
     initial_player_props["line"] = 22.0
 
