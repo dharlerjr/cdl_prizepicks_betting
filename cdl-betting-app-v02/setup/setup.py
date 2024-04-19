@@ -310,7 +310,7 @@ def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame, rosters
     
     # Merge old props with new props
     new_props = pd.merge(
-        old_props, 
+        old_props.copy(), 
         new_props.drop("team_abbr", axis=1), 
         on=['player', 'prop'], 
         how = "outer", 
@@ -320,10 +320,10 @@ def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame, rosters
     # Merge with rosters to get teams and team_abbrs
     new_props = pd.merge(
         new_props.drop(["team", "team_abbr"], axis = 1), 
-        rosters, 
+        rosters.copy(), 
         on = "player", 
         how = "left"
-)
+    )  
 
     # Fill in missing values from new_props with corresponding values from old_props
     new_props['line'] = new_props['line_updated'].fillna(new_props['line_initial'])

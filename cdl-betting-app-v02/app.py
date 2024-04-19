@@ -353,6 +353,7 @@ app_ui = ui.page_sidebar(
     ui.layout_columns(
         # Kills Scoreboards
         ui.card(ui.output_data_frame("scoreboards")),
+        ui.card(ui.output_data_frame("show_player_props")),
         # ui.card(ui.output_data_frame("all_data")),
         # Col Widths: Spans full row
         # Row Height
@@ -652,6 +653,15 @@ def server(input, output, session):
                 gamemode(), 
                 input.map_name()
             ), 
+            filters = True, 
+            summary = False
+        )
+
+    # Test Render Player Props
+    @render.data_frame
+    def show_player_props():
+        return render.DataGrid(
+            player_props_df(),
             filters = True, 
             summary = False
         )
