@@ -27,6 +27,7 @@ def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_x: st
     return series_score_diffs_input
 
 # Function to create dataframe of kills for user-selected team & gamemode
+# Function to create dataframe of kills for user-selected team & gamemode
 def build_scoreboards(
         cdlDF_input: pd.DataFrame, team_x: str, team_y: str, gamemode_input: str, map_input = "All"
     ):
@@ -51,7 +52,7 @@ def build_scoreboards(
     team_x_scoreboard = \
         cdlDF_input[(cdlDF_input["team"] == team_x) & 
                     (cdlDF_input["gamemode"] == gamemode_input)] \
-            [["match_date", "match_id", "map_name", "team_abbr", "player", "kills", 
+            [["match_date", "match_id", "map_name", "map_num", "team_abbr", "player", "kills", 
               "deaths", "score_diff", "opp_abbr"]]
 
     # Get team_y scoreboards
@@ -59,14 +60,14 @@ def build_scoreboards(
         cdlDF_input[(cdlDF_input["team"] == team_y) & 
                     (cdlDF_input["gamemode"] == gamemode_input) &
                     (cdlDF_input["opp"] != team_x)] \
-            [["match_date", "match_id", "map_name", "team_abbr", "player", "kills", 
+            [["match_date", "match_id", "map_name", "map_num", "team_abbr", "player", "kills", 
               "deaths", "score_diff", "opp_abbr"]]
     
     # Combine scoreboards and reset index
     scoreboards = pd.concat([team_x_scoreboard, team_y_scoreboard], axis=0)
 
-    # Arrange by match_date and match_id
-    scoreboards = scoreboards.sort_values(by = ["match_date", "match_id"], ascending = [False, True]).reset_index(drop=True)
+    # Arrange by match_date, match_id, and map_num for later concatenation
+    scoreboards = scoreboards.sort_values(by = ["match_date", "match_id", "map_num"], ascending = [False, True, True]).reset_index(drop=True)
 
     # Add player data for opposing teams
 
@@ -83,7 +84,7 @@ def build_scoreboards(
             cdlDF_input[
                 (cdlDF_input["match_id"] == row["match_id"]) &
                 (cdlDF_input["team_abbr"] == row["opp_abbr"]) &
-                (cdlDF_input["gamemode"] == "Search & Destroy")
+                (cdlDF_input["gamemode"] == gamemode_input)
             ] \
             [["player", "kills", "deaths"]]
         ], 
@@ -93,6 +94,9 @@ def build_scoreboards(
 
     # Concatenate scoreboards & opponents 
     scoreboards = pd.concat([scoreboards, opponents], axis=1)
+
+    # Drop map_num
+    scoreboards = scoreboards.drop("map_num", axis = 1)
 
     # Rename columns
     scoreboards = scoreboards.rename(columns = {
