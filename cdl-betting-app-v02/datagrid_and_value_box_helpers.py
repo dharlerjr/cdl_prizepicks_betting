@@ -124,7 +124,7 @@ def compute_win_streak(
 ):
     # Get relevant columns and drop duplicates
     queried_df = cdlDF_input[
-        ["match_id", "match_date", "team", "gamemode", "map_name", "map_result"]
+        ["match_id", "match_date", "team", "gamemode", "map_name", "map_result", "map_num"]
     ] \
      .drop_duplicates()
     # Filter queried df by team, map, and mode
@@ -145,7 +145,7 @@ def compute_win_streak(
         return 0
     
     # Sort queried_df by date descending & reset index
-    queried_df = queried_df.sort_values("match_date", ascending = False) \
+    queried_df = queried_df.sort_values(by = ["match_date", "map_num"], ascending = [False, False] ) \
         .reset_index(drop=True)
     
     # Replace all losses with a -1
@@ -249,6 +249,7 @@ def player_over_under_percentage(
             (cdlDF_input["gamemode"] == gamemode_input) &
             (cdlDF_input["map_name"] == map_input)
         ]
+    
     # Get relevant columns and drop duplicates
     queried_df = queried_df[
         ["match_id", "kills", "gamemode", "map_name"]
@@ -267,4 +268,60 @@ def player_over_under_percentage(
         return "Over", str(over_percentage)
     else:
         return "Under", str(under_percentage)
+
+# Function to compete O/U streak
+def player_over_under_streak(
+        cdlDF_input: pd.DataFrame, player_input: str, 
+        gamemode_input: str, cur_line: float, map_input = "All"
+):
+    # Filter by given inputs
+    if map_input == "All":
+        queried_df = cdlDF_input[
+            (cdlDF_input["player"] == player_input) &
+            (cdlDF_input["gamemode"] == gamemode_input)
+        ]
+    else:
+        queried_df = cdlDF_input[
+            (cdlDF_input["player"] == player_input) &
+            (cdlDF_input["gamemode"] == gamemode_input) &
+            (cdlDF_input["map_name"] == map_input)
+        ]
     
+    # Get relevant columns and drop duplicates
+    queried_df = queried_df[
+        ["match_date", "kills", "map_num"]
+    ]
+
+    # If the dataframe is empty, return "Never Played"
+    if queried_df.empty:
+        return "Never Played", "Never Played"
+    
+    # Sort queried_df by date descending & reset index
+    queried_df = queried_df.sort_values(by = ["match_date", "map_num"], ascending = [False, False] ) \
+        .reset_index(drop=True)
+    
+    # Initialize streak and iterator
+    streak = 1
+    i = 1
+
+    # Compute starting over_under
+    start = queried_df.iloc[0, 1] - cur_line
+    if start >= 0:
+        start = "Over"
+    else:
+        start = "Under"
+
+    while i < len(queried_df):
+        if start == "Under":
+            if queried_df.iloc[i, 1] - cur_line > 0:
+                break
+            else:
+                streak += 1
+        else:
+            if queried_df.iloc[i, 1] - cur_line < 0:
+                break
+            else:
+                streak +=1
+        i += 1
+
+    return start, str(streak)

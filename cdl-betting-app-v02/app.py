@@ -165,7 +165,9 @@ app_ui = ui.page_sidebar(
                         ), 
                         ui.value_box(
                             title = "Streak", 
-                            value = "pass"
+                            value = ui.output_ui("player_1_ou_streak"), 
+                            showcase = ui.output_ui("change_player_1_ou_streak_icon"),
+                            showcase_layout="left center"
                         ), 
                         width = 1
                     ), 
@@ -186,7 +188,9 @@ app_ui = ui.page_sidebar(
                         ), 
                         ui.value_box(
                             title = "Streak", 
-                            value = "pass"
+                            value = ui.output_ui("player_2_ou_streak"), 
+                            showcase = ui.output_ui("change_player_2_ou_streak_icon"),
+                            showcase_layout="left center"
                         ), 
                         width = 1
                     ), 
@@ -207,7 +211,9 @@ app_ui = ui.page_sidebar(
                         ), 
                         ui.value_box(
                             title = "Streak", 
-                            value = "pass"
+                            value = ui.output_ui("player_3_ou_streak"), 
+                            showcase = ui.output_ui("change_player_3_ou_streak_icon"),
+                            showcase_layout="left center"
                         ), 
                         width = 1
                     ), 
@@ -228,7 +234,9 @@ app_ui = ui.page_sidebar(
                         ),
                         ui.value_box(
                             title = "Streak", 
-                            value = "pass"
+                            value = ui.output_ui("player_4_ou_streak"), 
+                            showcase = ui.output_ui("change_player_4_ou_streak_icon"),
+                            showcase_layout="left center"
                         ), 
                         width = 1
                     ), 
@@ -294,7 +302,9 @@ app_ui = ui.page_sidebar(
                         ), 
                         ui.value_box(
                             title = "Streak", 
-                            value = "pass"
+                            value = ui.output_ui("player_5_ou_streak"), 
+                            showcase = ui.output_ui("change_player_5_ou_streak_icon"),
+                            showcase_layout="left center"
                         ), 
                         width = 1
                     ), 
@@ -315,7 +325,9 @@ app_ui = ui.page_sidebar(
                         ), 
                         ui.value_box(
                             title = "Streak", 
-                            value = "pass"
+                            value = ui.output_ui("player_6_ou_streak"), 
+                            showcase = ui.output_ui("change_player_6_ou_streak_icon"),
+                            showcase_layout="left center"
                         ), 
                         width = 1
                     ), 
@@ -336,7 +348,9 @@ app_ui = ui.page_sidebar(
                         ), 
                         ui.value_box(
                             title = "Streak", 
-                            value = "pass"
+                            value = ui.output_ui("player_7_ou_streak"), 
+                            showcase = ui.output_ui("change_player_7_ou_streak_icon"),
+                            showcase_layout="left center"
                         ), 
                         width = 1
                     ), 
@@ -357,7 +371,9 @@ app_ui = ui.page_sidebar(
                         ), 
                         ui.value_box(
                             title = "Streak", 
-                            value = "pass"
+                            value = ui.output_ui("player_8_ou_streak"), 
+                            showcase = ui.output_ui("change_player_8_ou_streak_icon"),
+                            showcase_layout="left center"
                         ), 
                         width = 1
                     ), 
@@ -1210,5 +1226,213 @@ def server(input, output, session):
         else:
             return ICONS["chevron_down"]
         
+    # Player 1 O/U Streak
+    @render.ui
+    def player_1_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
+            gamemode(), 
+            player_1_line(), 
+            input.map_name()
+        )
+        return f"{ou} last {streak} maps"
+    
+    # Player 2 O/U Streak
+    @render.ui
+    def player_2_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'], 
+            gamemode(), 
+            player_2_line(), 
+            input.map_name()
+        )
+        return f"{ou} last {streak} maps"
+    
+    # Player 3 O/U Streak
+    @render.ui
+    def player_3_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'], 
+            gamemode(), 
+            player_3_line(), 
+            input.map_name()
+        )
+        return f"{ou} last {streak} maps"
+    
+    # Player 4 O/U Streak
+    @render.ui
+    def player_4_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
+            gamemode(), 
+            player_4_line(), 
+            input.map_name()
+        )
+        return f"{ou} last {streak} maps"
+    
+    # Player 5 O/U Streak
+    @render.ui
+    def player_5_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
+            gamemode(), 
+            player_5_line(), 
+            input.map_name()
+        )
+        return f"{ou} last {streak} maps"
+    
+    # Player 6 O/U Streak
+    @render.ui
+    def player_6_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
+            gamemode(), 
+            player_6_line(), 
+            input.map_name()
+        )
+        return f"{ou} last {streak} maps"
+    
+    # Player 7 O/U Streak
+    @render.ui
+    def player_7_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
+            gamemode(), 
+            player_7_line(), 
+            input.map_name()
+        )
+        return f"{ou} last {streak} maps"
+    
+    # Player 8 O/U Streak
+    @render.ui
+    def player_8_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
+            gamemode(), 
+            player_8_line(), 
+            input.map_name()
+        )
+        return f"{ou} last {streak} maps"
+        
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_1_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
+            gamemode(), 
+            player_1_line(), 
+            input.map_name()
+        )[0]
+        icon = ICONS["crosshairs"]
+        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
+        return icon
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_2_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'], 
+            gamemode(), 
+            player_2_line(), 
+            input.map_name()
+        )[0]
+        icon = ICONS["crosshairs"]
+        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
+        return icon
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_3_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'], 
+            gamemode(), 
+            player_3_line(), 
+            input.map_name()
+        )[0]
+        icon = ICONS["crosshairs"]
+        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
+        return icon
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_4_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
+            gamemode(), 
+            player_4_line(), 
+            input.map_name()
+        )[0]
+        icon = ICONS["crosshairs"]
+        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
+        return icon
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_5_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
+            gamemode(), 
+            player_5_line(), 
+            input.map_name()
+        )[0]
+        icon = ICONS["crosshairs"]
+        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
+        return icon
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_6_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
+            gamemode(), 
+            player_6_line(), 
+            input.map_name()
+        )[0]
+        icon = ICONS["crosshairs"]
+        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
+        return icon
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_7_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
+            gamemode(), 
+            player_7_line(), 
+            input.map_name()
+        )[0]
+        icon = ICONS["crosshairs"]
+        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
+        return icon
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_8_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
+            gamemode(), 
+            player_8_line(), 
+            input.map_name()
+        )[0]
+        icon = ICONS["crosshairs"]
+        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
+        return icon
+
 
 app = App(app_ui, server)
