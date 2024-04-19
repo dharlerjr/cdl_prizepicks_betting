@@ -90,18 +90,21 @@ def team_score_diffs(
         cdlDF_input: pd.DataFrame, team_input: str, 
         gamemode_input: str, map_input = "All"
 ):
+    
+    # Create a copy of cdlDF_input
+    queried_df = cdlDF_input.copy()
 
     # If user selected all maps    
     if map_input == "All":
     
         # Filter data based on user inputs
-        filtered_df = \
-        cdlDF_input[(cdlDF_input['gamemode'] == gamemode_input) & \
-                (cdlDF_input['team'] == team_input)] \
+        queried_df = \
+        queried_df[(queried_df['gamemode'] == gamemode_input) & \
+                (queried_df['team'] == team_input)] \
                 [['match_id', 'map_name', 'score_diff']].drop_duplicates()
         
         # Initialize facets
-        p = sns.FacetGrid(filtered_df, col = "map_name", col_wrap = 3)
+        p = sns.FacetGrid(queried_df, col = "map_name", col_wrap = 3)
 
         # Histogram for Hardpoint
         if gamemode_input == "Hardpoint":
@@ -129,10 +132,10 @@ def team_score_diffs(
     else:
 
         # Filter data based on user inputs, including map
-        filtered_df = \
-        cdlDF_input[(cdlDF_input['gamemode'] == gamemode_input) & \
-                (cdlDF_input['team'] == team_input) & \
-                (cdlDF_input["map_name"] == map_input)] \
+        queried_df = \
+        queried_df[(queried_df['gamemode'] == gamemode_input) & \
+                (queried_df['team'] == team_input) & \
+                (queried_df["map_name"] == map_input)] \
                 [['match_id', 'map_name', 'score_diff']].drop_duplicates()
         
         # Histogram for Hardpoint
@@ -140,7 +143,7 @@ def team_score_diffs(
 
           # Plot the histogram
           p = sns.histplot(
-              data = filtered_df, x = "score_diff", 
+              data = queried_df, x = "score_diff", 
               binwidth = 50, binrange = (-150, 150)
               )
         
@@ -148,7 +151,7 @@ def team_score_diffs(
         else:
            
           # Plot the bar chart
-          p = sns.histplot(data = filtered_df, x = "score_diff", discrete = True, 
+          p = sns.histplot(data = queried_df, x = "score_diff", discrete = True, 
                            binrange = gamemode_bin_ranges[gamemode_input])
         
         # Title
@@ -163,14 +166,14 @@ def team_score_diffs(
 # Distribution of Series Differentials by Team
 def team_series_diffs(series_score_diffs_input: pd.DataFrame, team_input: str):
 
-    filtered_df = \
+    queried_df = \
         series_score_diffs_input[
             series_score_diffs_input["team"] == team_input
-            ]
+            ].copy()
 
     # Plot the histogram
     p = sns.histplot(
-        data = filtered_df, x = "series_score_diff", discrete = True
+        data = queried_df, x = "series_score_diff", discrete = True
         )
         
     # Title
@@ -185,29 +188,32 @@ def player_kills_overview(
         cdlDF_input: pd.DataFrame, player_input: str, gamemode_input: str, 
         cur_line: float, map_input = "All"
 ):
+    
+    # Create a copy of cdlDF_input
+    queried_df = cdlDF_input.copy()
 
     # If user selected all maps
     if map_input == "All":
 
         # Filter data based on user inputs
-        filtered_df = \
-            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
-            (cdlDF_input["player"] == player_input)]
+        queried_df = \
+            queried_df[(queried_df["gamemode"] == gamemode_input) & \
+            (queried_df["player"] == player_input)]
 
     # User selected only one map
     else:
 
         # Filter data based on user inputs, including map
-        filtered_df = \
-            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
-            (cdlDF_input["player"] == player_input) & \
-            (cdlDF_input["map_name"] == map_input)]
+        queried_df = \
+            queried_df[(queried_df["gamemode"] == gamemode_input) & \
+            (queried_df["player"] == player_input) & \
+            (queried_df["map_name"] == map_input)]
         
     # Plot the boxplot
-    sns.boxplot(filtered_df, y =  "kills", fill = False)
+    sns.boxplot(queried_df, y =  "kills", fill = False)
     
     # Add in points to show each observation
-    sns.stripplot(filtered_df, y = "kills", jitter = 0.05)
+    sns.stripplot(queried_df, y = "kills", jitter = 0.05)
 
     # Add current PrizePicks lines
     plt.axhline(y = cur_line, color = "purple", linestyle = '--')
@@ -218,26 +224,29 @@ def player_kills_vs_time(
         cdlDF_input: pd.DataFrame, player_input: str,
           gamemode_input: str, cur_line: float, map_input = "All"
 ):
+    
+    # Create a copy of cdlDF_input
+    queried_df = cdlDF_input.copy()
 
     # If user selects all maps
     if map_input == "All":
         
-        filtered_df = \
-            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
-                (cdlDF_input["player"] == player_input)]
+        queried_df = \
+            queried_df[(queried_df["gamemode"] == gamemode_input) & \
+                (queried_df["player"] == player_input)]
 
     # If user selects only one map
     else:
 
-        filtered_df = \
-            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
-                (cdlDF_input["player"] == player_input) & \
-                (cdlDF_input["map_name"] == map_input)]
+        queried_df = \
+            queried_df[(queried_df["gamemode"] == gamemode_input) & \
+                (queried_df["player"] == player_input) & \
+                (queried_df["map_name"] == map_input)]
         
     
     # Create the line chart 
     sns.scatterplot(
-        filtered_df, x = "match_date", y = "kills"
+        queried_df, x = "match_date", y = "kills"
         )
     
     # Add current PrizePicks lines
@@ -250,25 +259,28 @@ def player_kills_vs_score_diff(
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
     
+    # Create a copy of cdlDF_input
+    queried_df = cdlDF_input.copy()
+    
     # If user selects all maps
     if map_input == "All":
         
-        filtered_df = \
-            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
-                (cdlDF_input["player"] == player_input)]
+        queried_df = \
+            queried_df[(queried_df["gamemode"] == gamemode_input) & \
+                (queried_df["player"] == player_input)]
 
     # If user selects only one map
     else:
 
-        filtered_df = \
-            cdlDF_input[(cdlDF_input["gamemode"] == gamemode_input) & \
-                (cdlDF_input["player"] == player_input) & \
-                (cdlDF_input["map_name"] == map_input)]
+        queried_df = \
+            queried_df[(queried_df["gamemode"] == gamemode_input) & \
+                (queried_df["player"] == player_input) & \
+                (queried_df["map_name"] == map_input)]
         
     
     # Create the scatterplot with lowess model
     sns.regplot(
-        filtered_df, x = "score_diff", y = "kills", lowess = True
+        queried_df, x = "score_diff", y = "kills", lowess = True
         )
     
     # Add current PrizePicks lines
