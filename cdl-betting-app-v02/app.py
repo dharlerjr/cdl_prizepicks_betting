@@ -155,52 +155,84 @@ app_ui = ui.page_sidebar(
                 "1", 
                 ui.layout_columns(
                     ui.output_plot("player_1_box", width = "200px"), 
-                    ui.output_plot("player_1_scatter", width = "600px"), 
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_1_ou"),
-                        showcase = ui.output_ui("player_1_ou_icon"), 
-                        showcase_layout="left center"
-                    )
+                    ui.output_plot("player_1_scatter"), 
+                    ui.layout_column_wrap(
+                        ui.value_box(
+                            title = "O/U", 
+                            value = ui.output_ui("player_1_ou"),
+                            showcase = ui.output_ui("player_1_ou_icon"), 
+                            showcase_layout="left center"
+                        ), 
+                        ui.value_box(
+                            title = "Streak", 
+                            value = "pass"
+                        ), 
+                        width = 1
+                    ), 
+                    height = "400px"
                 )
             ), 
             ui.nav_panel(                
                 "2", 
                 ui.layout_columns(
                     ui.output_plot("player_2_box", width = "200px"), 
-                    ui.output_plot("player_2_scatter", width = "600px"), 
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_2_ou"),
-                        showcase = ui.output_ui("player_2_ou_icon"), 
-                        showcase_layout="left center"
-                    )
+                    ui.output_plot("player_2_scatter"), 
+                    ui.layout_column_wrap(
+                        ui.value_box(
+                            title = "O/U", 
+                            value = ui.output_ui("player_2_ou"),
+                            showcase = ui.output_ui("player_2_ou_icon"), 
+                            showcase_layout="left center"
+                        ), 
+                        ui.value_box(
+                            title = "Streak", 
+                            value = "pass"
+                        ), 
+                        width = 1
+                    ), 
+                    height = "400px"
                 ), 
             ),
             ui.nav_panel(                
                 "3", 
                 ui.layout_columns(
                     ui.output_plot("player_3_box", width = "200px"), 
-                    ui.output_plot("player_3_scatter", width = "600px"),
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_3_ou"),
-                        showcase = ui.output_ui("player_3_ou_icon"), 
-                        showcase_layout="left center"
-                    )
+                    ui.output_plot("player_3_scatter"),
+                    ui.layout_column_wrap(
+                        ui.value_box(
+                            title = "O/U", 
+                            value = ui.output_ui("player_3_ou"),
+                            showcase = ui.output_ui("player_3_ou_icon"), 
+                            showcase_layout="left center"
+                        ), 
+                        ui.value_box(
+                            title = "Streak", 
+                            value = "pass"
+                        ), 
+                        width = 1
+                    ), 
+                    height = "400px"
                 ), 
             ),
             ui.nav_panel(                
                 "4", 
                 ui.layout_columns(
                     ui.output_plot("player_4_box", width = "200px"), 
-                    ui.output_plot("player_4_scatter", width = "600px"), 
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_4_ou"),
-                        showcase = ui.output_ui("player_4_ou_icon"), 
-                        showcase_layout="left center"
-                    )
+                    ui.output_plot("player_4_scatter"), 
+                    ui.layout_column_wrap(
+                        ui.value_box(
+                            title = "O/U", 
+                            value = ui.output_ui("player_4_ou"),
+                            showcase = ui.output_ui("player_4_ou_icon"), 
+                            showcase_layout="left center"
+                        ),
+                        ui.value_box(
+                            title = "Streak", 
+                            value = "pass"
+                        ), 
+                        width = 1
+                    ), 
+                    height = "400px"
                 )
             ), 
         )
@@ -252,56 +284,90 @@ app_ui = ui.page_sidebar(
                 "1", 
                 ui.layout_columns(
                     ui.output_plot("player_5_box", width = "200px"), 
-                    ui.output_plot("player_5_scatter", width = "600px"), 
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_5_ou"),
-                        showcase = ui.output_ui("player_5_ou_icon"), 
-                        showcase_layout="left center"
-                    )
+                    ui.output_plot("player_5_scatter"), 
+                    ui.layout_column_wrap(
+                        ui.value_box(
+                            title = "O/U", 
+                            value = ui.output_ui("player_5_ou"),
+                            showcase = ui.output_ui("player_5_ou_icon"), 
+                            showcase_layout="left center"
+                        ), 
+                        ui.value_box(
+                            title = "Streak", 
+                            value = "pass"
+                        ), 
+                        width = 1
+                    ), 
+                    height = "400px"
                 )
             ), 
             ui.nav_panel(                
                 "2", 
                 ui.layout_columns(
                     ui.output_plot("player_6_box", width = "200px"), 
-                    ui.output_plot("player_6_scatter", width = "600px"), 
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_6_ou"),
-                        showcase = ui.output_ui("player_6_ou_icon"), 
-                        showcase_layout="left center"
-                    )
+                    ui.output_plot("player_6_scatter"), 
+                    ui.layout_column_wrap(
+                        ui.value_box(
+                            title = "O/U", 
+                            value = ui.output_ui("player_6_ou"),
+                            showcase = ui.output_ui("player_6_ou_icon"), 
+                            showcase_layout="left center"
+                        ), 
+                        ui.value_box(
+                            title = "Streak", 
+                            value = "pass"
+                        ), 
+                        width = 1
+                    ), 
+                    height = "400px"
                 )
             ), 
             ui.nav_panel(                
                 "3", 
                 ui.layout_columns(
                     ui.output_plot("player_7_box", width = "200px"), 
-                    ui.output_plot("player_7_scatter", width = "600px"), 
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_7_ou"),
-                        showcase = ui.output_ui("player_7_ou_icon"), 
-                        showcase_layout="left center"
-                    )
+                    ui.output_plot("player_7_scatter"), 
+                    ui.layout_column_wrap(
+                        ui.value_box(
+                            title = "O/U", 
+                            value = ui.output_ui("player_7_ou"),
+                            showcase = ui.output_ui("player_7_ou_icon"), 
+                            showcase_layout="left center"
+                        ), 
+                        ui.value_box(
+                            title = "Streak", 
+                            value = "pass"
+                        ), 
+                        width = 1
+                    ), 
+                    height = "400px"
                 )
             ), 
             ui.nav_panel(                
                 "4", 
                 ui.layout_columns(
                     ui.output_plot("player_8_box", width = "200px"), 
-                    ui.output_plot("player_8_scatter", width = "600px"), 
-                    ui.value_box(
-                        title = "O/U", 
-                        value = ui.output_ui("player_8_ou"),
-                        showcase = ui.output_ui("player_8_ou_icon"), 
-                        showcase_layout="left center"
-                    )
+                    ui.output_plot("player_8_scatter"), 
+                    ui.layout_column_wrap(
+                        ui.value_box(
+                            title = "O/U", 
+                            value = ui.output_ui("player_8_ou"),
+                            showcase = ui.output_ui("player_8_ou_icon"), 
+                            showcase_layout="left center"
+                        ), 
+                        ui.value_box(
+                            title = "Streak", 
+                            value = "pass"
+                        ), 
+                        width = 1
+                    ), 
+                    height = "400px"
                 )
             )
         ),
         # Col Widths: Spans Full Page
+        # Max Height
+        max_height = "400px"
     ),
 
     # Fifth row: Kills Scoreboards
@@ -813,7 +879,7 @@ def server(input, output, session):
         else:
             return player_kills_vs_score_diff(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
                 gamemode(), 
                 player_5_line(),
                 input.map_name()
