@@ -16,8 +16,12 @@ dropped_players = [
     "GodRx", "iLLeY", "JurNii", "Owakening", "SlasheR", "Vivid"
 ]
 
-# List of players who changed teams
-changed_players = ["Asim", "Standy", "ReeaL"]
+# Dictionary of players who changed teams
+changed_players = {
+    "Asim": "BOS", 
+    "ReeaL": "CAR", 
+    "Standy": "LV"
+}
 
 # Function to load and clean cdl data and return as pandas dataframe
 def load_and_clean_cdl_data():
@@ -246,31 +250,16 @@ def filter_players(cdlDF_input):
     # Remove dropped players, excluding players who switched teams
     cdlDF_input = cdlDF_input[~cdlDF_input['player'].isin(dropped_players)]
 
-    # Update team info for "Standy"
-    cdlDF_input.loc[cdlDF_input['player'] == 'Standy', 'team'] = 'Minnesota ROKKR'
-    cdlDF_input.loc[cdlDF_input['player'] == 'Standy', 'team_abbr'] = 'MIN'
-    cdlDF_input.loc[cdlDF_input['player'] == 'Standy', 'team_icon'] = 'ROKKR'
-
-    # Update team info for "ReeaL"
-    cdlDF_input.loc[cdlDF_input['player'] == 'ReeaL', 'team'] = 'Miami Heretics'
-    cdlDF_input.loc[cdlDF_input['player'] == 'ReeaL', 'team_abbr'] = 'MIA'
-    cdlDF_input.loc[cdlDF_input['player'] == 'ReeaL', 'team_icon'] = 'Heretics'
-
-    # Update team info for "Asim"
-    cdlDF_input.loc[cdlDF_input['player'] == 'Asim', 'team'] = 'Las Vegas Legion'
-    cdlDF_input.loc[cdlDF_input['player'] == 'Asim', 'team_abbr'] = 'LV'
-    cdlDF_input.loc[cdlDF_input['player'] == 'Asim', 'team_icon'] = 'Legion'
-
-    # Change FelonY's player name to FeLo to match PrizePicks
-    cdlDF_input.loc[cdlDF_input['player'] == 'FelonY', 'player'] = 'FeLo'
-
     return cdlDF_input
 
 # Funciton to build rosters AFTER players have been filtered
 def build_rosters(cdlDF_input: pd.DataFrame):
     rostersDF = cdlDF_input[["player", "team", "team_abbr"]].drop_duplicates().sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
-    rostersDF = rostersDF.reset_index()
-    rostersDF = rostersDF.drop("index", axis = 1)
+    # Filter for players who changed teams
+    for player, old_team in changed_players.items():
+        rostersDF = rostersDF[~((rostersDF['player'] == player) & (rostersDF['team_abbr'] == old_team))]
+    # Reset index & return
+    rostersDF = rostersDF.reset_index(drop=True)
     return rostersDF
 
 # Build initial player props for app.py
