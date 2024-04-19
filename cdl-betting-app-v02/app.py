@@ -391,7 +391,7 @@ app_ui = ui.page_sidebar(
         # ui.markdown("** **"),
         # Kills Scoreboards
         ui.card(ui.output_data_frame("scoreboards")),
-        ui.card(ui.output_data_frame("all_data")),
+        # ui.card(ui.output_data_frame("all_data")),
         # ui.markdown("** **"),
         # Col Widths
         # col_widths = [2, 8, 2], 
@@ -660,13 +660,13 @@ def server(input, output, session):
         )
     
     # Test render all cdlDF
-    @render.data_frame
-    def all_data():
-        return render.DataGrid(
-            cdlDF,
-            filters = True, 
-            summary = False
-        )
+    # @render.data_frame
+    # def all_data():
+    #     return render.DataGrid(
+    #         cdlDF,
+    #         filters = True, 
+    #         summary = False
+    #     )
 
     # Team A Score Differentials Histogram
     @render.plot
