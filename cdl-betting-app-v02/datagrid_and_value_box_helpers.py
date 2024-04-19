@@ -107,7 +107,7 @@ def build_scoreboards(
         "player": "Player",
         "kills": "Kills", 
         "deaths": "Deaths", 
-        "score_diff": "Score Differential",
+        "score_diff": "Margin",
         "opp_abbr": "Opponent"
     })
 

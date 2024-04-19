@@ -44,7 +44,9 @@ team_logos = {
 
 # Dictionary of faicons for value boxes
 ICONS = {
-    "crosshairs": fa.icon_svg("crosshairs"), 
+    "red_crosshairs": fa.icon_svg("crosshairs").add_class("text-danger"), 
+    "green_crosshairs": fa.icon_svg("crosshairs").add_class("text-success"), 
+    "crosshairs": fa.icon_svg("crosshairs"),
     "percent": fa.icon_svg("percent"), 
     "headset": fa.icon_svg("headset"), 
     "plus": fa.icon_svg("plus"), 
@@ -56,22 +58,20 @@ ICONS = {
 # Major 3 Qualifiers Start Date (String)
 start_date = '2024-04-12' 
 
-# Load in data
+# Load in four instance of cdl data for testing
 cdlDF = load_and_clean_cdl_data()
-cdlDF
 
 # Build series summaries
-series_score_diffs = build_series_summaries(cdlDF)
+series_score_diffs = build_series_summaries(cdlDF).copy()
 
 # Filter maps from cdlDF
 cdlDF = filter_maps(cdlDF)
 
 # Build team summaries
-team_summaries_DF = build_team_summaries(cdlDF)
-team_summaries_DF
+team_summaries_DF = build_team_summaries(cdlDF).copy()
 
 # Build rosters
-rostersDF = build_rosters(cdlDF)
+rostersDF = build_rosters(cdlDF).copy()
 
 # Compute CDL Standings for Major III Qualifiers
 current_standings = \
@@ -83,10 +83,10 @@ current_standings = \
         wins = ("series_result", lambda x: sum(x)), 
         losses = ("series_result", lambda x: len(x) - sum(x))
     ) \
-    .reset_index()
+    .reset_index().copy()
 
 # Initialize player props dataframe
-initial_player_props = build_intial_props(rostersDF)
+initial_player_props = build_intial_props(rostersDF).copy()
 
 # Define ui
 app_ui = ui.page_sidebar(   
@@ -1236,7 +1236,7 @@ def server(input, output, session):
             player_1_line(), 
             input.map_name()
         )
-        return f"{ou} last {streak} maps"
+        return f"{ou} {streak}"
     
     # Player 2 O/U Streak
     @render.ui
@@ -1248,7 +1248,7 @@ def server(input, output, session):
             player_2_line(), 
             input.map_name()
         )
-        return f"{ou} last {streak} maps"
+        return f"{ou} {streak}"
     
     # Player 3 O/U Streak
     @render.ui
@@ -1260,7 +1260,7 @@ def server(input, output, session):
             player_3_line(), 
             input.map_name()
         )
-        return f"{ou} last {streak} maps"
+        return f"{ou} {streak}"
     
     # Player 4 O/U Streak
     @render.ui
@@ -1272,7 +1272,7 @@ def server(input, output, session):
             player_4_line(), 
             input.map_name()
         )
-        return f"{ou} last {streak} maps"
+        return f"{ou} {streak}"
     
     # Player 5 O/U Streak
     @render.ui
@@ -1284,7 +1284,7 @@ def server(input, output, session):
             player_5_line(), 
             input.map_name()
         )
-        return f"{ou} last {streak} maps"
+        return f"{ou} {streak}"
     
     # Player 6 O/U Streak
     @render.ui
@@ -1296,7 +1296,7 @@ def server(input, output, session):
             player_6_line(), 
             input.map_name()
         )
-        return f"{ou} last {streak} maps"
+        return f"{ou} {streak}"
     
     # Player 7 O/U Streak
     @render.ui
@@ -1308,7 +1308,7 @@ def server(input, output, session):
             player_7_line(), 
             input.map_name()
         )
-        return f"{ou} last {streak} maps"
+        return f"{ou} {streak}"
     
     # Player 8 O/U Streak
     @render.ui
@@ -1320,7 +1320,7 @@ def server(input, output, session):
             player_8_line(), 
             input.map_name()
         )
-        return f"{ou} last {streak} maps"
+        return f"{ou} {streak}"
         
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
@@ -1332,9 +1332,7 @@ def server(input, output, session):
             player_1_line(), 
             input.map_name()
         )[0]
-        icon = ICONS["crosshairs"]
-        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
-        return icon
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
@@ -1346,9 +1344,7 @@ def server(input, output, session):
             player_2_line(), 
             input.map_name()
         )[0]
-        icon = ICONS["crosshairs"]
-        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
-        return icon
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
@@ -1360,9 +1356,7 @@ def server(input, output, session):
             player_3_line(), 
             input.map_name()
         )[0]
-        icon = ICONS["crosshairs"]
-        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
-        return icon
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
@@ -1374,9 +1368,7 @@ def server(input, output, session):
             player_4_line(), 
             input.map_name()
         )[0]
-        icon = ICONS["crosshairs"]
-        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
-        return icon
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
@@ -1388,9 +1380,7 @@ def server(input, output, session):
             player_5_line(), 
             input.map_name()
         )[0]
-        icon = ICONS["crosshairs"]
-        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
-        return icon
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
@@ -1402,9 +1392,7 @@ def server(input, output, session):
             player_6_line(), 
             input.map_name()
         )[0]
-        icon = ICONS["crosshairs"]
-        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
-        return icon
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
@@ -1416,9 +1404,7 @@ def server(input, output, session):
             player_7_line(), 
             input.map_name()
         )[0]
-        icon = ICONS["crosshairs"]
-        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
-        return icon
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
@@ -1430,9 +1416,7 @@ def server(input, output, session):
             player_8_line(), 
             input.map_name()
         )[0]
-        icon = ICONS["crosshairs"]
-        icon.add_class(f"text-{('danger' if start == 'Under' else 'success')}")
-        return icon
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
 
 
 app = App(app_ui, server)
