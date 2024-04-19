@@ -78,28 +78,42 @@ def build_scoreboards(
     # Add player data for opposing teams
 
     # Build dataframe of unique match_ids and opponents
-    # matches = scoreboards[["match_id", "opp_abbr"]].drop_duplicates().reset_index(drop=True)
+    matches = scoreboards[["match_id", "opp_abbr"]].drop_duplicates().reset_index(drop=True).copy()
 
-    # # # Initialize opponents dataframe
-    # opponents = pd.DataFrame()
+    # Initialize opponents dataframe
+    opponents = pd.DataFrame()
 
-    # # Loop through matches and append player data  
-    # for index, row in matches.iterrows():
-    #     opponents = pd.concat([
-    #         opponents, 
-    #         cdlDF_copy[
-    #             (cdlDF_copy["match_id"] == row["match_id"]) &
-    #             (cdlDF_copy["team_abbr"] == row["opp_abbr"]) &
-    #             (cdlDF_copy["gamemode"] == gamemode_input)
-    #         ] \
-    #         [["player", "kills", "deaths"]]
-    #     ], 
-    #     axis=0)
+    # Loop through matches and append player data  
+    for index, row in matches.iterrows():
+        opponents = pd.concat([
+            opponents, 
+            cdlDF_copy[
+                (cdlDF_copy["match_id"] == row["match_id"]) &
+                (cdlDF_copy["team_abbr"] == row["opp_abbr"]) &
+                (cdlDF_copy["gamemode"] == gamemode_input)
+            ] \
+                [["match_date", "match_id", "map_num", "player", "kills", 
+                  "deaths"]]
+        ], 
+        axis=0)
 
-    # opponents = opponents.reset_index(drop=True)
+    # Arrange by match_date, match_id, and map_num for later concatenation
+    opponents = opponents.sort_values(by = ["match_date", "match_id", "map_num"], ascending = [False, True, True]).reset_index(drop=True)
+
+    # Rename opponent columns
+    opponents = opponents.rename(columns = {
+        "player": "Player ",
+        "kills": "Kills ", 
+        "deaths": "Deaths ", 
+    })
 
     # # Concatenate scoreboards & opponents 
-    # scoreboards = pd.concat([scoreboards, opponents], axis=1)
+    scoreboards = pd.concat(
+        [
+            scoreboards, 
+            opponents.drop(["match_date", "match_id", "map_num"], axis = 1).reset_index(drop=True)
+        ], 
+        axis=1)
 
     # Drop map_num
     scoreboards = scoreboards.drop("map_num", axis = 1)
@@ -118,8 +132,8 @@ def build_scoreboards(
     })
 
     # Drop Map column if only one map
-    #if map_input != "All":
-    #    scoreboards = scoreboards.drop("Map", axis = 1)
+    if map_input != "All":
+        scoreboards = scoreboards.drop("Map", axis = 1)
     
     return scoreboards
 

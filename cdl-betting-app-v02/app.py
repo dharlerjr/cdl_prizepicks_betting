@@ -388,13 +388,10 @@ app_ui = ui.page_sidebar(
 
     # Fifth row: Kills Scoreboards
     ui.layout_columns(
-        # ui.markdown("** **"),
         # Kills Scoreboards
         ui.card(ui.output_data_frame("scoreboards")),
         # ui.card(ui.output_data_frame("all_data")),
-        # ui.markdown("** **"),
-        # Col Widths
-        # col_widths = [2, 8, 2], 
+        # Col Widths: Spans full row
         # Row Height
         height = "400px"
     ),
