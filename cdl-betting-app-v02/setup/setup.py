@@ -112,6 +112,9 @@ def load_and_clean_cdl_data():
     
     # Convert match_date column to datetime
     cdlDF["match_date"] = pd.to_datetime(cdlDF['match_date'])
+
+    # Change FeLo's player name to match PrizePicks
+    cdlDF.loc[cdlDF['player'] == 'FelonY', 'player'] = 'FeLo'
     
     return cdlDF
 

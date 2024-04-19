@@ -247,44 +247,7 @@ app_ui = ui.page_sidebar(
         # Col Widths: Spans Full Page
     ),
 
-    # Third row: Value Boxes containing Map Win %s, Win Streaks, & H2H
-    ui.layout_columns(
-        # Team A Win Streak
-        ui.value_box(
-            title = ui.output_ui("team_a_win_streak_title"),
-            value = ui.output_ui("team_a_win_streak"),
-            showcase = ui.output_ui("change_team_a_win_streak_icon")
-        ), 
-        # Team A Win % 
-        ui.value_box(
-            title = ui.output_ui("team_a_map_record_title"),
-            value = ui.output_ui("team_a_map_record"),
-            showcase = ICONS["percent"]
-        ), 
-        # H2H W - L
-        ui.value_box(
-            title = ui.output_ui("map_h2h_title"),
-            value = ui.output_ui("h2h_map_record"),
-            showcase = ICONS["crosshairs"]
-        ),
-        # Team B Win %
-            ui.value_box(
-                title = ui.output_ui("team_b_map_record_title"),
-                value = ui.output_ui("team_b_map_record"),
-                showcase = ICONS["percent"]
-            ), 
-        # Team B Win Streak
-        ui.value_box(
-            title = ui.output_ui("team_b_win_streak_title"),
-            value = ui.output_ui("team_b_win_streak"),
-            showcase = ui.output_ui("change_team_b_win_streak_icon")
-        ),
-        # Col Widths: Automatic  
-        # Row Height
-        height = "180px"
-    ),
-
-    # Fourth row: Team B Player Kills Plots & O/U %
+    # Third row: Team B Player Kills Plots & O/U %
     ui.layout_columns(
         # Card with Pill Tabset of Plots
         ui.navset_card_pill(
@@ -386,7 +349,7 @@ app_ui = ui.page_sidebar(
         max_height = "400px"
     ),
 
-    # Fifth row: Kills Scoreboards
+    # Fourth row: Kills Scoreboards
     ui.layout_columns(
         # Kills Scoreboards
         ui.card(ui.output_data_frame("scoreboards")),
@@ -394,6 +357,43 @@ app_ui = ui.page_sidebar(
         # Col Widths: Spans full row
         # Row Height
         height = "400px"
+    ),
+
+    # Fifth row: Value Boxes containing Map Win %s, Win Streaks, & H2H
+    ui.layout_columns(
+        # Team A Win Streak
+        ui.value_box(
+            title = ui.output_ui("team_a_win_streak_title"),
+            value = ui.output_ui("team_a_win_streak"),
+            showcase = ui.output_ui("change_team_a_win_streak_icon")
+        ), 
+        # Team A Win % 
+        ui.value_box(
+            title = ui.output_ui("team_a_map_record_title"),
+            value = ui.output_ui("team_a_map_record"),
+            showcase = ICONS["percent"]
+        ), 
+        # H2H W - L
+        ui.value_box(
+            title = ui.output_ui("map_h2h_title"),
+            value = ui.output_ui("h2h_map_record"),
+            showcase = ICONS["crosshairs"]
+        ),
+        # Team B Win %
+            ui.value_box(
+                title = ui.output_ui("team_b_map_record_title"),
+                value = ui.output_ui("team_b_map_record"),
+                showcase = ICONS["percent"]
+            ), 
+        # Team B Win Streak
+        ui.value_box(
+            title = ui.output_ui("team_b_win_streak_title"),
+            value = ui.output_ui("team_b_win_streak"),
+            showcase = ui.output_ui("change_team_b_win_streak_icon")
+        ),
+        # Col Widths: Automatic  
+        # Row Height
+        height = "180px"
     ),
 
     # Sixth row: Map & Mode Differentials

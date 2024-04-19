@@ -329,7 +329,7 @@ def player_over_under_streak(
 
     # If the dataframe is empty, return "Never Played"
     if queried_df.empty:
-        return "Never Played", "Never Played"
+        return "Never Played", " "
     
     # Sort queried_df by date descending & reset index
     queried_df = queried_df.sort_values(by = ["match_date", "map_num"], ascending = [False, False] ) \
