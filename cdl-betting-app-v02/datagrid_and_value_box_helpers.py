@@ -118,8 +118,8 @@ def build_scoreboards(
     })
 
     # Drop Map column if only one map
-    if map_input != "All":
-        scoreboards = scoreboards.drop("Map", axis = 1)
+    #if map_input != "All":
+    #    scoreboards = scoreboards.drop("Map", axis = 1)
     
     return scoreboards
 
