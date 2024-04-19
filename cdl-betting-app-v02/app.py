@@ -70,8 +70,7 @@ cdlDF = filter_maps(cdlDF)
 team_summaries_DF = build_team_summaries(cdlDF)
 team_summaries_DF
 
-# Filter players from cdlDF & build rosters
-cdlDF = filter_players(cdlDF)
+# Build rosters
 rostersDF = build_rosters(cdlDF)
 
 # Compute CDL Standings for Major III Qualifiers

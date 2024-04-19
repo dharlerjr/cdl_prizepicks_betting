@@ -244,17 +244,11 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
     
     return team_summaries_DF
 
-# Function to filter players from cdlDF
-def filter_players(cdlDF_input):
-    
-    # Remove dropped players, excluding players who switched teams
-    cdlDF_input = cdlDF_input[~cdlDF_input['player'].isin(dropped_players)]
-
-    return cdlDF_input
-
 # Funciton to build rosters AFTER players have been filtered
 def build_rosters(cdlDF_input: pd.DataFrame):
     rostersDF = cdlDF_input[["player", "team", "team_abbr"]].drop_duplicates().sort_values(by = ["team", "player"], key = lambda x: x.str.lower())
+    # Remove dropped players, excluding players who switched teams
+    rostersDF = rostersDF[~rostersDF['player'].isin(dropped_players)]
     # Filter for players who changed teams
     for player, old_team in changed_players.items():
         rostersDF = rostersDF[~((rostersDF['player'] == player) & (rostersDF['team_abbr'] == old_team))]
