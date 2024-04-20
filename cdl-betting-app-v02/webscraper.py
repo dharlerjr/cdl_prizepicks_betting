@@ -62,7 +62,7 @@ def scrape_prizepicks():
 
     # Get the stat container and various stats 
     stat_container = WebDriverWait(driver,
-                                1).until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
+                                15).until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
     categories = driver.find_element(By.CSS_SELECTOR, ".stat-container").text.split('\n')
 
     # Remove Maps 1 - 3 Kills & Maps 1 - 3 Kills (Combo)

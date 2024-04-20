@@ -42,6 +42,22 @@ team_logos = {
     "Toronto Ultra": "\\team_logos\\TOR.webp"
 }
 
+# Dictionary of team names to abbreviations
+team_abbrs = {
+    "Atlanta FaZe": "ATL",
+    "Boston Breach": "BOS",
+    "Carolina Royal Ravens": "CAR", 
+    "Las Vegas Legion": "LV",
+    "Los Angeles Guerrillas": "LAG", 
+    "Los Angeles Thieves": "LAT", 
+    "Miami Heretics": "MIA", 
+    "Minnesota ROKKR": "MIN", 
+    "New York Subliners": "NYSL",
+    "OpTic Texas": "TX", 
+    "Seattle Surge": "SEA", 
+    "Toronto Ultra": "TOR"
+}
+
 # Dictionary of faicons for value boxes
 ICONS = {
     "red_crosshairs": fa.icon_svg("crosshairs").add_class("text-danger"), 
@@ -485,17 +501,17 @@ def server(input, output, session):
     @render.ui
     def team_a_map_record_title():
         if input.map_name() == "All":
-            return f"{input.team_a()} {gamemode()} \n Win % (W - L)"
+            return f"{team_abbrs[input.team_a()]} {gamemode()}" + "\n Win % (W - L)"
         else:
-            return f"{input.team_a()} {input.map_name()} {gamemode()} \n Win % (W - L)"
+            return f"{team_abbrs[input.team_a()]} {input.map_name()} {gamemode()}" + "\n Win % (W - L)"
         
     # Title for Team B Map Record Value Box
     @render.ui
     def team_b_map_record_title():
         if input.map_name() == "All":
-            return f"{input.team_b()} {gamemode()} \n Win % (W - L)"
+            return f"{team_abbrs[input.team_b()]} {gamemode()}" + "\n Win % (W - L)"
         else:
-            return f"{input.team_b()} {input.map_name()} {gamemode()} \n Win % (W - L)"
+            return f"{team_abbrs[input.team_b()]} {input.map_name()} {gamemode()}" + "\n Win % (W - L)"
         
     # Title for H2H Value Box
     @render.ui
@@ -562,17 +578,17 @@ def server(input, output, session):
     @render.ui
     def team_a_win_streak_title():
         if input.map_name() == "All":
-            return f"{gamemode()} Win Streak"
+            return f"{team_abbrs[input.team_a()]} {gamemode()} \n Win Streak"
         else:
-            return f"{input.map_name()} {gamemode()} Win Streak"
+            return f"{team_abbrs[input.team_a()]} {input.map_name()} {gamemode()} \n Win Streak"
         
     # Title for Team B Win Streak Value Box
     @render.ui
     def team_b_win_streak_title():
         if input.map_name() == "All":
-            return f"{gamemode()} Win Streak"
+            return f"{team_abbrs[input.team_b()]} {gamemode()} \n Win Streak"
         else:
-            return f"{input.map_name()} {gamemode()} Win Streak"
+            return f"{team_abbrs[input.team_b()]} {input.map_name()} {gamemode()} \n Win Streak"
         
     # Compute Team A Win Streak
     @reactive.calc
