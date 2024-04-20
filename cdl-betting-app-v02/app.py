@@ -436,13 +436,12 @@ def server(input, output, session):
     @reactive.effect
     @reactive.event(input.scrape)
     def scrape_props():
-        player_props_df.set(
-            merge_player_props(
-                player_props_df(), 
-                scrape_prizepicks(), 
-                rostersDF
-            )
+        newVal = merge_player_props(
+            player_props_df(), 
+            scrape_prizepicks(), 
+            rostersDF
         )
+        player_props_df.set(newVal)
 
     # Reactive calc to get map_num from map_num input
     @reactive.calc
