@@ -27,6 +27,9 @@ def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_x: st
         .sort_values(["Date", "Team"]) \
         .reset_index(drop = True)
     
+    # Convert the 'Date' column to strings for display purposes   
+    queried_df['Date'] = queried_df['Date'].astype(str)
+    
     return queried_df
 
 # Function to create dataframe of kills for user-selected team & gamemode

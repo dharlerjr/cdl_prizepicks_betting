@@ -165,6 +165,7 @@ app_ui = ui.page_sidebar(
 
     # Second row: Team A Player Kills Plots & O/U %
     ui.layout_columns(
+        ui.card_header("Plots"),
         # Card with Pill Tabset of Plots
         ui.navset_card_pill(
             ui.nav_panel(
@@ -259,7 +260,7 @@ app_ui = ui.page_sidebar(
                     height = "400px"
                 )
             ), 
-        )
+        ),
         # Col Widths: Spans Full Page
     ),
 
@@ -267,6 +268,7 @@ app_ui = ui.page_sidebar(
     ui.layout_columns(
         # Card with Pill Tabset of Plots
         ui.navset_card_pill(
+            ui.card_header("Plots"),
             ui.nav_panel(
                 "1", 
                 ui.layout_columns(
@@ -501,17 +503,17 @@ def server(input, output, session):
     @render.ui
     def team_a_map_record_title():
         if input.map_name() == "All":
-            return f"{team_abbrs[input.team_a()]} {gamemode()}" + "\n Win % (W - L)"
+            return f"{gamemode()} Win % (W - L)"
         else:
-            return f"{team_abbrs[input.team_a()]} {input.map_name()} {gamemode()}" + "\n Win % (W - L)"
+            return f"{input.map_name()} {gamemode()} Win % (W - L)"
         
     # Title for Team B Map Record Value Box
     @render.ui
     def team_b_map_record_title():
         if input.map_name() == "All":
-            return f"{team_abbrs[input.team_b()]} {gamemode()}" + "\n Win % (W - L)"
+            return f"{gamemode()} Win % (W - L)"
         else:
-            return f"{team_abbrs[input.team_b()]} {input.map_name()} {gamemode()}" + "\n Win % (W - L)"
+            return f"{input.map_name()} {gamemode()} Win % (W - L)"
         
     # Title for H2H Value Box
     @render.ui
@@ -578,17 +580,17 @@ def server(input, output, session):
     @render.ui
     def team_a_win_streak_title():
         if input.map_name() == "All":
-            return f"{team_abbrs[input.team_a()]} {gamemode()} \n Win Streak"
+            return f"{gamemode()} Win Streak"
         else:
-            return f"{team_abbrs[input.team_a()]} {input.map_name()} {gamemode()} \n Win Streak"
+            return f"{input.map_name()} {gamemode()} Win Streak"
         
     # Title for Team B Win Streak Value Box
     @render.ui
     def team_b_win_streak_title():
         if input.map_name() == "All":
-            return f"{team_abbrs[input.team_b()]} {gamemode()} \n Win Streak"
+            return f"{gamemode()} Win Streak"
         else:
-            return f"{team_abbrs[input.team_b()]} {input.map_name()} {gamemode()} \n Win Streak"
+            return f"{input.map_name()} {gamemode()} Win Streak"
         
     # Compute Team A Win Streak
     @reactive.calc
