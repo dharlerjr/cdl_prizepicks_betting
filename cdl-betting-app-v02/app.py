@@ -165,7 +165,6 @@ app_ui = ui.page_sidebar(
 
     # Second row: Team A Player Kills Plots & O/U %
     ui.layout_columns(
-        ui.card_header("Plots"),
         # Card with Pill Tabset of Plots
         ui.navset_card_pill(
             ui.nav_panel(
@@ -260,15 +259,17 @@ app_ui = ui.page_sidebar(
                     height = "400px"
                 )
             ), 
+            header = ui.card_header("Plots")
         ),
         # Col Widths: Spans Full Page
+        # Max Height
+        max_height = "400px" 
     ),
 
     # Third row: Team B Player Kills Plots & O/U %
     ui.layout_columns(
         # Card with Pill Tabset of Plots
         ui.navset_card_pill(
-            ui.card_header("Plots"),
             ui.nav_panel(
                 "1", 
                 ui.layout_columns(
@@ -360,11 +361,12 @@ app_ui = ui.page_sidebar(
                     ), 
                     height = "400px"
                 )
-            )
+            ), 
+            header = ui.card_header("Plots")
         ),
         # Col Widths: Spans Full Page
         # Max Height
-        max_height = "400px"
+        max_height = "400px" 
     ),
 
     # Fourth row: Kills Scoreboards
