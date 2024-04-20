@@ -244,7 +244,7 @@ def player_kills_vs_time(
                 (queried_df["map_name"] == map_input)]
         
     
-    # Create the line chart 
+    # Create the scatterplot
     sns.scatterplot(
         queried_df, x = "match_date", y = "kills"
         )

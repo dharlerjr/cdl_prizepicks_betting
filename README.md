@@ -52,8 +52,10 @@ Two Shiny applications for betting on CDL player props on PrizePicks. Version 1 
 
 ## Version 3
 
-- Coded in Python
+- Still coded in Python
 - Updated layout from version 2
-- Clean working directory
+- Learned how to plot a seaborn boxplot and a seaborn scatterplot on a single MatPlotLib figure
+- Removed faceted plots
+- Cleaned working directory
 
 ## Challenges
