@@ -310,7 +310,7 @@ def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame, rosters
     
     # Merge old props with new props
     new_props = pd.merge(
-        old_props.copy(), 
+        old_props,
         new_props.drop("team_abbr", axis=1), 
         on=['player', 'prop'], 
         how = "outer", 
@@ -320,7 +320,7 @@ def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame, rosters
     # Merge with rosters to get teams and team_abbrs
     new_props = pd.merge(
         new_props.drop(["team", "team_abbr"], axis = 1), 
-        rosters.copy(), 
+        rosters,
         on = "player", 
         how = "left"
     )  
