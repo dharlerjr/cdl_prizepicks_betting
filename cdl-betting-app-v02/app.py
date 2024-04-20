@@ -135,10 +135,7 @@ app_ui = ui.page_sidebar(
     
     # First row: Team Logos, Standings, and Series H2H
     ui.layout_columns(
-        ui.card(
-            ui.output_image("team_a_logo", width = "100px", height = "100px"), 
-            max_height = "160px"
-            ),
+        ui.output_image("team_a_logo", width = "120px", height = "120px"), 
         ui.value_box(
             title = "Series W-L (Major III Qualifiers)", 
             value = ui.output_ui("team_a_series_record"),
@@ -154,10 +151,7 @@ app_ui = ui.page_sidebar(
             value = ui.output_ui("team_b_series_record"),
             showcase = ICONS["headset"]
         ),
-        ui.card(
-            ui.output_image("team_b_logo", width = "100px", height = "100px"), 
-            max_height = "160px"
-            ), 
+        ui.output_image("team_b_logo", width = "120px", height = "120px"), 
         # Col Widths: Automatic
         # Row Height
         height = "180px"
@@ -258,8 +252,7 @@ app_ui = ui.page_sidebar(
                     ), 
                     height = "400px"
                 )
-            ), 
-            header = ui.card_header("Plots")
+            )
         ),
         # Col Widths: Spans Full Page
         # Max Height
@@ -361,8 +354,7 @@ app_ui = ui.page_sidebar(
                     ), 
                     height = "400px"
                 )
-            ), 
-            header = ui.card_header("Plots")
+            )
         ),
         # Col Widths: Spans Full Page
         # Max Height
@@ -371,11 +363,18 @@ app_ui = ui.page_sidebar(
 
     # Fourth row: Kills Scoreboards
     ui.layout_columns(
+        # Team A Logo
+        ui.output_image("team_a_logo_2nd", width = "120px", height = "120px"), 
         # Kills Scoreboards
         ui.card(ui.output_data_frame("scoreboards")),
-        ui.card(ui.output_data_frame("show_player_props")),
+        # Team B Logo
+        ui.output_image("team_b_logo_2nd", width = "120px", height = "120px"), 
+        # Check Player Props
+        # ui.card(ui.output_data_frame("show_player_props")),
+        # Check CDL Dataframe
         # ui.card(ui.output_data_frame("all_data")),
-        # Col Widths: Spans full row
+        # Col Widths
+        col_widths=[2, 8, 2],
         # Row Height
         height = "400px"
     ),
@@ -477,14 +476,28 @@ def server(input, output, session):
     @render.image
     def team_a_logo():
         img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.team_a()], 
-                        "width": "100px", "width": "100px", "image-align": "left"}
+                        "width": "120px", "height": "120px", "image-align": "left"}
+        return img
+    
+    # Team A Logo 2nd
+    @render.image
+    def team_a_logo_2nd():
+        img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.team_a()], 
+                        "width": "120px", "height": "120px", "image-align": "left"}
         return img
     
     # Team B Logo
     @render.image
     def team_b_logo():
         img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.team_b()], 
-                        "width": "100px", "width": "100px", "image-align": "right"}
+                        "width": "120px", "height": "120px", "image-align": "right"}
+        return img
+    
+    # Team B Logo
+    @render.image
+    def team_b_logo_2nd():
+        img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.team_b()], 
+                        "width": "120px", "height": "120px", "image-align": "right"}
         return img
 
     # Team A Series Record for Major 3 Quals

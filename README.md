@@ -1,6 +1,6 @@
 # Shiny Applications for CDL Betting on PrizePicks
 
-Two Shiny applications for betting on CDL player props, primarily on PrizePicks. Version 1 coded in R, Version 2 coded in Python. Data from breakingpoint.gg using my [breakingpoint.gg web scraping project](https://github.com/dharlerjr/bp_web_scraping).
+Two Shiny applications for betting on CDL player props on PrizePicks. Version 1 coded in R, Versions 2 & 3 coded in Python. Data from breakingpoint.gg using my [breakingpoint.gg web scraping project](https://github.com/dharlerjr/bp_web_scraping).
 
 ## Version 1
 
@@ -32,6 +32,12 @@ Two Shiny applications for betting on CDL player props, primarily on PrizePicks.
 - Coded in Python (see below)
 - **User no longer has to manually input player props!!!**
   - Uses undetected_chromedriver (only available in Python to my knowledge) to scrape player prop lines from PrizePicks website (documentation on undetected_chromedriver can be found [here](https://pypi.org/project/undetected-chromedriver/2.1.1/))
+- Added team logos! Found here: [Call of Duty Esports Wiki](https://cod-esports.fandom.com/wiki/Call_of_Duty_Esports_Wiki)
+- Accounted for CDL roster changes and map pool adjustments
+- Kept files which were ultimately not implemented in version 3, namely:
+  - ggplot_helpers
+  - great_tables_helpers
+  - pandas_stylers_helpers
 - Completed April 2024
 
 ### Python Packages
@@ -44,8 +50,10 @@ Two Shiny applications for betting on CDL player props, primarily on PrizePicks.
 - **Shiny** to build the web app and display the reactive dashboard components
 - **Faicons** to add icons to the displayed value boxes
 
-## Notes
+## Version 3
 
-- Team logos via [Call of Duty Esports Wiki](https://cod-esports.fandom.com/wiki/Call_of_Duty_Esports_Wiki)
-- Version 2 accounts for changes between CDL Seasons 2 & 3 (ie. roster and map pool changes)
-- Version 2 originally included **stylized pandas tables** to display win-loss records, win percentages, head-to-head records, and head-to-head win percentages in two tables similar to the **gt tables** from Version 1. However, these tables were replaced with **shiny value boxes** that display the relevant information in a more clean and concise manner
+- Coded in Python
+- Updated layout from version 2
+- Clean working directory
+
+## Challenges

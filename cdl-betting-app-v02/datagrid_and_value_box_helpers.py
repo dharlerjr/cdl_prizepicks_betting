@@ -20,9 +20,9 @@ def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_x: st
             columns = {"match_date": "Date",
                        "match_id": "Match ID",
                        "team_abbr": "Team",
-                       "map_wins": "Map Wins", 
-                       "map_losses": "Map Losses", 
-                       "opp": "Opponent"} \
+                       "map_wins": "W", 
+                       "map_losses": "L", 
+                       "opp": "Opp"} \
         ) \
         .sort_values(["Date", "Team"]) \
         .reset_index(drop = True)

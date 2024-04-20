@@ -210,7 +210,7 @@ def player_kills_overview(
             (queried_df["map_name"] == map_input)]
         
     # Plot the boxplot
-    sns.boxplot(queried_df, y =  "kills", fill = False)
+    sns.boxplot(queried_df, y =  "kills", fill = False).set(title = f"{player_input}")
     
     # Add in points to show each observation
     sns.stripplot(queried_df, y = "kills", jitter = 0.05)
