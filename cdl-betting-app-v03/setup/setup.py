@@ -189,6 +189,7 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
         .agg(
             wins = ("map_result", lambda x: sum(x)), 
             losses = ("map_result", lambda x: len(x) - sum(x)), 
+            total = ("map_result", lambda x: len(x)), 
             win_percentage = ("map_result", lambda x: round(sum(x) / len(x), 2))
         ) \
         .reset_index()
@@ -210,6 +211,7 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
     # Set datatypes
     team_summaries_DF_top['wins'] = team_summaries_DF_top['wins'].astype('int64')
     team_summaries_DF_top['losses'] = team_summaries_DF_top['losses'].astype('int64')
+    team_summaries_DF_top['total'] = team_summaries_DF_top['total'].astype('int64')
     team_summaries_DF_top['win_percentage'] = team_summaries_DF_top['win_percentage'].astype('float64')
     
     # Team Summaries by Mode only
@@ -220,6 +222,7 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
         .agg(
             wins = ("map_result", lambda x: sum(x)), 
             losses = ("map_result", lambda x: len(x) - sum(x)), 
+            total = ("map_result", lambda x: len(x)), 
             win_percentage = ("map_result", lambda x: round(sum(x) / len(x), 2))
         ) \
         .reset_index()

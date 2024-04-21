@@ -1468,4 +1468,5 @@ def server(input, output, session):
         return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
 
 
+# Run app
 app = App(app_ui, server)
