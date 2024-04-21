@@ -4,9 +4,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Import filter_maps from setup
-from setup.setup import filter_maps
-
 # Dictionary of color scales by gamemode 
 gamemode_color_scales = {
   "Hardpoint": ["red", "orange", "green", "blue", "purple"],
