@@ -5,6 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import datetime as dt
+import math
 
 # Dictionary of color scales by gamemode 
 gamemode_color_scales = {
@@ -231,7 +232,7 @@ def player_kills_vs_time(
 
     # If necessary, scale y-axis due to lack of entries
     kills = queried_df["kills"].to_list()
-    kills.append(cur_line)
+    kills.append(math.floor(cur_line))
     min_y = min(kills)
     max_y = max(kills)
     if min_y == max_y:
@@ -302,7 +303,7 @@ def player_kills_vs_score_diff(
 
     # If necessary, scale y-axis due to lack of entries
     kills = queried_df["kills"].to_list()
-    kills.append(cur_line)
+    kills.append(math.floor(cur_line))
     min_y = min(kills)
     max_y = max(kills)
     if min_y == max_y:
