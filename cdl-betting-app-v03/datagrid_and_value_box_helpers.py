@@ -1,37 +1,6 @@
 
 import pandas as pd
 
-# Function to create dataframe of series results for user-selected team
-def build_series_res_datagrid(series_score_diffs_input: pd.DataFrame, team_x: str, team_y: str):
-
-    # Create a copy of series_score_diffs_input
-    queried_df = series_score_diffs_input.copy()
-
-    team_x_series = queried_df \
-        [queried_df["team"] == team_x] \
-        [["match_date", "match_id", "team_abbr", "map_wins", "map_losses", "opp"]]
-    
-    team_y_series = queried_df \
-        [queried_df["team"] == team_y] \
-        [["match_date", "match_id", "team_abbr", "map_wins", "map_losses", "opp"]]
-    
-    queried_df = pd.concat([team_x_series, team_y_series], axis = 0) \
-        .rename(
-            columns = {"match_date": "Date",
-                       "match_id": "Match ID",
-                       "team_abbr": "Team",
-                       "map_wins": "W", 
-                       "map_losses": "L", 
-                       "opp": "Opp"} \
-        ) \
-        .sort_values(["Date", "Team"]) \
-        .reset_index(drop = True)
-    
-    # Convert the 'Date' column to strings for display purposes   
-    queried_df['Date'] = queried_df['Date'].astype(str)
-    
-    return queried_df
-
 # Function to create dataframe of kills for user-selected team & gamemode
 def build_scoreboards(
         cdlDF_input: pd.DataFrame, team_x: str, team_y: str, gamemode_input: str, map_input = "All"
@@ -293,17 +262,22 @@ def player_over_under_percentage(
 
     # If the dataframe is empty, return "Never Played"
     if queried_df.empty:
-        return "Never Played", "Never Played"
+        return "Never Played", "", "", "", ""
+    
+    # Compute overs, unders, and hooks
+    overs = len(queried_df[queried_df['kills'] > cur_line])
+    unders = len(queried_df[queried_df['kills'] < cur_line])
+    hooks = len(queried_df[queried_df['kills'] == cur_line])
 
     # Compute over & under percentages
-    under_percentage = int(round(((len(queried_df[queried_df['kills'] <= cur_line]) / len(queried_df)) * 100), 0))
-    over_percentage = int(round(((len(queried_df[queried_df['kills'] >= cur_line]) / len(queried_df)) * 100), 0))
+    over_percentage = int(round((overs / len(queried_df) * 100), 0))
+    under_percentage = int(round((unders / len(queried_df) * 100), 0))
     
     # Return recommended bet based on percentages
     if over_percentage >= under_percentage:
-        return "Over", str(over_percentage)
+        return "Over", str(over_percentage), str(overs), str(unders), str(hooks)
     else:
-        return "Under", str(under_percentage)
+        return "Under", str(under_percentage), str(overs), str(unders), str(hooks)
 
 # Function to compete O/U streak
 def player_over_under_streak(
