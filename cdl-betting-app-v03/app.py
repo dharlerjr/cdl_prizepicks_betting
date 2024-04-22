@@ -136,6 +136,12 @@ app_ui = ui.page_fluid(
 
         ),
 
+        # Row 1 of 2
+        ui.layout_columns(),
+
+        # Row 2 of 2
+        ui.layout_columns()
+
     ),
 
     # App Title
