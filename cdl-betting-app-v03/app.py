@@ -222,12 +222,28 @@ app_ui = ui.page_sidebar(
         # Column 2: Card with Pill Tabset of Player O/U Stats
         ui.navset_card_pill(
             ui.nav_panel(
-                "1", ui.output_plot("player_1_plot", width = "640px"), 
+                "1", ui.output_plot("player_1_plot", width = "640px"),
+                ui.layout_columns(
+                    ui.value_box(
+                        ui.h6("O/U").add_class("text-body-secondary"), 
+                        ui.output_ui("player_1_ou"),
+                        showcase = ui.output_ui("player_1_ou_icon"), 
+                        showcase_layout="left center", 
+                        height = "80px"
+                    ), 
+                    ui.value_box(
+                        "Streak", 
+                        ui.output_ui("player_1_ou_streak"), 
+                        showcase = ui.output_ui("change_player_1_ou_streak_icon"),
+                        showcase_layout="left center", 
+                        height = "80px"
+                    ), 
+                ) 
             ) 
         ),
 
         # Row Height
-        height = "600px",
+        height = "560px",
 
         # Column Widths
         col_widths = [-3, 6, -3]
@@ -773,10 +789,10 @@ def server(input, output, session):
     # Player One O/U %
     @render.ui
     def player_1_ou():
-        over_under, percentage, *_ = player_1_ou_stats()
+        over_under, percentage, overs, unders, hooks = player_1_ou_stats()
         if over_under == "Never Played":
             return over_under
-        return f"{over_under} {percentage}%"
+        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
     
     # Player Two O/U %
     @render.ui
@@ -833,46 +849,6 @@ def server(input, output, session):
         if over_under == "Never Played":
             return over_under
         return f"{over_under} {percentage}%"
-    
-    # Player One O/U Record
-    def player_1_ou_record():
-        *_, overs, unders, hooks = player_1_ou_stats()
-        return f"{overs} - {unders} - {hooks}"
-    
-    # Player Two O/U Record
-    def player_2_ou_record():
-        *_, overs, unders, hooks = player_2_ou_stats()
-        return f"{overs} - {unders} - {hooks}"
-    
-    # Player Three O/U Record
-    def player_3_ou_record():
-        *_, overs, unders, hooks = player_3_ou_stats()
-        return f"{overs} - {unders} - {hooks}"
-    
-    # Player Four O/U Record
-    def player_4_ou_record():
-        *_, overs, unders, hooks = player_4_ou_stats()
-        return f"{overs} - {unders} - {hooks}"
-    
-    # Player Five O/U Record
-    def player_5_ou_record():
-        *_, overs, unders, hooks = player_5_ou_stats()
-        return f"{overs} - {unders} - {hooks}"
-    
-    # Player Six O/U Record
-    def player_6_ou_record():
-        *_, overs, unders, hooks = player_6_ou_stats()
-        return f"{overs} - {unders} - {hooks}"
-    
-    # Player Seven O/U Record
-    def player_7_ou_record():
-        *_, overs, unders, hooks = player_7_ou_stats()
-        return f"{overs} - {unders} - {hooks}"
-    
-    # Player Eight O/U Record
-    def player_8_ou_record():
-        *_, overs, unders, hooks = player_8_ou_stats()
-        return f"{overs} - {unders} - {hooks}"
     
     # Player One O/U Icon
     @render.ui
