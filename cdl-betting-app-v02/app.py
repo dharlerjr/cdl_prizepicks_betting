@@ -690,7 +690,7 @@ def server(input, output, session):
         )
 
     # Test Render Player Props
-    @render.data_frame
+    # @render.data_frame
     # def show_player_props():
     #     return render.DataGrid(
     #         player_props_df(),

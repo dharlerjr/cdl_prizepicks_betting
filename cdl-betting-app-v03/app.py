@@ -139,7 +139,7 @@ app_ui = ui.page_sidebar(
 
     ),
 
-    # Row 1 of 3
+    # Row 1 of 4
     ui.layout_columns(
         
         # Column 1 of 5: Team A Logo
@@ -174,7 +174,7 @@ app_ui = ui.page_sidebar(
 
     ),
 
-    # Row 2 of 3
+    # Row 2 of 4
     ui.layout_columns(
         
         # Team A Win Streak
@@ -216,37 +216,80 @@ app_ui = ui.page_sidebar(
         height = "140px"
     ),
 
-    # Row 3 of 3
+    # Row 3 of 4
     ui.layout_columns(
 
+        # Column 1: Team A Stats
+        ui.layout_column_wrap(
+            
+            ui.card(ui.output_plot("team_a_score_diffs", width = "280px", height = "240px")),
+            ui.card(ui.output_plot("team_a_maps_played", width = "280px", height = "160px")),
+
+            width = 1
+        ),
+
         # Column 2: Card with Pill Tabset of Player O/U Stats
-        ui.navset_card_pill(
-            ui.nav_panel(
-                "1", ui.output_plot("player_1_plot", width = "660px"),
-                ui.layout_columns(
-                    ui.value_box(
-                        "O/U",
-                        ui.output_ui("player_1_ou"),
-                        showcase = ui.output_ui("player_1_ou_icon"), 
-                        showcase_layout="left center", 
-                        height = "80px"
-                    ), 
-                    ui.value_box(
-                        "Streak", 
-                        ui.output_ui("player_1_ou_streak"), 
-                        showcase = ui.output_ui("change_player_1_ou_streak_icon"),
-                        showcase_layout="left center", 
-                        height = "80px"
-                    ), 
+        ui.layout_columns(
+
+            ui.navset_card_pill(
+                ui.nav_panel(
+                    "1", ui.output_plot("player_1_plot", width = "660px", height = "360px"),
+                    ui.layout_columns(),
+                    ui.layout_columns(
+                        ui.value_box(
+                            "O/U",
+                            ui.output_ui("player_1_ou"),
+                            showcase = ui.output_ui("player_1_ou_icon"), 
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                        ui.value_box(
+                            "Streak", 
+                            ui.output_ui("player_1_ou_streak"), 
+                            showcase = ui.output_ui("change_player_1_ou_streak_icon"),
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                    ) 
                 ) 
-            ) 
+            ),
+        ),
+
+        # Column 3: Team B Stats
+        ui.layout_column_wrap(
+
+            ui.card(ui.output_plot("team_b_score_diffs", width = "280px", height = "240px")),
+            ui.card(ui.output_plot("team_b_maps_played", width = "280px", height = "160px")),
+
+            width = 1, 
         ),
 
         # Row Height
-        height = "600px",
+        height = "660px",
 
         # Column Widths
-        col_widths = [-3, 6, -3]
+        col_widths = [3, 6, 3]
+
+    ),
+
+    # Row 4 of 4: Series Score Differentials & Big Datagrid
+    ui.layout_columns(
+
+        # Column 1: Team A Score Diffs
+        ui.card(ui.output_plot("team_a_series_diffs", width = "280px", height = "240px")),
+
+        # Column 2: Big Datagrid
+        ui.card(ui.output_data_frame("scoreboards")),
+
+        # Column 3: Team B Score Diffs
+        ui.card(ui.output_plot("team_b_series_diffs", width = "280px", height = "240px")),
+
+        # Row Height
+        height = "300px",
+        
+        # Column Widths
+        col_widths = [3, 6, 3]
+
     ),
 
     # App Title
@@ -462,15 +505,43 @@ def server(input, output, session):
         )
     
     # Team A Pie Chart of % Maps Played
+    @render.plot
     def team_a_maps_played():
         return team_percent_maps_played(
             team_summaries_DF, input.team_a(), gamemode()
         )
     
     # Team B Pie Chart of % Maps Played
+    @render.plot
     def team_b_maps_played():
         return team_percent_maps_played(
             team_summaries_DF, input.team_b(), gamemode()
+        )
+    
+    # Team A Series Differentials Histogram
+    @render.plot
+    def team_a_series_diffs():
+        return team_series_diffs(series_score_diffs, input.team_a())
+    
+    # Team B Series Differentials Histogram
+    @render.plot
+    def team_b_series_diffs():
+        return team_series_diffs(series_score_diffs, input.team_b())
+    
+    # Datagrid of Player Kills and Map Results for Selected Teams
+    # Aka. Scoreboards
+    @render.data_frame
+    def scoreboards():
+        return render.DataGrid(
+            build_scoreboards(
+                cdlDF, 
+                input.team_a(),
+                input.team_b(),
+                gamemode(), 
+                input.map_name()
+            ), 
+            filters = True, 
+            summary = False
         )
     
     # Player One Line

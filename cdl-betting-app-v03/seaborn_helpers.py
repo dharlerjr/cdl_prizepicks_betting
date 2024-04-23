@@ -139,7 +139,8 @@ def team_score_diffs(
         max_y = 0 if queried_df.empty else max(queried_df["score_diff"].value_counts())
         
     # Set y-axis to integer values only
-    y_axis_ticks = range(0, max_y + 1)
+    step_y = 1 if max_y < 6 else 2
+    y_axis_ticks = range(0, max_y + 1, step_y)
     plt.yticks(y_axis_ticks)
         
     # Styling
@@ -170,6 +171,9 @@ def team_percent_maps_played(
     ax.pie(queried_df["total"], labels = queried_df["map_name"], 
            autopct = '%1.1f%%',  pctdistance = 0.65,
            colors = viridis_gamemode_color_scales["Hardpoint"])
+    
+    # Margins
+    plt.margins(0.05)
 
 
 # Team Distribution of Series Differentials
@@ -242,7 +246,7 @@ def player_kills_vs_time(
         plt.yticks(y_axis_ticks)
 
     # X- & Y-Axis Labels
-    axs[1].set_xlabel("Date")
+    axs[1].set_xlabel("")
     axs[0].set_ylabel("Kills")
     axs[0].set_xticks([])
     axs[1].set_ylabel("")
@@ -250,7 +254,7 @@ def player_kills_vs_time(
     # Date Ticks
     formatter = mdates.DateFormatter('%b %d')
     axs[1].xaxis.set_major_formatter(formatter)
-    axs[1].tick_params(axis = 'x', rotation = 35)
+    axs[1].tick_params(axis = 'x', rotation = 30)
 
     # Label current line from PrizePicks if queried_df is not empty
     if not queried_df.empty:
@@ -319,7 +323,7 @@ def player_kills_vs_score_diff(
         plt.yticks(y_axis_ticks)
 
     # Styling
-    axs[1].set_xlabel("Map Result")
+    axs[1].set_xlabel("")
     axs[0].set_ylabel("Kills")
     axs[0].set_xticks([])
     axs[1].set_ylabel("")
