@@ -193,6 +193,9 @@ def team_series_diffs(series_score_diffs_input: pd.DataFrame, team_input: str):
     # Styling
     ax.set_xlabel("Series Result")
 
+    # Set margins
+    plt.margins(0.05)
+
 
 # Player Kills vs Time by Map & Mode
 def player_kills_vs_time(        

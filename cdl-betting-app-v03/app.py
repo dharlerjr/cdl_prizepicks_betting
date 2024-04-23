@@ -285,7 +285,7 @@ app_ui = ui.page_sidebar(
         ui.card(ui.output_plot("team_b_series_diffs", width = "280px", height = "240px")),
 
         # Row Height
-        height = "300px",
+        height = "360px",
         
         # Column Widths
         col_widths = [3, 6, 3]

@@ -86,13 +86,12 @@ def build_scoreboards(
         ], 
         axis=1)
 
-    # Drop map_num
-    scoreboards = scoreboards.drop("map_num", axis = 1)
+    # Drop map_num & match_id
+    scoreboards = scoreboards.drop(["map_num", "match_id"], axis = 1)
 
     # Rename columns
     scoreboards = scoreboards.rename(columns = {
         "match_date": "Date", 
-        "match_id": "Match ID", 
         "map_name": "Map", 
         "team_abbr": "Team", 
         "player": "Player",
