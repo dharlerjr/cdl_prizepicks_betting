@@ -143,48 +143,35 @@ app_ui = ui.page_sidebar(
     ui.layout_columns(
         
         # Column 1 of 5: Team A Logo & Standing, wrapped
-        ui.layout_column_wrap(
-            ui.output_image("team_a_logo", width = "120px", height = "120px"), 
-            ui.value_box(
-                title = "Series W-L (Major III Qualifiers)", 
-                value = ui.output_ui("team_a_series_record"),
-                showcase = ICONS["headset"], 
-                height = "60px"
-            ),
-            width = 1, 
-            heights_equal = "row" 
-        ),
-
+        ui.output_image("team_a_logo", width = "120px", height = "120px"), 
+            
         # Column 2 of 5: Blank
-        ui.markdown(""),
+        ui.value_box(
+            title = "Series W-L (Major III Qualifiers)", 
+            value = ui.output_ui("team_a_series_record"),
+            showcase = ICONS["headset"]
+        ),
         
         # Column 3 of 5
         ui.value_box(
             title = "Series H2H (Overall)",
             value = ui.output_ui("h2h_series_record"),
-            showcase = ICONS["crosshairs"],
-            showcase_layout = "left center",
-            height = "120px"
+            showcase = ICONS["crosshairs"]
         ), 
         
         # Column 4 of 5: Blank
-        ui.markdown(""),
+        ui.value_box(
+            title = "Series W-L (Major III Qualifiers)", 
+            value = ui.output_ui("team_b_series_record"),
+            showcase = ICONS["headset"]
+        ), 
         
         # Column 5 of 5: Team B Logo & Standing, wrapped
-        ui.layout_column_wrap(
-            ui.output_image("team_b_logo", width = "120px", height = "120px"), 
-            ui.value_box(
-                title = "Series W-L (Major III Qualifiers)", 
-                value = ui.output_ui("team_b_series_record"),
-                showcase = ICONS["headset"], 
-                height = "60px"
-            ), 
-            width = 1, 
-            heights_equal = "row"
-        ),
+        ui.output_image("team_b_logo", width = "120px", height = "120px"), 
 
         # Row Height
-        height = "180px"
+        height = "140px"
+
     ),
 
     # Row 2 of 2
