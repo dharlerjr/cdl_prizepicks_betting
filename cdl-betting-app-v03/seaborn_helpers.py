@@ -244,8 +244,8 @@ def player_kills_vs_time(
     # X- & Y-Axis Labels
     axs[1].set_xlabel("Date")
     axs[0].set_ylabel("Kills")
-    axs[0].get_xaxis().set_visible(False)
-    axs[1].get_yaxis().set_visible(False)
+    axs[0].set_xticks([])
+    axs[1].set_ylabel("")
 
     # Date Ticks
     formatter = mdates.DateFormatter('%b %d')
@@ -321,8 +321,9 @@ def player_kills_vs_score_diff(
     # Styling
     axs[1].set_xlabel("Map Result")
     axs[0].set_ylabel("Kills")
-    axs[0].get_xaxis().set_visible(False)
-    axs[1].get_yaxis().set_visible(False)
+    axs[0].set_xticks([])
+    axs[1].set_ylabel("")
+
 
     # Label current line from PrizePicks if queried_df is not empty
     if not queried_df.empty:

@@ -222,10 +222,10 @@ app_ui = ui.page_sidebar(
         # Column 2: Card with Pill Tabset of Player O/U Stats
         ui.navset_card_pill(
             ui.nav_panel(
-                "1", ui.output_plot("player_1_plot", width = "640px"),
+                "1", ui.output_plot("player_1_plot", width = "660px"),
                 ui.layout_columns(
                     ui.value_box(
-                        ui.h6("O/U").add_class("text-body-secondary"), 
+                        "O/U",
                         ui.output_ui("player_1_ou"),
                         showcase = ui.output_ui("player_1_ou_icon"), 
                         showcase_layout="left center", 
@@ -243,7 +243,7 @@ app_ui = ui.page_sidebar(
         ),
 
         # Row Height
-        height = "560px",
+        height = "600px",
 
         # Column Widths
         col_widths = [-3, 6, -3]
