@@ -113,10 +113,10 @@ app_ui = ui.page_sidebar(
     ui.sidebar(
 
         # Theme picker
-        shinyswatch.theme_picker_ui(),
+        #shinyswatch.theme_picker_ui(),
         
         # Set theme: cerulean
-        # shinyswatch.theme.cerulean,
+        shinyswatch.theme.cerulean,
         
         # Inputs
         ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
@@ -143,15 +143,17 @@ app_ui = ui.page_sidebar(
     ui.layout_columns(
         
         # Column 1 of 5: Team A Logo & Standing, wrapped
-        ui.layout_columns(
+        ui.layout_column_wrap(
             ui.output_image("team_a_logo", width = "120px", height = "120px"), 
             ui.value_box(
                 title = "Series W-L (Major III Qualifiers)", 
                 value = ui.output_ui("team_a_series_record"),
-                showcase = ICONS["headset"]
-            ), 
-            row_heights = (2, 1)
+                showcase = ICONS["headset"], 
+                height = "60px"
             ),
+            width = 1, 
+            heights_equal = "row" 
+        ),
 
         # Column 2 of 5: Blank
         ui.markdown(""),
@@ -160,22 +162,29 @@ app_ui = ui.page_sidebar(
         ui.value_box(
             title = "Series H2H (Overall)",
             value = ui.output_ui("h2h_series_record"),
-            showcase = ICONS["crosshairs"]
+            showcase = ICONS["crosshairs"],
+            showcase_layout = "left center",
+            height = "120px"
         ), 
         
         # Column 4 of 5: Blank
         ui.markdown(""),
         
         # Column 5 of 5: Team B Logo & Standing, wrapped
-        ui.layout_columns(
+        ui.layout_column_wrap(
             ui.output_image("team_b_logo", width = "120px", height = "120px"), 
             ui.value_box(
                 title = "Series W-L (Major III Qualifiers)", 
                 value = ui.output_ui("team_b_series_record"),
-                showcase = ICONS["headset"]
+                showcase = ICONS["headset"], 
+                height = "60px"
             ), 
-            row_heights = (2, 1)
-            ),
+            width = 1, 
+            heights_equal = "row"
+        ),
+
+        # Row Height
+        height = "180px"
     ),
 
     # Row 2 of 2
@@ -190,7 +199,7 @@ app_ui = ui.page_sidebar(
 def server(input, output, session):
     
     # Theme picker
-    shinyswatch.theme_picker_server()
+    # shinyswatch.theme_picker_server()
 
     # Intialize reactive dataframe of player props
     player_props_df = reactive.value(initial_player_props)
@@ -220,14 +229,14 @@ def server(input, output, session):
     @render.image
     def team_a_logo():
         img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.team_a()], 
-                        "width": "120px", "height": "120px", "image-align": "left"}
+                        "width": "120px", "height": "120px", "image-align": "center"}
         return img
     
     # Team B Logo
     @render.image
     def team_b_logo():
         img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.team_b()], 
-                        "width": "120px", "height": "120px", "image-align": "right"}
+                        "width": "120px", "height": "120px", "image-align": "center"}
         return img
     
     # Team A Series Record for Major 3 Quals
