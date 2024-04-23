@@ -260,6 +260,9 @@ def player_kills_vs_time(
 
     # Add title
     plt.title(player_input, loc = "left")
+
+    # Set margins
+    plt.margins(0.05)
     
 
 # Player Kills vs Score Differential by Map & Mode
@@ -329,3 +332,6 @@ def player_kills_vs_score_diff(
 
     # Add title
     plt.title(player_input, loc = "left")
+
+    # Set margins
+    plt.margins(0.05)
