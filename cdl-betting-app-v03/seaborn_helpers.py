@@ -175,9 +175,6 @@ def player_kills_vs_time(
     sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[0], color = "#2fa4e7")
     axs[0].axhline(y = cur_line, color = "purple", linestyle = '--')
 
-    # Add title
-    plt.title(player_input, fontsize = 18, family = "sans serif", loc = "left")
-
     # Scatterplot
     sns.scatterplot(queried_df, x = "match_date", y = "kills", ax=axs[1], color = "#2fa4e7")
     axs[1].axhline(y = cur_line, color = "purple", linestyle = '--')
@@ -279,9 +276,6 @@ def player_kills_vs_score_diff(
         bbox = {'facecolor': 'purple', 'alpha': 0.5, 'pad': 0.4, 'boxstyle': 'round'}
         min_score_diff = min(queried_df["score_diff"])
         text = [plt.text(min_score_diff, cur_line + 1, "Line: " + str(cur_line), bbox = bbox, color = "white")]
-
-    # Add title
-    plt.title(player_input)
 
     # Set margins
     plt.margins(0.05)
