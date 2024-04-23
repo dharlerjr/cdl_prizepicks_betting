@@ -250,8 +250,148 @@ app_ui = ui.page_sidebar(
                             showcase_layout="left center", 
                             max_height = "100px"
                         ), 
-                    ) 
-                ) 
+                    ),   
+                ), 
+                ui.nav_panel(
+                    "2", ui.output_plot("player_2_plot", width = "660px", height = "360px"),
+                    ui.layout_columns(),
+                    ui.layout_columns(
+                        ui.value_box(
+                            "O/U",
+                            ui.output_ui("player_2_ou"),
+                            showcase = ui.output_ui("player_2_ou_icon"), 
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                        ui.value_box(
+                            "Streak", 
+                            ui.output_ui("player_2_ou_streak"), 
+                            showcase = ui.output_ui("change_player_2_ou_streak_icon"),
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                    ),  
+                ), 
+                ui.nav_panel(
+                    "3", ui.output_plot("player_3_plot", width = "660px", height = "360px"),
+                    ui.layout_columns(),
+                    ui.layout_columns(
+                        ui.value_box(
+                            "O/U",
+                            ui.output_ui("player_3_ou"),
+                            showcase = ui.output_ui("player_3_ou_icon"), 
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                        ui.value_box(
+                            "Streak", 
+                            ui.output_ui("player_3_ou_streak"), 
+                            showcase = ui.output_ui("change_player_3_ou_streak_icon"),
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                    ),  
+                ), 
+                ui.nav_panel(
+                    "4", ui.output_plot("player_4_plot", width = "660px", height = "360px"),
+                    ui.layout_columns(),
+                    ui.layout_columns(
+                        ui.value_box(
+                            "O/U",
+                            ui.output_ui("player_4_ou"),
+                            showcase = ui.output_ui("player_4_ou_icon"), 
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                        ui.value_box(
+                            "Streak", 
+                            ui.output_ui("player_4_ou_streak"), 
+                            showcase = ui.output_ui("change_player_4_ou_streak_icon"),
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                    ),  
+                ), 
+                ui.nav_panel(
+                    "5", ui.output_plot("player_5_plot", width = "660px", height = "360px"),
+                    ui.layout_columns(),
+                    ui.layout_columns(
+                        ui.value_box(
+                            "O/U",
+                            ui.output_ui("player_5_ou"),
+                            showcase = ui.output_ui("player_5_ou_icon"), 
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                        ui.value_box(
+                            "Streak", 
+                            ui.output_ui("player_5_ou_streak"), 
+                            showcase = ui.output_ui("change_player_5_ou_streak_icon"),
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                    ),  
+                ), 
+                ui.nav_panel(
+                    "6", ui.output_plot("player_6_plot", width = "660px", height = "360px"),
+                    ui.layout_columns(),
+                    ui.layout_columns(
+                        ui.value_box(
+                            "O/U",
+                            ui.output_ui("player_6_ou"),
+                            showcase = ui.output_ui("player_6_ou_icon"), 
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                        ui.value_box(
+                            "Streak", 
+                            ui.output_ui("player_6_ou_streak"), 
+                            showcase = ui.output_ui("change_player_6_ou_streak_icon"),
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                    ),  
+                ), 
+                ui.nav_panel(
+                    "7", ui.output_plot("player_7_plot", width = "660px", height = "360px"),
+                    ui.layout_columns(),
+                    ui.layout_columns(
+                        ui.value_box(
+                            "O/U",
+                            ui.output_ui("player_7_ou"),
+                            showcase = ui.output_ui("player_7_ou_icon"), 
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                        ui.value_box(
+                            "Streak", 
+                            ui.output_ui("player_7_ou_streak"), 
+                            showcase = ui.output_ui("change_player_7_ou_streak_icon"),
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                    ),  
+                ), 
+                ui.nav_panel(
+                    "8", ui.output_plot("player_8_plot", width = "660px", height = "360px"),
+                    ui.layout_columns(),
+                    ui.layout_columns(
+                        ui.value_box(
+                            "O/U",
+                            ui.output_ui("player_8_ou"),
+                            showcase = ui.output_ui("player_8_ou_icon"), 
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                        ui.value_box(
+                            "Streak", 
+                            ui.output_ui("player_8_ou_streak"), 
+                            showcase = ui.output_ui("change_player_8_ou_streak_icon"),
+                            showcase_layout="left center", 
+                            max_height = "100px"
+                        ), 
+                    ),  
+                )
             ),
         ),
 
