@@ -691,12 +691,12 @@ def server(input, output, session):
 
     # Test Render Player Props
     @render.data_frame
-    def show_player_props():
-        return render.DataGrid(
-            player_props_df(),
-            filters = True, 
-            summary = False
-        )
+    # def show_player_props():
+    #     return render.DataGrid(
+    #         player_props_df(),
+    #         filters = True, 
+    #         summary = False
+    #     )
     
     # Test render all cdlDF
     # @render.data_frame

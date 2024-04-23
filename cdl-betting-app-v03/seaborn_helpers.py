@@ -116,7 +116,7 @@ def team_score_diffs(
         
 
     # Create the figure
-    fig, ax = plt.subplots(figsize = (8, 4))
+    fig, ax = plt.subplots(figsize = (4, 2))
 
     # Histogram for Hardpoint
     if gamemode_input == "Hardpoint":
@@ -164,7 +164,7 @@ def team_percent_maps_played(
     ]
 
     # Create figure
-    fig, ax = plt.subplots(figsize = (8, 4))
+    fig, ax = plt.subplots(figsize = (4, 2))
 
     # Pie Chart
     ax.pie(queried_df["total"], labels = queried_df["map_name"], 
@@ -181,7 +181,7 @@ def team_series_diffs(series_score_diffs_input: pd.DataFrame, team_input: str):
         ].copy()
 
     # Create figure
-    fig, ax = plt.subplots(figsize = (8, 4))
+    fig, ax = plt.subplots(figsize = (4, 2))
 
     # Histogram
     sns.histplot(data = queried_df, x = "series_score_diff", discrete = True, color = "#2fa4e7")
@@ -219,7 +219,7 @@ def player_kills_vs_time(
             ]
     
     # Create figure with gridspec
-    f, axs = plt.subplots(1, 2, figsize = (8, 4), gridspec_kw = dict(width_ratios=[0.4, 2], wspace = 0.05), sharey = True)
+    f, axs = plt.subplots(1, 2, figsize = (6, 3), gridspec_kw = dict(width_ratios=[0.4, 2], wspace = 0.05), sharey = True)
 
     # Boxplot
     sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[0], color = "#2fa4e7", showfliers = False)
@@ -257,6 +257,9 @@ def player_kills_vs_time(
         bbox = {'facecolor': 'purple', 'alpha': 0.5, 'pad': 0.4, 'boxstyle': 'round'}
         cur_line_x = min(queried_df["match_date"])
         plt.text(cur_line_x, cur_line + 1, "Line: " + str(cur_line), bbox = bbox, color = "white")
+
+    # Add title
+    plt.title(player_input, loc = "left")
     
 
 # Player Kills vs Score Differential by Map & Mode
@@ -288,7 +291,7 @@ def player_kills_vs_score_diff(
             ]
         
     # Create figure with gridspec
-    f, axs = plt.subplots(1, 2, figsize = (8, 4), gridspec_kw = dict(width_ratios=[0.4, 2], wspace = 0.05), sharey = True)
+    f, axs = plt.subplots(1, 2, figsize = (6, 3), gridspec_kw = dict(width_ratios=[0.4, 2], wspace = 0.05), sharey = True)
 
     # Boxplot
     sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[0], color = "#2fa4e7", showfliers = False)
@@ -323,3 +326,6 @@ def player_kills_vs_score_diff(
         bbox = {'facecolor': 'purple', 'alpha': 0.5, 'pad': 0.4, 'boxstyle': 'round'}
         min_score_diff = min(queried_df["score_diff"])
         text = [plt.text(min_score_diff, cur_line + 1, "Line: " + str(cur_line), bbox = bbox, color = "white")]
+
+    # Add title
+    plt.title(player_input, loc = "left")

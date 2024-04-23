@@ -124,6 +124,7 @@ def compute_win_streak(
         ["match_id", "match_date", "team", "gamemode", "map_name", "map_result", "map_num"]
     ] \
      .drop_duplicates()
+    
     # Filter queried df by team, map, and mode
     if map_input == "All":
         queried_df = queried_df[

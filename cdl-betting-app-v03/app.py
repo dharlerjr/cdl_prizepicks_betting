@@ -61,15 +61,15 @@ team_abbrs = {
 
 # Dictionary of faicons for value boxes
 ICONS = {
-    "red_crosshairs": fa.icon_svg("crosshairs").add_class("text-danger"), 
-    "green_crosshairs": fa.icon_svg("crosshairs").add_class("text-success"), 
+    "red_crosshairs": fa.icon_svg("crosshairs", height = "48px").add_class("text-danger"), 
+    "green_crosshairs": fa.icon_svg("crosshairs", height = "48px").add_class("text-success"), 
     "crosshairs": fa.icon_svg("crosshairs", height = "48px"),
-    "percent": fa.icon_svg("percent"), 
+    "percent": fa.icon_svg("percent", height = "48px"), 
     "headset": fa.icon_svg("headset", height = "48px"), 
-    "plus": fa.icon_svg("plus"), 
-    "minus": fa.icon_svg("minus"), 
-    "chevron_up": fa.icon_svg("chevron-up").add_class("text-purple"),
-    "chevron_down": fa.icon_svg("chevron-down").add_class("text-purple")
+    "plus": fa.icon_svg("plus", height = "48px"), 
+    "minus": fa.icon_svg("minus", height = "48px"), 
+    "chevron_up": fa.icon_svg("chevron-up", height = "48px").add_class("text-purple"),
+    "chevron_down": fa.icon_svg("chevron-down", height = "48px").add_class("text-purple")
 }
 
 # Major 3 Qualifiers Start Date (String)
@@ -213,7 +213,21 @@ app_ui = ui.page_sidebar(
         ),
         
         # Row Height
-        height = "180px"
+        height = "140px"
+    ),
+
+    # Row 3 of 3
+    ui.layout_columns(
+
+        # Column 2: Card with Pill Tabset of Player O/U Stats
+        ui.navset_card_pill(
+            ui.nav_panel(
+                "1", ui.output_plot("player_1_plot", width = "600px", ), 
+            ) 
+        ),
+
+        # Row Height
+        height = "400px"
     ),
 
     # App Title
@@ -355,6 +369,772 @@ def server(input, output, session):
     def h2h_map_record():
         return compute_h2h_map_record(cdlDF, input.team_a(), input.team_b(), 
                                       gamemode(), input.map_name())
+    
+    # Title for Team A Win Streak Value Box
+    @render.ui
+    def team_a_win_streak_title():
+        if input.map_name() == "All":
+            return f"{gamemode()} Win Streak"
+        else:
+            return f"{input.map_name()} {gamemode()} Win Streak"
+        
+    # Title for Team B Win Streak Value Box
+    @render.ui
+    def team_b_win_streak_title():
+        if input.map_name() == "All":
+            return f"{gamemode()} Win Streak"
+        else:
+            return f"{input.map_name()} {gamemode()} Win Streak"
+        
+    # Compute Team A Win Streak
+    @reactive.calc
+    def compute_team_a_win_streak():
+        return compute_win_streak(cdlDF, input.team_a(), gamemode(), input.map_name())
+    
+    # Compute Team B Win Streak
+    @reactive.calc
+    def compute_team_b_win_streak():
+        return compute_win_streak(cdlDF, input.team_b(), gamemode(), input.map_name())
+
+    # Team A Win Streak for User-Selected Map & Mode Combination
+    @render.ui
+    def team_a_win_streak():
+        return str(compute_team_a_win_streak())
+    
+    # Team B Win Streak for User-Selected Map & Mode Combination
+    @render.ui
+    def team_b_win_streak():
+        return str(compute_team_b_win_streak())
+    
+    # Change Win Streak Icon Based on Sign of Win Streak
+    @render.ui
+    def change_team_a_win_streak_icon():
+        win_streak = compute_team_a_win_streak()
+        if win_streak > 0:
+            icon = ICONS["plus"]
+        else:
+            icon = ICONS["minus"]
+        icon.add_class(f"text-{('success' if win_streak > 0 else 'danger')}")
+        return icon
+    
+    # Change Win Streak Icon Based on Sign of Win Streak
+    @render.ui
+    def change_team_b_win_streak_icon():
+        win_streak = compute_team_b_win_streak()
+        if win_streak > 0:
+            icon = ICONS["plus"]
+        else:
+            icon = ICONS["minus"]
+        icon.add_class(f"text-{('success' if win_streak > 0 else 'danger')}")
+        return icon
+    
+    # Team A Score Differentials Histogram
+    @render.plot
+    def team_a_score_diffs():
+        return team_score_diffs(
+            cdlDF, input.team_a(), gamemode(), input.map_name()
+        )
+    
+    # Team B Score Differentials Histogram
+    @render.plot
+    def team_b_score_diffs():
+        return team_score_diffs(
+            cdlDF, input.team_b(), gamemode(), input.map_name()
+        )
+    
+    # Team A Pie Chart of % Maps Played
+    def team_a_maps_played():
+        return team_percent_maps_played(
+            team_summaries_DF, input.team_a(), gamemode()
+        )
+    
+    # Team B Pie Chart of % Maps Played
+    def team_b_maps_played():
+        return team_percent_maps_played(
+            team_summaries_DF, input.team_b(), gamemode()
+        )
+    
+    # Player One Line
+    @reactive.Calc
+    def player_1_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['prop'] == map_num())] \
+                    .iloc[0]['line']
+    
+    # Player Two Line
+    @reactive.Calc
+    def player_2_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['prop'] == map_num())] \
+                    .iloc[1]['line']
+    
+    # Player Three Line
+    @reactive.Calc
+    def player_3_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['prop'] == map_num())] \
+                    .iloc[2]['line']
+    
+    # Player Four Line
+    @reactive.Calc
+    def player_4_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_a()) &
+                (player_props_df.get()['prop'] == map_num())] \
+                    .iloc[3]['line']
+    
+    # Player Five Line
+    @reactive.Calc
+    def player_5_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_b()) &
+                (player_props_df.get()['prop'] == map_num())] \
+                    .iloc[0]['line']
+    
+    # Player Six Line
+    @reactive.Calc
+    def player_6_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_b()) &
+                (player_props_df.get()['prop'] == map_num())] \
+                    .iloc[1]['line']
+    
+    # Player Seven Line
+    @reactive.Calc
+    def player_7_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_b()) &
+                (player_props_df.get()['prop'] == map_num())] \
+                    .iloc[2]['line']
+    
+    # Player Eight Line
+    @reactive.Calc
+    def player_8_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.team_b()) &
+                (player_props_df.get()['prop'] == map_num())] \
+                    .iloc[3]['line']
+    
+    
+    # Player One Plot
+    @render.plot
+    def player_1_plot():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
+                gamemode(), 
+                player_1_line(),
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
+                gamemode(), 
+                player_1_line(),
+                input.map_name()
+            )
+        
+    # Player Two Plot
+    @render.plot
+    def player_2_plot():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
+                gamemode(), 
+                player_2_line(),
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
+                gamemode(), 
+                player_2_line(),
+                input.map_name()
+            )
+        
+    # Player Three Plot
+    @render.plot
+    def player_3_plot():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
+                gamemode(), 
+                player_3_line(),
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
+                gamemode(), 
+                player_3_line(),
+                input.map_name()
+            )
+        
+    # Player Four Plot
+    @render.plot
+    def player_4_plot():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'],  
+                gamemode(), 
+                player_4_line(),
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
+                gamemode(), 
+                player_4_line(),
+                input.map_name()
+            )
+        
+    # Player Five Plot
+    @render.plot
+    def player_5_plot():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'],  
+                gamemode(), 
+                player_5_line(),
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
+                gamemode(), 
+                player_5_line(),
+                input.map_name()
+            )
+        
+    # Player Six Plot
+    @render.plot
+    def player_6_plot():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'],  
+                gamemode(), 
+                player_6_line(),
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
+                gamemode(), 
+                player_6_line(),
+                input.map_name()
+            )
+        
+    # Player Seven Plot
+    @render.plot
+    def player_7_plot():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'],  
+                gamemode(), 
+                player_7_line(),
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
+                gamemode(), 
+                player_7_line(),
+                input.map_name()
+            )
+        
+    # Player Eight Plot
+    @render.plot
+    def player_8_plot():
+        if input.x_axis() == "Time":
+            return player_kills_vs_time(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'],  
+                gamemode(), 
+                player_8_line(),
+                input.map_name()
+            )
+        else:
+            return player_kills_vs_score_diff(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
+                gamemode(), 
+                player_8_line(),
+                input.map_name()
+            )
+
+    # Player One O/U Calcs
+    @reactive.calc
+    def player_1_ou_stats():
+        return player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
+            gamemode(), 
+            player_1_line(), 
+            input.map_name()
+            )
+    
+    # Player Two O/U Calcs
+    @reactive.calc
+    def player_2_ou_stats():
+        return player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'], 
+            gamemode(), 
+            player_2_line(), 
+            input.map_name()
+            )
+    
+    # Player Three O/U Calcs
+    @reactive.calc
+    def player_3_ou_stats():
+        return player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'], 
+            gamemode(), 
+            player_3_line(), 
+            input.map_name()
+            )
+    
+    # Player Four O/U Calcs
+    @reactive.calc
+    def player_4_ou_stats():
+        return player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
+            gamemode(), 
+            player_4_line(), 
+            input.map_name()
+            )
+    
+    # Player Five O/U Calcs
+    @reactive.calc
+    def player_5_ou_stats():
+        return player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
+            gamemode(), 
+            player_5_line(), 
+            input.map_name()
+            )
+    
+    # Player Six O/U Calcs
+    @reactive.calc
+    def player_6_ou_stats():
+        return player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
+            gamemode(), 
+            player_6_line(), 
+            input.map_name()
+            )
+    
+    # Player Seven O/U Calcs
+    @reactive.calc
+    def player_7_ou_stats():
+        return player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
+            gamemode(), 
+            player_7_line(), 
+            input.map_name()
+            )
+    
+    # Player Eight O/U Calcs
+    @reactive.calc
+    def player_8_ou_stats():
+        return player_over_under_percentage(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
+            gamemode(), 
+            player_8_line(), 
+            input.map_name()
+            )
+
+    # Player One O/U %
+    @render.ui
+    def player_1_ou():
+        over_under, percentage, *_ = player_1_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+    
+    # Player Two O/U %
+    @render.ui
+    def player_2_ou():
+        over_under, percentage, *_ = player_2_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Three O/U %
+    @render.ui
+    def player_3_ou():
+        over_under, percentage, *_ = player_3_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Four O/U %
+    @render.ui
+    def player_4_ou():
+        over_under, percentage, *_ = player_4_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Five O/U %
+    @render.ui
+    def player_5_ou():
+        over_under, percentage, *_ = player_5_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Six O/U %
+    @render.ui
+    def player_6_ou():
+        over_under, percentage, *_ = player_6_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Seven O/U %
+    @render.ui
+    def player_7_ou():
+        over_under, percentage, *_ = player_7_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+
+    # Player Eight O/U %
+    @render.ui
+    def player_8_ou():
+        over_under, percentage, *_ = player_8_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%"
+    
+    # Player One O/U Record
+    def player_1_ou_record():
+        *_, overs, unders, hooks = player_1_ou_stats()
+        return f"{overs} - {unders} - {hooks}"
+    
+    # Player Two O/U Record
+    def player_2_ou_record():
+        *_, overs, unders, hooks = player_2_ou_stats()
+        return f"{overs} - {unders} - {hooks}"
+    
+    # Player Three O/U Record
+    def player_3_ou_record():
+        *_, overs, unders, hooks = player_3_ou_stats()
+        return f"{overs} - {unders} - {hooks}"
+    
+    # Player Four O/U Record
+    def player_4_ou_record():
+        *_, overs, unders, hooks = player_4_ou_stats()
+        return f"{overs} - {unders} - {hooks}"
+    
+    # Player Five O/U Record
+    def player_5_ou_record():
+        *_, overs, unders, hooks = player_5_ou_stats()
+        return f"{overs} - {unders} - {hooks}"
+    
+    # Player Six O/U Record
+    def player_6_ou_record():
+        *_, overs, unders, hooks = player_6_ou_stats()
+        return f"{overs} - {unders} - {hooks}"
+    
+    # Player Seven O/U Record
+    def player_7_ou_record():
+        *_, overs, unders, hooks = player_7_ou_stats()
+        return f"{overs} - {unders} - {hooks}"
+    
+    # Player Eight O/U Record
+    def player_8_ou_record():
+        *_, overs, unders, hooks = player_8_ou_stats()
+        return f"{overs} - {unders} - {hooks}"
+    
+    # Player One O/U Icon
+    @render.ui
+    def player_1_ou_icon():
+        over_under = player_1_ou_stats()[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Two O/U Icon
+    @render.ui
+    def player_2_ou_icon():
+        over_under = player_2_ou_stats()[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Three O/U Icon
+    @render.ui
+    def player_3_ou_icon():
+        over_under = player_3_ou_stats()[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Four O/U Icon
+    @render.ui
+    def player_4_ou_icon():
+        over_under = player_4_ou_stats()[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Five O/U Icon
+    @render.ui
+    def player_5_ou_icon():
+        over_under = player_5_ou_stats()[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Six O/U Icon
+    @render.ui
+    def player_6_ou_icon():
+        over_under = player_6_ou_stats()[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Seven O/U Icon
+    @render.ui
+    def player_7_ou_icon():
+        over_under = player_7_ou_stats()[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player Eight O/U Icon
+    @render.ui
+    def player_8_ou_icon():
+        over_under = player_8_ou_stats()[0]
+        if over_under == "Over":
+            return ICONS["chevron_up"]
+        else:
+            return ICONS["chevron_down"]
+        
+    # Player 1 O/U Streak
+    @render.ui
+    def player_1_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
+            gamemode(), 
+            player_1_line(), 
+            input.map_name()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 2 O/U Streak
+    @render.ui
+    def player_2_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'], 
+            gamemode(), 
+            player_2_line(), 
+            input.map_name()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 3 O/U Streak
+    @render.ui
+    def player_3_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'], 
+            gamemode(), 
+            player_3_line(), 
+            input.map_name()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 4 O/U Streak
+    @render.ui
+    def player_4_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
+            gamemode(), 
+            player_4_line(), 
+            input.map_name()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 5 O/U Streak
+    @render.ui
+    def player_5_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
+            gamemode(), 
+            player_5_line(), 
+            input.map_name()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 6 O/U Streak
+    @render.ui
+    def player_6_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
+            gamemode(), 
+            player_6_line(), 
+            input.map_name()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 7 O/U Streak
+    @render.ui
+    def player_7_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
+            gamemode(), 
+            player_7_line(), 
+            input.map_name()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 8 O/U Streak
+    @render.ui
+    def player_8_ou_streak():
+        ou, streak = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
+            gamemode(), 
+            player_8_line(), 
+            input.map_name()
+        )
+        return f"{ou} {streak}"
+        
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_1_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
+            gamemode(), 
+            player_1_line(), 
+            input.map_name()
+        )[0]
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_2_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'], 
+            gamemode(), 
+            player_2_line(), 
+            input.map_name()
+        )[0]
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_3_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'], 
+            gamemode(), 
+            player_3_line(), 
+            input.map_name()
+        )[0]
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_4_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
+            gamemode(), 
+            player_4_line(), 
+            input.map_name()
+        )[0]
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_5_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
+            gamemode(), 
+            player_5_line(), 
+            input.map_name()
+        )[0]
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_6_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
+            gamemode(), 
+            player_6_line(), 
+            input.map_name()
+        )[0]
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_7_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
+            gamemode(), 
+            player_7_line(), 
+            input.map_name()
+        )[0]
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
+    
+    # Change O/U Streak Icon Based on recent O/U result
+    @render.ui
+    def change_player_8_ou_streak_icon():
+        start = player_over_under_streak(
+            cdlDF, 
+            rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
+            gamemode(), 
+            player_8_line(), 
+            input.map_name()
+        )[0]
+        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
+
 
 # Run app
 app = App(app_ui, server)
