@@ -1034,7 +1034,7 @@ def server(input, output, session):
         over_under, percentage, overs, unders, hooks = player_4_ou_stats()
         if over_under == "Never Played":
             return over_under
-        return f"{over_under} {percentage}%"
+        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
 
     # Player Five O/U %
     @render.ui
