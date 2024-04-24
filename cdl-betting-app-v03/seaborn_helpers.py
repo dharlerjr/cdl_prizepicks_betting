@@ -166,18 +166,23 @@ def player_kills_vs_time(
             (queried_df["gamemode"] == gamemode_input) & 
             (queried_df["map_name"] == map_input)
             ]
+        
+    queried_df.loc[:, 'match_date'] = pd.to_datetime(queried_df['match_date']).dt.date
     
     # Create figure with gridspec
-    f, axs = plt.subplots(1, 2, figsize = (6, 3), gridspec_kw = dict(width_ratios=[0.4, 2], wspace = 0.05), sharey = True)
-
-    # Boxplot
-    sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[0], color = "#2fa4e7", showfliers = False)
-    sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[0], color = "#2fa4e7")
-    axs[0].axhline(y = cur_line, color = "purple", linestyle = '--')
+    f, axs = plt.subplots(1, 2, figsize = (6, 3), gridspec_kw = dict(width_ratios=[2, 0.4], wspace = 0.05), sharey = True)
 
     # Scatterplot
-    sns.scatterplot(queried_df, x = "match_date", y = "kills", ax=axs[1], color = "#2fa4e7")
+    sns.scatterplot(queried_df, x = "match_date", y = "kills", ax=axs[0], color = "#2fa4e7")
+    axs[0].axhline(y = cur_line, color = "purple", linestyle = '--')
+
+    # Boxplot
+    sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[1], color = "#2fa4e7", showfliers = False)
+    sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], color = "#2fa4e7")
     axs[1].axhline(y = cur_line, color = "purple", linestyle = '--')
+
+    # Add title
+    axs[0].set_title(player_input, fontsize = 18, family = "sans serif", loc = "left")
 
     # If necessary, scale y-axis due to lack of entries
     kills = queried_df["kills"].to_list()
@@ -191,17 +196,19 @@ def player_kills_vs_time(
         plt.yticks(y_axis_ticks)
 
     # X- & Y-Axis Labels
-    axs[1].set_xlabel("")
+    axs[0].set_xlabel("")
     axs[0].set_ylabel("Kills")
-    axs[0].set_xticks([])
+    axs[1].set_xticks([])
     axs[1].set_ylabel("")
 
     # Date Ticks
     formatter = mdates.DateFormatter('%b %d')
-    axs[1].xaxis.set_major_formatter(formatter)
-    axs[1].tick_params(axis = 'x', rotation = 30)
+    axs[0].xaxis.set_major_formatter(formatter)
+    axs[0].tick_params(axis = 'x', rotation = 30)
+
 
     # Label current line from PrizePicks if queried_df is not empty
+    plt.sca(axs[0])
     if not queried_df.empty:
         bbox = {'facecolor': 'purple', 'alpha': 0.5, 'pad': 0.4, 'boxstyle': 'round'}
         cur_line_x = min(queried_df["match_date"])
@@ -240,18 +247,21 @@ def player_kills_vs_score_diff(
             ]
         
     # Create figure with gridspec
-    f, axs = plt.subplots(1, 2, figsize = (6, 3), gridspec_kw = dict(width_ratios=[0.4, 2], wspace = 0.05), sharey = True)
-
-    # Boxplot
-    sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[0], color = "#2fa4e7", showfliers = False)
-    sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[0], color = "#2fa4e7")
-    axs[0].axhline(y = cur_line, color = "purple", linestyle = '--')
+    f, axs = plt.subplots(1, 2, figsize = (6, 3), gridspec_kw = dict(width_ratios=[2, 0.4], wspace = 0.05), sharey = True)
 
     # Scatterplot
-    sns.scatterplot(queried_df, x = "score_diff", y = "kills", ax=axs[1])
-    sns.regplot(queried_df, x = "score_diff", y = "kills", lowess = True, color = "#2fa4e7")
+    sns.scatterplot(queried_df, x = "score_diff", y = "kills", ax=axs[0], color = "#2fa4e7")
+    sns.regplot(queried_df, x = "score_diff", y = "kills", lowess = True, ax=axs[0], color = "#2fa4e7")
+    axs[0].axhline(y = cur_line, color = "purple", linestyle = '--')
+    # axs[0].axvline(x = 0, color = "orange", linestyle = '--')
+
+    # Boxplot
+    sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[1], color = "#2fa4e7", showfliers = False)
+    sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], color = "#2fa4e7")
     axs[1].axhline(y = cur_line, color = "purple", linestyle = '--')
-    # axs[1].axvline(x = 0, color = "orange", linestyle = '--')
+
+    # Add title
+    axs[0].set_title(player_input, fontsize = 18, family = "sans serif", loc = "left")
 
     # If necessary, scale y-axis due to lack of entries
     kills = queried_df["kills"].to_list()
@@ -264,14 +274,15 @@ def player_kills_vs_score_diff(
         y_axis_ticks = range(min_y, max_y + 1)
         plt.yticks(y_axis_ticks)
 
-    # Styling
-    axs[1].set_xlabel("")
+    # X- & Y-Axis Labels
+    axs[0].set_xlabel("")
     axs[0].set_ylabel("Kills")
-    axs[0].set_xticks([])
+    axs[1].set_xticks([])
     axs[1].set_ylabel("")
 
 
     # Label current line from PrizePicks if queried_df is not empty
+    plt.sca(axs[0])
     if not queried_df.empty:
         bbox = {'facecolor': 'purple', 'alpha': 0.5, 'pad': 0.4, 'boxstyle': 'round'}
         min_score_diff = min(queried_df["score_diff"])
