@@ -12,7 +12,8 @@ from setup.config import db_password
 # List of players that have been dropped
 dropped_players = [
     "Afro", "Arcitys", "Purj", "Cammy", "Capsidal", "EriKBooM", 
-    "GodRx", "iLLeY", "JurNii", "Owakening", "SlasheR", "Vivid"
+    "GodRx", "iLLeY", "JurNii", "Owakening", "SlasheR", "Vivid", 
+    # "Assault"
 ]
 
 # Dictionary of players who changed teams

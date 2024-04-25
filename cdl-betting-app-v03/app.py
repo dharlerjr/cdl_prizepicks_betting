@@ -561,7 +561,7 @@ def server(input, output, session):
             (team_summaries_DF['gamemode'] == gamemode()) & 
             (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
         icon = ICONS["percent"]
-        return icon.add_class(f"text-{("success" if win_percentage >= 0.5 else "danger")}")
+        return icon.add_class(f"text-{('success' if win_percentage >= 0.5 else 'danger')}")
                 
 
     # Team B Map Record for User-Selected Map & Mode Combination
@@ -594,7 +594,7 @@ def server(input, output, session):
             (team_summaries_DF['gamemode'] == gamemode()) & 
             (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
         icon = ICONS["percent"]
-        return icon.add_class(f"text-{("success" if win_percentage >= 0.5 else "danger")}")
+        return icon.add_class(f"text-{('success' if win_percentage >= 0.5 else 'danger')}")
 
     # H2H Map Record for User-Selected Map & Mode Combination
     @render.ui
