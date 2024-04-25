@@ -195,7 +195,7 @@ app_ui = ui.page_sidebar(
         ui.value_box(
             title = ui.output_ui("team_a_map_record_title"),
             value = ui.output_ui("team_a_map_record"),
-            showcase = ICONS["percent"]
+            showcase = ui.output_ui("team_a_percentage_icon")
         ), 
         
         # H2H W - L
@@ -209,7 +209,7 @@ app_ui = ui.page_sidebar(
         ui.value_box(
             title = ui.output_ui("team_b_map_record_title"),
             value = ui.output_ui("team_b_map_record"),
-            showcase = ICONS["percent"]
+            showcase = ui.output_ui("team_b_percentage_icon")
         ), 
         
         # Team B Win Streak
@@ -551,6 +551,18 @@ def server(input, output, session):
             (team_summaries_DF['gamemode'] == gamemode()) & 
             (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
         return f"{win_percentage:.0%} ({wins} - {losses})"
+    
+    # Team A Map Win Percentage Icon
+    @render.ui
+    def team_a_percentage_icon():
+        map_to_search_for = "All" if input.map_name() == "All" else input.map_name()
+        win_percentage = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.team_a()) &
+            (team_summaries_DF['gamemode'] == gamemode()) & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
+        icon = ICONS["percent"]
+        return icon.add_class(f"text-{('success' if win_percentage >= 0.5 else 'danger')}")
+                
 
     # Team B Map Record for User-Selected Map & Mode Combination
     @render.ui
@@ -572,6 +584,17 @@ def server(input, output, session):
             (team_summaries_DF['gamemode'] == gamemode()) & 
             (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
         return f"{win_percentage:.0%} ({wins} - {losses})"
+    
+    # Team B Map Win Percentage Icon
+    @render.ui
+    def team_b_percentage_icon():
+        map_to_search_for = "All" if input.map_name() == "All" else input.map_name()
+        win_percentage = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.team_b()) &
+            (team_summaries_DF['gamemode'] == gamemode()) & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
+        icon = ICONS["percent"]
+        return icon.add_class(f"text-{('success' if win_percentage >= 0.5 else 'danger')}")
 
     # H2H Map Record for User-Selected Map & Mode Combination
     @render.ui

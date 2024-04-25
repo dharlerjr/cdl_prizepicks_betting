@@ -269,12 +269,6 @@ def build_rosters(cdlDF_input: pd.DataFrame):
     for player, old_team in changed_players.items():
         rostersDF = rostersDF[~((rostersDF['player'] == player) & (rostersDF['team_abbr'] == old_team))]
 
-    # Add asim to roster
-    asim_row = {'player': "Asim", 'team': "Las Vegas Legion", 'team_abbr': "LV"}
-
-    # Add the new row to the dataframe using loc and specify the index
-    rostersDF.loc[len(rostersDF)] = asim_row
-
     # Reset index & return
     rostersDF = rostersDF.reset_index(drop=True)
     return rostersDF
