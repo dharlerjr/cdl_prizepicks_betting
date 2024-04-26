@@ -113,6 +113,9 @@ def scrape_prizepicks():
     player_props_df['player'] = player_props_df['player'].astype(str)
     player_props_df['team_abbr'] = player_props_df['team_abbr'].astype(str)
 
+    # Drop duplicates before sorting
+    player_props_df.drop_duplicates(subset = ['player', 'prop'], inplace = True)
+
     # Add player_lower column for sorting
     player_props_df["player_lower"] = player_props_df['player'].str.lower()
 
