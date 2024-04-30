@@ -2,7 +2,7 @@
 # Import shiny
 from shiny import ui
 
-# Function to render ui.nav_panel that contains various visualizations of player stats
+# Function to render one ui.nav_panel per player
 def player_panel(player_num: str):
     return ui.nav_panel(
         player_num, ui.output_plot(f"player_{player_num}_plot", width = "660px", height = "380px"),
