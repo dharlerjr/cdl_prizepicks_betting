@@ -16,6 +16,7 @@ from setup.setup import *
 from webscraper import *
 from seaborn_helpers import *
 from datagrid_and_value_box_helpers import *
+from app_helpers import *
 
 
 # Dictionary to map map_num to gamemode
@@ -237,168 +238,15 @@ app_ui = ui.page_sidebar(
 
         # Column 2: Card with Pill Tabset of Player O/U Stats
         ui.layout_columns(
-
-            ui.navset_card_pill(
-                ui.nav_panel(
-                    "1", ui.output_plot("player_1_plot", width = "660px", height = "360px"),
-                    ui.layout_columns(),
-                    ui.layout_columns(
-                        ui.value_box(
-                            "O/U",
-                            ui.output_ui("player_1_ou"),
-                            showcase = ui.output_ui("player_1_ou_icon"), 
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                        ui.value_box(
-                            "Streak", 
-                            ui.output_ui("player_1_ou_streak"), 
-                            showcase = ui.output_ui("change_player_1_ou_streak_icon"),
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                    ),   
-                ), 
-                ui.nav_panel(
-                    "2", ui.output_plot("player_2_plot", width = "660px", height = "360px"),
-                    ui.layout_columns(),
-                    ui.layout_columns(
-                        ui.value_box(
-                            "O/U",
-                            ui.output_ui("player_2_ou"),
-                            showcase = ui.output_ui("player_2_ou_icon"), 
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                        ui.value_box(
-                            "Streak", 
-                            ui.output_ui("player_2_ou_streak"), 
-                            showcase = ui.output_ui("change_player_2_ou_streak_icon"),
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                    ),  
-                ), 
-                ui.nav_panel(
-                    "3", ui.output_plot("player_3_plot", width = "660px", height = "360px"),
-                    ui.layout_columns(),
-                    ui.layout_columns(
-                        ui.value_box(
-                            "O/U",
-                            ui.output_ui("player_3_ou"),
-                            showcase = ui.output_ui("player_3_ou_icon"), 
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                        ui.value_box(
-                            "Streak", 
-                            ui.output_ui("player_3_ou_streak"), 
-                            showcase = ui.output_ui("change_player_3_ou_streak_icon"),
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                    ),  
-                ), 
-                ui.nav_panel(
-                    "4", ui.output_plot("player_4_plot", width = "660px", height = "360px"),
-                    ui.layout_columns(),
-                    ui.layout_columns(
-                        ui.value_box(
-                            "O/U",
-                            ui.output_ui("player_4_ou"),
-                            showcase = ui.output_ui("player_4_ou_icon"), 
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                        ui.value_box(
-                            "Streak", 
-                            ui.output_ui("player_4_ou_streak"), 
-                            showcase = ui.output_ui("change_player_4_ou_streak_icon"),
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                    ),  
-                ), 
-                ui.nav_panel(
-                    "5", ui.output_plot("player_5_plot", width = "660px", height = "360px"),
-                    ui.layout_columns(),
-                    ui.layout_columns(
-                        ui.value_box(
-                            "O/U",
-                            ui.output_ui("player_5_ou"),
-                            showcase = ui.output_ui("player_5_ou_icon"), 
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                        ui.value_box(
-                            "Streak", 
-                            ui.output_ui("player_5_ou_streak"), 
-                            showcase = ui.output_ui("change_player_5_ou_streak_icon"),
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                    ),  
-                ), 
-                ui.nav_panel(
-                    "6", ui.output_plot("player_6_plot", width = "660px", height = "360px"),
-                    ui.layout_columns(),
-                    ui.layout_columns(
-                        ui.value_box(
-                            "O/U",
-                            ui.output_ui("player_6_ou"),
-                            showcase = ui.output_ui("player_6_ou_icon"), 
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                        ui.value_box(
-                            "Streak", 
-                            ui.output_ui("player_6_ou_streak"), 
-                            showcase = ui.output_ui("change_player_6_ou_streak_icon"),
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                    ),  
-                ), 
-                ui.nav_panel(
-                    "7", ui.output_plot("player_7_plot", width = "660px", height = "360px"),
-                    ui.layout_columns(),
-                    ui.layout_columns(
-                        ui.value_box(
-                            "O/U",
-                            ui.output_ui("player_7_ou"),
-                            showcase = ui.output_ui("player_7_ou_icon"), 
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                        ui.value_box(
-                            "Streak", 
-                            ui.output_ui("player_7_ou_streak"), 
-                            showcase = ui.output_ui("change_player_7_ou_streak_icon"),
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                    ),  
-                ), 
-                ui.nav_panel(
-                    "8", ui.output_plot("player_8_plot", width = "660px", height = "360px"),
-                    ui.layout_columns(),
-                    ui.layout_columns(
-                        ui.value_box(
-                            "O/U",
-                            ui.output_ui("player_8_ou"),
-                            showcase = ui.output_ui("player_8_ou_icon"), 
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                        ui.value_box(
-                            "Streak", 
-                            ui.output_ui("player_8_ou_streak"), 
-                            showcase = ui.output_ui("change_player_8_ou_streak_icon"),
-                            showcase_layout="left center", 
-                            max_height = "100px"
-                        ), 
-                    ),  
-                )
+            ui.navset_card_pill( 
+                player_panel("1"), 
+                player_panel("2"), 
+                player_panel("3"), 
+                player_panel("4"), 
+                player_panel("5"), 
+                player_panel("6"), 
+                player_panel("7"), 
+                player_panel("8"), 
             ),
         ),
 
@@ -412,7 +260,7 @@ app_ui = ui.page_sidebar(
         ),
 
         # Row Height
-        height = "660px",
+        height = "680px",
 
         # Column Widths
         col_widths = [3, 6, 3]
@@ -1261,7 +1109,7 @@ def server(input, output, session):
         
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
-    def change_player_1_ou_streak_icon():
+    def player_1_ou_streak_icon():
         start = player_over_under_streak(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
@@ -1273,7 +1121,7 @@ def server(input, output, session):
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
-    def change_player_2_ou_streak_icon():
+    def player_2_ou_streak_icon():
         start = player_over_under_streak(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'], 
@@ -1285,7 +1133,7 @@ def server(input, output, session):
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
-    def change_player_3_ou_streak_icon():
+    def player_3_ou_streak_icon():
         start = player_over_under_streak(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'], 
@@ -1297,7 +1145,7 @@ def server(input, output, session):
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
-    def change_player_4_ou_streak_icon():
+    def player_4_ou_streak_icon():
         start = player_over_under_streak(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
@@ -1309,7 +1157,7 @@ def server(input, output, session):
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
-    def change_player_5_ou_streak_icon():
+    def player_5_ou_streak_icon():
         start = player_over_under_streak(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
@@ -1321,7 +1169,7 @@ def server(input, output, session):
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
-    def change_player_6_ou_streak_icon():
+    def player_6_ou_streak_icon():
         start = player_over_under_streak(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
@@ -1333,7 +1181,7 @@ def server(input, output, session):
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
-    def change_player_7_ou_streak_icon():
+    def player_7_ou_streak_icon():
         start = player_over_under_streak(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
@@ -1345,7 +1193,7 @@ def server(input, output, session):
     
     # Change O/U Streak Icon Based on recent O/U result
     @render.ui
-    def change_player_8_ou_streak_icon():
+    def player_8_ou_streak_icon():
         start = player_over_under_streak(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
