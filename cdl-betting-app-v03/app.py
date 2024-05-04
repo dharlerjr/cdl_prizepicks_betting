@@ -72,7 +72,8 @@ ICONS = {
     "red_crosshairs": fa.icon_svg("crosshairs", height = "48px").add_class("text-danger"), 
     "green_crosshairs": fa.icon_svg("crosshairs", height = "48px").add_class("text-success"), 
     "crosshairs": fa.icon_svg("crosshairs", height = "48px"),
-    "percent": fa.icon_svg("percent", height = "48px"), 
+    "red_percent": fa.icon_svg("percent", height = "48px").add_class("text-danger"),
+    "green_percent": fa.icon_svg("percent", height = "48px").add_class("text-success"),
     "headset": fa.icon_svg("headset", height = "48px"), 
     "plus": fa.icon_svg("plus", height = "48px"), 
     "minus": fa.icon_svg("minus", height = "48px"), 
@@ -408,8 +409,10 @@ def server(input, output, session):
             (team_summaries_DF['team'] == input.team_a()) &
             (team_summaries_DF['gamemode'] == gamemode()) & 
             (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
-        icon = ICONS["percent"]
-        return icon.add_class(f"text-{('success' if win_percentage >= 0.5 else 'danger')}")
+        if win_percentage >= 0.5:
+            return ICONS["green_percent"]
+        else:
+            return ICONS["red_percent"]
                 
 
     # Team B Map Record for User-Selected Map & Mode Combination
@@ -441,8 +444,10 @@ def server(input, output, session):
             (team_summaries_DF['team'] == input.team_b()) &
             (team_summaries_DF['gamemode'] == gamemode()) & 
             (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
-        icon = ICONS["percent"]
-        return icon.add_class(f"text-{('success' if win_percentage >= 0.5 else 'danger')}")
+        if win_percentage >= 0.5:
+            return ICONS["green_percent"]
+        else:
+            return ICONS["red_percent"]
 
     # H2H Map Record for User-Selected Map & Mode Combination
     @render.ui
