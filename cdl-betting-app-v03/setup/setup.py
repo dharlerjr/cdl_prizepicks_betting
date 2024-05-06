@@ -13,7 +13,7 @@ from setup.config import db_password
 dropped_players = [
     "Afro", "Arcitys", "Purj", "Cammy", "Capsidal", "EriKBooM", 
     "GodRx", "iLLeY", "JurNii", "Owakening", "SlasheR", "Vivid", 
-    "Assault", "Beans"
+    "Assault", "Seany"
 ]
 
 # Dictionary of players who changed teams
