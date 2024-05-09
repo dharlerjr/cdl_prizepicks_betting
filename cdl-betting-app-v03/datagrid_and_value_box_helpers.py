@@ -1,6 +1,13 @@
 
 import pandas as pd
 
+# Function to compute date of last match
+def compute_last_match(cdlDF_input: pd.DataFrame, team_x: str, team_y: str):
+    return cdlDF_input[
+        (cdlDF_input['team'] == team_x) & 
+        (cdlDF_input['opp'] == team_y)
+    ].iloc[-1, 1].strftime("%b %d %Y")
+
 # Function to create dataframe of kills for user-selected team & gamemode
 def build_scoreboards(
         cdlDF_input: pd.DataFrame, team_x: str, team_y: str, gamemode_input: str, map_input = "All"

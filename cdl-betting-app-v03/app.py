@@ -78,7 +78,8 @@ ICONS = {
     "plus": fa.icon_svg("plus", height = "48px"), 
     "minus": fa.icon_svg("minus", height = "48px"), 
     "chevron_up": fa.icon_svg("chevron-up", height = "48px").add_class("text-purple"),
-    "chevron_down": fa.icon_svg("chevron-down", height = "48px").add_class("text-purple")
+    "chevron_down": fa.icon_svg("chevron-down", height = "48px").add_class("text-purple"), 
+    "calendar": fa.icon_svg("calendar", height = "48px")
 }
 
 # Major 3 Qualifiers Start Date (String)
@@ -151,31 +152,38 @@ app_ui = ui.page_sidebar(
     # Row 1 of 4
     ui.layout_columns(
         
-        # Column 1 of 5: Team A Logo
+        # Column 1 of 6: Team A Logo
         ui.output_image("team_a_logo", width = "120px", height = "120px"), 
-            
-        # Column 2 of 5: Team A Standing
+
+        # Column 2 of 6: Team A Standing
         ui.value_box(
-            title = "Series W-L (Major III Qualifiers)", 
+            title = "Major III Standing",
             value = ui.output_ui("team_a_series_record"),
             showcase = ICONS["headset"]
         ),
         
-        # Column 3 of 5: H2H Series Record
+        # Column 3 of 6: H2H Series Record
         ui.value_box(
             title = "Series H2H (Overall)",
             value = ui.output_ui("h2h_series_record"),
             showcase = ICONS["crosshairs"]
         ), 
-        
-        # Column 4 of 5: Team B Standing
+
+        # Column 4 of 6: Date of Last Match
         ui.value_box(
-            title = "Series W-L (Major III Qualifiers)", 
+            title = "Last Match",
+            value = ui.output_ui("last_match_date"),
+            showcase = ICONS["calendar"]
+        ), 
+
+        # Column 5 of 6: Team B Standing
+        ui.value_box(
+            title = "Major III Standing",
             value = ui.output_ui("team_b_series_record"),
             showcase = ICONS["headset"]
         ), 
         
-        # Column 5 of 5: Team B Logo
+        # Column 6 of 6: Team B Logo
         ui.output_image("team_b_logo", width = "120px", height = "120px"), 
 
         # Row Height
@@ -336,6 +344,11 @@ def server(input, output, session):
         img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.team_b()], 
                         "width": "120px", "height": "120px"}
         return img
+    
+    # Date of Last Match
+    @render.ui
+    def last_match_date():
+        return compute_last_match(cdlDF, input.team_a(), input.team_b())
     
     # Team A Series Record for Major 3 Quals
     @render.ui
