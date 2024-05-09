@@ -1,10 +1,11 @@
 
 
-# Import shiny, shinyswatch, and faicons
+# Import shiny, shinyswatch, faicons, and asyncio
 from shiny import App, reactive, render, ui
 from shiny.types import ImgData
 import shinyswatch
 import faicons as fa
+import asyncio
 
 # Import os for filepaths
 import os
@@ -311,15 +312,37 @@ def server(input, output, session):
     player_props_df = reactive.value(initial_player_props)
 
     # Reactive event to update player props dataframe
+    # @reactive.effect
+    # @reactive.event(input.scrape)
+    # def scrape_props():
+    #     newVal = merge_player_props(
+    #         player_props_df(), 
+    #         scrape_prizepicks(), 
+    #         rostersDF
+    #     )
+    #     player_props_df.set(newVal)
+
+    
+    # Reactive event to update player props dataframe
     @reactive.effect
     @reactive.event(input.scrape)
-    def scrape_props():
-        newVal = merge_player_props(
-            player_props_df(), 
-            scrape_prizepicks(), 
-            rostersDF
-        )
-        player_props_df.set(newVal)
+    async def scrape_props():
+        with ui.Progress(min = 1, max = 15) as p:
+            p.set(message = "Scraping PrizePicks", detail = "Please wait")
+            
+            newVal = merge_player_props(
+                player_props_df(), 
+                scrape_prizepicks(), 
+                rostersDF
+            )
+            player_props_df.set(newVal)
+
+            for i in range(1, 15):
+                if i <= 10:
+                    p.set(i, message = "Scraping PrizePicks")
+                else:
+                    p.set(i, message = "Finished")
+                await asyncio.sleep(0.1)
 
     # Reactive calc to get map_num from map_num input
     @reactive.calc
