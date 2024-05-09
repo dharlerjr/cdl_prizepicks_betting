@@ -171,7 +171,7 @@ app_ui = ui.page_sidebar(
 
         # Column 4 of 6: Date of Last Match
         ui.value_box(
-            title = "Last Match",
+            title = "Last H2H Match",
             value = ui.output_ui("last_match_date"),
             showcase = ICONS["calendar"]
         ), 
