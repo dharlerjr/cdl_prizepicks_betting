@@ -297,8 +297,14 @@ app_ui = ui.page_sidebar(
 
     ),
 
+    # Import CSS Styling
+    ui.tags.style(
+        "body { font-size: 14px; } h4 { font-size: 20px; color: black; font-family: 'system-ui', sans-serif; }"
+    ),
+    
     # App Title
-    title = "CDL Bets on PrizePicks" 
+    title = "CDL Bets on PrizePicks",
+
 )
 
 
@@ -328,7 +334,7 @@ def server(input, output, session):
     @reactive.event(input.scrape)
     async def scrape_props():
         with ui.Progress(min = 1, max = 15) as p:
-            p.set(message = "Scraping PrizePicks", detail = "Please wait")
+            p.set(message = "Scraping PrizePicks", detail = "Please wait...")
             
             newVal = merge_player_props(
                 player_props_df(), 
@@ -378,7 +384,7 @@ def server(input, output, session):
     def team_a_series_record():
         wins = current_standings.loc[current_standings['team'] == input.team_a(), 'wins'].reset_index(drop=True)[0]
         losses = current_standings.loc[current_standings['team'] == input.team_a(), 'losses'].reset_index(drop=True)[0]
-        return f"{wins} - {losses}"
+        return ui.h4(f"{wins} - {losses}")
 
     # Team B Series Record for Major 3 Quals
     @render.ui
