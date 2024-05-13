@@ -1,0 +1,17 @@
+body { 
+    font-size: 14px; 
+} 
+
+.value-box-value.html-fill-item.html-fill-container { 
+    font-size: 28px; 
+    color: #495057; 
+    font-family: 'Segoe UI', sans-serif; 
+    font-weight: 400
+}
+
+.value-box-title.html-fill-item.html-fill-container {
+    font-size: 14px; 
+    color: #868e96; 
+    font-family: 'Segoe UI', sans-serif; 
+    font-weight: 400
+}

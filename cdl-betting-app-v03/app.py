@@ -297,10 +297,16 @@ app_ui = ui.page_sidebar(
 
     ),
 
-    # Import CSS Styling
-    ui.tags.style(
-        "body { font-size: 14px; } h4 { font-size: 20px; color: black; font-family: 'system-ui', sans-serif; }"
+    # Import font files
+    ui.tags.link(
+        rel="stylesheet",
+        href="https://fonts.googleapis.com/css?family=Roboto"
     ),
+
+    # Import CSS Styling
+    ui.include_css(
+        os.path.dirname(__file__) + "\\styles.css"
+    ),        
     
     # App Title
     title = "CDL Bets on PrizePicks",
@@ -384,7 +390,8 @@ def server(input, output, session):
     def team_a_series_record():
         wins = current_standings.loc[current_standings['team'] == input.team_a(), 'wins'].reset_index(drop=True)[0]
         losses = current_standings.loc[current_standings['team'] == input.team_a(), 'losses'].reset_index(drop=True)[0]
-        return ui.h4(f"{wins} - {losses}")
+        # return f"{wins} - {losses}"
+        return f"{wins} - {losses}"
 
     # Team B Series Record for Major 3 Quals
     @render.ui
