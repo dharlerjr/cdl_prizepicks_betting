@@ -101,206 +101,238 @@ initial_player_props = build_intial_props(rostersDF).copy()
 
 
 # Define ui
-app_ui = ui.page_sidebar(
+app_ui = ui.page_navbar(
 
-    # Sidebar with inputs
-    ui.sidebar(
+    # 1st Page: Kills per Map
+    ui.nav_panel("Kills per Map",
+                 
+        # Sidebar Layout
+        ui.layout_sidebar(
 
-        # Theme picker
-        # shinyswatch.theme_picker_ui(),
-        
-        # Set theme: cerulean
-        shinyswatch.theme.cerulean,
-        
-        # Inputs
-        ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
-        ui.input_select(id = "team_a", label = "Team A", selected = "OpTic Texas",
-                        choices = sorted(cdlDF['team'].unique())), 
-        ui.input_select(id = "team_b", label = "Team B", selected = "Atlanta FaZe",
-                        choices = sorted(cdlDF['team'].unique())), 
-        ui.input_select(id = "map_num_and_gamemode", label = "Map Number", selected = 1,
-                        choices = [
-                            "Map 1 Hardpoint", 
-                            "Map 2 Search & Destroy", 
-                            "Map 3 Control", 
-                            "Map 4 Hardpoint", 
-                            "Map 5 Search & Destroy"
-                        ]), 
-        ui.input_select(id = "map_name", label = "Map", selected = "All",
-                        choices = ["All"] + sorted(filter_maps(cdlDF)['map_name'].unique())), 
-        ui.input_select(id = "x_axis", label = "X-Axis", selected = "Time",
-                        choices = ["Time", "Score Differential"])
+            # Sidebar with inputs
+            ui.sidebar(
 
-    ),
+                # Theme picker
+                # shinyswatch.theme_picker_ui(),
+                
+                # Set theme: cerulean
+                shinyswatch.theme.cerulean,
+                
+                # Inputs
+                ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
+                ui.input_select(id = "team_a", label = "Team A", selected = "OpTic Texas",
+                                choices = sorted(cdlDF['team'].unique())), 
+                ui.input_select(id = "team_b", label = "Team B", selected = "Atlanta FaZe",
+                                choices = sorted(cdlDF['team'].unique())), 
+                ui.input_select(id = "map_num_and_gamemode", label = "Map Number", selected = 1,
+                                choices = [
+                                    "Map 1 Hardpoint", 
+                                    "Map 2 Search & Destroy", 
+                                    "Map 3 Control", 
+                                    "Map 4 Hardpoint", 
+                                    "Map 5 Search & Destroy"
+                                ]), 
+                ui.input_select(id = "map_name", label = "Map", selected = "All",
+                                choices = ["All"] + sorted(filter_maps(cdlDF)['map_name'].unique())), 
+                ui.input_select(id = "x_axis", label = "X-Axis", selected = "Time",
+                                choices = ["Time", "Score Differential"])
 
-    # Row 1 of 4
-    ui.layout_columns(
-        
-        # Column 1 of 6: Team A Logo
-        ui.output_image("team_a_logo", width = "120px", height = "120px"), 
-
-        # Column 2 of 6: Placeholder Column
-        ui.layout_columns(),
-        
-        # Column 3 of 6: H2H Series Record
-        ui.value_box(
-            title = "Series H2H (Overall)",
-            value = ui.output_ui("h2h_series_record"),
-            showcase = ICONS["crosshairs"]
-        ), 
-
-        # Column 4 of 6: Date of Last Match
-        ui.value_box(
-            title = "Last H2H Match",
-            value = ui.output_ui("last_match_date"),
-            showcase = ICONS["calendar"]
-        ), 
-
-        # Column 5 of 6: Placeholder Column
-        ui.layout_columns(),
-        
-        # Column 6 of 6: Team B Logo
-        ui.output_image("team_b_logo", width = "120px", height = "120px"), 
-
-        # Row Height
-        height = "120px"
-
-    ),
-
-    # Row 2 of 4
-    ui.layout_columns(
-        
-        # Team A Standing
-        ui.value_box(
-            title = "Major III Standing",
-            value = ui.output_ui("team_a_series_record"),
-            showcase = ICONS["headset"]
-        ),
-
-        # Team A Win Streak
-        ui.value_box(
-            title = ui.output_ui("team_a_win_streak_title"),
-            value = ui.output_ui("team_a_win_streak"),
-            showcase = ui.output_ui("change_team_a_win_streak_icon")
-        ), 
-        
-        # Team A Win % 
-        ui.value_box(
-            title = ui.output_ui("team_a_map_record_title"),
-            value = ui.output_ui("team_a_map_record"),
-            showcase = ui.output_ui("team_a_win_percent_icon")
-        ), 
-        
-        # H2H W - L
-        # ui.value_box(
-        #     title = ui.output_ui("map_h2h_title"),
-        #     value = ui.output_ui("h2h_map_record"),
-        #     showcase = ICONS["crosshairs"]
-        # ),
-        
-        # Team B Win %
-        ui.value_box(
-            title = ui.output_ui("team_b_map_record_title"),
-            value = ui.output_ui("team_b_map_record"),
-            showcase = ui.output_ui("team_b_win_percent_icon")
-        ), 
-        
-        # Team B Win Streak
-        ui.value_box(
-            title = ui.output_ui("team_b_win_streak_title"),
-            value = ui.output_ui("team_b_win_streak"),
-            showcase = ui.output_ui("change_team_b_win_streak_icon")
-        ),
-
-        # Team B Standing
-        ui.value_box(
-            title = "Major III Standing",
-            value = ui.output_ui("team_b_series_record"),
-            showcase = ICONS["headset"]
-        ), 
-        
-        # Row Height
-        height = "120px"
-    ),
-
-    # Row 3 of 4
-    ui.layout_columns(
-
-        # Column 1: Team A Stats
-        ui.layout_column_wrap(
-            
-            ui.card(ui.card_header("Map Results"), 
-                    ui.output_plot("team_a_score_diffs", width = "280px", height = "240px")),
-            ui.card(ui.card_header("Maps Played"), 
-                    ui.output_plot("team_a_maps_played", width = "280px", height = "160px")),
-
-            width = 1
-        ),
-
-        # Column 2: Card with Pill Tabset of Player O/U Stats
-        ui.layout_columns(
-            ui.navset_card_pill( 
-                player_panel("1"), 
-                player_panel("2"), 
-                player_panel("3"), 
-                player_panel("4"), 
-                player_panel("5"), 
-                player_panel("6"), 
-                player_panel("7"), 
-                player_panel("8"), 
-                title = "Player Cards"
             ),
-        ),
 
-        # Column 3: Team B Stats
-        ui.layout_column_wrap(
+            # Row 1 of 4
+            ui.layout_columns(
+                
+                # Column 1 of 6: Team A Logo
+                ui.output_image("team_a_logo", width = "120px", height = "120px"), 
 
-            ui.card(ui.card_header("Map Results"), 
-                    ui.output_plot("team_b_score_diffs", width = "280px", height = "240px")),
-            ui.card(ui.card_header("Maps Played"), 
-                    ui.output_plot("team_b_maps_played", width = "280px", height = "160px")),
+                # Column 2 of 6: Placeholder Column
+                ui.layout_columns(),
+                
+                # Column 3 of 6: H2H Series Record
+                ui.value_box(
+                    title = "Series H2H (Overall)",
+                    value = ui.output_ui("h2h_series_record"),
+                    showcase = ICONS["crosshairs"]
+                ), 
 
-            width = 1, 
-        ),
+                # Column 4 of 6: Date of Last Match
+                ui.value_box(
+                    title = "Last H2H Match",
+                    value = ui.output_ui("last_match_date"),
+                    showcase = ICONS["calendar"]
+                ), 
 
-        # Row Height
-        height = "680px",
+                # Column 5 of 6: Placeholder Column
+                ui.layout_columns(),
+                
+                # Column 6 of 6: Team B Logo
+                ui.output_image("team_b_logo", width = "120px", height = "120px"), 
 
-        # Column Widths
-        col_widths = [3, 6, 3]
+                # Row Height
+                height = "120px"
 
-    ),
+            ),
 
-    # Row 4 of 4: Series Score Differentials & Big Datagrid
-    ui.layout_columns(
+            # Row 2 of 4
+            ui.layout_columns(
+                
+                # Team A Standing
+                ui.value_box(
+                    title = "Major III Standing",
+                    value = ui.output_ui("team_a_series_record"),
+                    showcase = ICONS["headset"]
+                ),
 
-        # Column 1: Team A Score Diffs
-        ui.card(ui.card_header("Series Results"), 
-                ui.output_plot("team_a_series_diffs", width = "280px", height = "240px")),
+                # Team A Win Streak
+                ui.value_box(
+                    title = ui.output_ui("team_a_win_streak_title"),
+                    value = ui.output_ui("team_a_win_streak"),
+                    showcase = ui.output_ui("change_team_a_win_streak_icon")
+                ), 
+                
+                # Team A Win % 
+                ui.value_box(
+                    title = ui.output_ui("team_a_map_record_title"),
+                    value = ui.output_ui("team_a_map_record"),
+                    showcase = ui.output_ui("team_a_win_percent_icon")
+                ), 
+                
+                # H2H W - L
+                # ui.value_box(
+                #     title = ui.output_ui("map_h2h_title"),
+                #     value = ui.output_ui("h2h_map_record"),
+                #     showcase = ICONS["crosshairs"]
+                # ),
+                
+                # Team B Win %
+                ui.value_box(
+                    title = ui.output_ui("team_b_map_record_title"),
+                    value = ui.output_ui("team_b_map_record"),
+                    showcase = ui.output_ui("team_b_win_percent_icon")
+                ), 
+                
+                # Team B Win Streak
+                ui.value_box(
+                    title = ui.output_ui("team_b_win_streak_title"),
+                    value = ui.output_ui("team_b_win_streak"),
+                    showcase = ui.output_ui("change_team_b_win_streak_icon")
+                ),
 
-        # Column 2: Big Datagrid
-        ui.card(ui.card_header("Scoreboards"), 
-                ui.output_data_frame("scoreboards")),
+                # Team B Standing
+                ui.value_box(
+                    title = "Major III Standing",
+                    value = ui.output_ui("team_b_series_record"),
+                    showcase = ICONS["headset"]
+                ), 
+                
+                # Row Height
+                height = "120px"
+            ),
 
-        # Column 3: Team B Score Diffs
-        ui.card(ui.card_header("Series Results"), 
-                ui.output_plot("team_b_series_diffs", width = "280px", height = "240px")),
+            # Row 3 of 4
+            ui.layout_columns(
 
-        # Row Height
-        height = "360px",
-        
-        # Column Widths
-        col_widths = [3, 6, 3]
+                # Column 1: Team A Stats
+                ui.layout_column_wrap(
+                    
+                    ui.card(ui.card_header("Map Results"), 
+                            ui.output_plot("team_a_score_diffs", width = "280px", height = "240px")),
+                    ui.card(ui.card_header("Maps Played"), 
+                            ui.output_plot("team_a_maps_played", width = "280px", height = "160px")),
 
-    ),
+                    width = 1
+                ),
 
-    # Import CSS Styling
-    ui.include_css(
-        os.path.dirname(__file__) + "\\styles.css"
-    ),        
+                # Column 2: Card with Pill Tabset of Player O/U Stats
+                ui.layout_columns(
+                    ui.navset_card_pill( 
+                        player_panel("1"), 
+                        player_panel("2"), 
+                        player_panel("3"), 
+                        player_panel("4"), 
+                        player_panel("5"), 
+                        player_panel("6"), 
+                        player_panel("7"), 
+                        player_panel("8"), 
+                        title = "Player Cards"
+                    ),
+                ),
+
+                # Column 3: Team B Stats
+                ui.layout_column_wrap(
+
+                    ui.card(ui.card_header("Map Results"), 
+                            ui.output_plot("team_b_score_diffs", width = "280px", height = "240px")),
+                    ui.card(ui.card_header("Maps Played"), 
+                            ui.output_plot("team_b_maps_played", width = "280px", height = "160px")),
+
+                    width = 1, 
+                ),
+
+                # Row Height
+                height = "680px",
+
+                # Column Widths
+                col_widths = [3, 6, 3]
+
+            ),
+
+            # Row 4 of 4: Series Score Differentials & Big Datagrid
+            ui.layout_columns(
+
+                # Column 1: Team A Score Diffs
+                ui.card(ui.card_header("Series Results"), 
+                        ui.output_plot("team_a_series_diffs", width = "280px", height = "240px")),
+
+                # Column 2: Big Datagrid
+                ui.card(ui.card_header("Scoreboards"), 
+                        ui.output_data_frame("scoreboards")),
+
+                # Column 3: Team B Score Diffs
+                ui.card(ui.card_header("Series Results"), 
+                        ui.output_plot("team_b_series_diffs", width = "280px", height = "240px")),
+
+                # Row Height
+                height = "360px",
+                
+                # Column Widths
+                col_widths = [3, 6, 3]
+
+            ), 
+
+            # Import CSS Styling
+            ui.include_css(
+                os.path.dirname(__file__) + "\\styles.css"
+            ),    
+        )
+    ), 
+
+    # 2nd Page: Kills per Maps 1 - 3
+    ui.nav_panel("Kills per Maps 1 - 3", 
+                 
+        # Sidebar Layout
+        ui.layout_sidebar(
+
+                        # Sidebar with inputs
+            ui.sidebar(
+                
+                # Inputs
+                ui.input_action_button(id = "p2_scrape", label = "Get PrizePicks Lines"), 
+                ui.input_select(id = "p2__team_a", label = "Team A", selected = "Carolina Royal Ravens",
+                                choices = sorted(cdlDF['team'].unique())), 
+                ui.input_select(id = "p2_team_b", label = "Team B", selected = "New York Subliners",
+                                choices = sorted(cdlDF['team'].unique())), 
+                ui.input_select(id = "p2_x_axis", label = "X-Axis", selected = "Time",
+                                choices = ["Time", "Score Differential"])
+
+            )
+
+        )
     
+    ),
+
     # App Title
-    title = "CDL Bets on PrizePicks",
+    title = "CDL Bets on PrizePicks"
 
 )
 

@@ -35,7 +35,7 @@ team_colors = {
     "New York Subliners": "#fff000", #"#171C38", 
     "Seattle Surge": "#00ffcc", 
     "Toronto Ultra": "#780df2",
-    "OpTic Texas": "green"# "#92c951" "#000000"
+    "OpTic Texas": "#92c951" # "#000000"
 
 }
 
