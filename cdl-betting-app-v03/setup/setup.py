@@ -13,12 +13,11 @@ from setup.config import db_password
 dropped_players = [
     "Afro", "Arcitys", "Purj", "Cammy", "Capsidal", "EriKBooM", 
     "GodRx", "iLLeY", "JurNii", "Owakening", "SlasheR", "Vivid", 
-    "Assault", "Seany"
+    "Assault", "Seany", "Asim"
 ]
 
 # Dictionary of players who changed teams
 changed_players = {
-    "Asim": "BOS", 
     "ReeaL": "CAR", 
     "Standy": "LV"
 }
@@ -51,7 +50,7 @@ def load_and_clean_cdl_data():
     # Add Map Win/Loss column 
     cdlDF['map_wl'] = ["W" if x == 1 else "L" for x in cdlDF['map_result']]
 
-    # Add team colors, abbreviations, and icons
+    # Add team abbreviations, and icons
 
     # Teams
     teams = cdlDF.sort_values(by = ['team']).team.unique()
@@ -72,7 +71,7 @@ def load_and_clean_cdl_data():
         "team_icon": team_icons
     })
 
-    # Left join cdlDF & team_abbrs_colors_df
+    # Left join cdlDF & team_abbrs_icons_df
     cdlDF = pd.merge(cdlDF, team_abbrs_icons_df, on = 'team', how = 'left')
 
     # Get Opponents, Match Scores, and Score Differentials

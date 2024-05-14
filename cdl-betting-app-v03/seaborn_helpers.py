@@ -22,6 +22,23 @@ gamemode_bin_ranges = {
     "Control": (-3, 3)
 }
 
+# Dictionary of team colors for plotting
+team_colors = {
+    "Atlanta FaZe": "#e43d30", 
+    "Boston Breach": "#02ff5b",
+    "Carolina Royal Ravens": "#0083c1",
+    "Los Angeles Guerrillas": "#60269e",
+    "Los Angeles Thieves": "#ff0000",
+    "Las Vegas Legion": "#ee7623",
+    "Miami Heretics": "#216d6b",
+    "Minnesota ROKKR": "#351f65",
+    "New York Subliners": "#fff000", #"#171C38", 
+    "Seattle Surge": "#00ffcc", 
+    "Toronto Ultra": "#780df2",
+    "OpTic Texas": "green"# "#92c951" "#000000"
+
+}
+
 # Set seaborn theme
 sns.set_theme(style = "darkgrid")
 
@@ -63,7 +80,7 @@ def team_score_diffs(
           
         # Plot the histogram
         sns.histplot(data = queried_df, x = "score_diff", binwidth = 50, 
-                     binrange = (-250, 250), color = "#2fa4e7")
+                     binrange = (-250, 250), color = team_colors[team_input])
 
         # Get max y
         queried_df['bin'] = pd.cut(queried_df['score_diff'], bins = range(-250, 300, 50))
@@ -75,7 +92,7 @@ def team_score_diffs(
         # Plot the bar chart
         sns.histplot(data = queried_df, x = "score_diff", discrete = True, 
              binrange = gamemode_bin_ranges[gamemode_input], 
-             color = "#2fa4e7")
+             color = team_colors[team_input])
         
         # Get max y
         max_y = 0 if queried_df.empty else max(queried_df["score_diff"].value_counts())
@@ -130,7 +147,8 @@ def team_series_diffs(series_score_diffs_input: pd.DataFrame, team_input: str):
     fig, ax = plt.subplots(figsize = (4, 2))
 
     # Histogram
-    sns.histplot(data = queried_df, x = "series_score_diff", discrete = True, color = "#2fa4e7")
+    sns.histplot(data = queried_df, x = "series_score_diff", 
+                 discrete = True, color = team_colors[team_input])
 
     # Styling
     ax.set_xlabel("Series Result")
@@ -167,18 +185,25 @@ def player_kills_vs_time(
             (queried_df["map_name"] == map_input)
             ]
         
+    # Set match_date column to dt.date type
     queried_df.loc[:, 'match_date'] = pd.to_datetime(queried_df['match_date']).dt.date
+
+    # Get team for for team_colors dictionary
+    team = queried_df.iloc[0, 4]
     
     # Create figure with gridspec
-    f, axs = plt.subplots(1, 2, figsize = (6, 3), gridspec_kw = dict(width_ratios=[2, 0.4], wspace = 0.05), sharey = True)
+    f, axs = plt.subplots(1, 2, figsize = (6, 3), sharey = True, gridspec_kw = 
+                          dict(width_ratios=[2, 0.4], wspace = 0.05))
 
     # Scatterplot
-    sns.scatterplot(queried_df, x = "match_date", y = "kills", ax=axs[0], color = "#2fa4e7")
+    sns.scatterplot(queried_df, x = "match_date", y = "kills", ax=axs[0], 
+                    color = team_colors[team])
     axs[0].axhline(y = cur_line, color = "purple", linestyle = '--')
 
     # Boxplot
-    sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[1], color = "#2fa4e7", showfliers = False)
-    sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], color = "#2fa4e7")
+    sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[1], 
+                color = team_colors[team], showfliers = False)
+    sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], color = team_colors[team])
     axs[1].axhline(y = cur_line, color = "purple", linestyle = '--')
 
     # Add title
@@ -246,18 +271,25 @@ def player_kills_vs_score_diff(
             (queried_df["map_name"] == map_input)
             ]
         
+    # Get team for for team_colors dictionary
+    team = queried_df.iloc[0, 4]
+        
     # Create figure with gridspec
     f, axs = plt.subplots(1, 2, figsize = (6, 3), gridspec_kw = dict(width_ratios=[2, 0.4], wspace = 0.05), sharey = True)
 
     # Scatterplot
-    sns.scatterplot(queried_df, x = "score_diff", y = "kills", ax=axs[0], color = "#2fa4e7")
-    sns.regplot(queried_df, x = "score_diff", y = "kills", lowess = True, ax=axs[0], color = "#2fa4e7")
+    sns.scatterplot(queried_df, x = "score_diff", y = "kills", ax=axs[0], 
+                    color = team_colors[team])
+    sns.regplot(queried_df, x = "score_diff", y = "kills", lowess = True, ax=axs[0], 
+                color = team_colors[team])
     axs[0].axhline(y = cur_line, color = "purple", linestyle = '--')
     # axs[0].axvline(x = 0, color = "orange", linestyle = '--')
 
     # Boxplot
-    sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[1], color = "#2fa4e7", showfliers = False)
-    sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], color = "#2fa4e7")
+    sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[1], 
+                color = team_colors[team], showfliers = False)
+    sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], 
+                  color = team_colors[team])
     axs[1].axhline(y = cur_line, color = "purple", linestyle = '--')
 
     # Add title

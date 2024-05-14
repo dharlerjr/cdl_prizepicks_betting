@@ -229,8 +229,10 @@ app_ui = ui.page_sidebar(
         # Column 1: Team A Stats
         ui.layout_column_wrap(
             
-            ui.card(ui.output_plot("team_a_score_diffs", width = "280px", height = "240px")),
-            ui.card(ui.output_plot("team_a_maps_played", width = "280px", height = "160px")),
+            ui.card(ui.card_header("Map Results"), 
+                    ui.output_plot("team_a_score_diffs", width = "280px", height = "240px")),
+            ui.card(ui.card_header("Maps Played"), 
+                    ui.output_plot("team_a_maps_played", width = "280px", height = "160px")),
 
             width = 1
         ),
@@ -252,8 +254,10 @@ app_ui = ui.page_sidebar(
         # Column 3: Team B Stats
         ui.layout_column_wrap(
 
-            ui.card(ui.output_plot("team_b_score_diffs", width = "280px", height = "240px")),
-            ui.card(ui.output_plot("team_b_maps_played", width = "280px", height = "160px")),
+            ui.card(ui.card_header("Map Results"), 
+                    ui.output_plot("team_b_score_diffs", width = "280px", height = "240px")),
+            ui.card(ui.card_header("Maps Played"), 
+                    ui.output_plot("team_b_maps_played", width = "280px", height = "160px")),
 
             width = 1, 
         ),
@@ -270,13 +274,16 @@ app_ui = ui.page_sidebar(
     ui.layout_columns(
 
         # Column 1: Team A Score Diffs
-        ui.card(ui.output_plot("team_a_series_diffs", width = "280px", height = "240px")),
+        ui.card(ui.card_header("Series Results"), 
+                ui.output_plot("team_a_series_diffs", width = "280px", height = "240px")),
 
         # Column 2: Big Datagrid
-        ui.card(ui.output_data_frame("scoreboards")),
+        ui.card(ui.card_header("Scoreboards"), 
+                ui.output_data_frame("scoreboards")),
 
         # Column 3: Team B Score Diffs
-        ui.card(ui.output_plot("team_b_series_diffs", width = "280px", height = "240px")),
+        ui.card(ui.card_header("Series Results"), 
+                ui.output_plot("team_b_series_diffs", width = "280px", height = "240px")),
 
         # Row Height
         height = "360px",
