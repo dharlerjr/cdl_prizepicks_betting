@@ -68,7 +68,7 @@ gamemode_abbrs = {
 
 # Global color variables
 theme_color_light = "#2fa4e7"
-theme_color_dark = "#033c73"
+theme_color_dark = "#1b6ead"
 team_a_color = theme_color_light
 team_b_color = theme_color_dark
 
@@ -429,17 +429,17 @@ def server(input, output, session):
     @render.ui
     def team_a_map_record_title():
         if input.map_name() == "All":
-            return f"{gamemode_abbrs[gamemode()]} Win % (W - L)"
+            return f"{gamemode_abbrs[gamemode()]} Win% (W - L)"
         else:
-            return f"{input.map_name()} {gamemode_abbrs[gamemode()]} Win % (W - L)"
+            return f"{input.map_name()} {gamemode_abbrs[gamemode()]} Win% (W - L)"
         
     # Title for Team B Map Record Value Box
     @render.ui
     def team_b_map_record_title():
         if input.map_name() == "All":
-            return f"{gamemode_abbrs[gamemode()]} Win % (W - L)"
+            return f"{gamemode_abbrs[gamemode()]} Win% (W - L)"
         else:
-            return f"{input.map_name()} {gamemode_abbrs[gamemode()]} Win % (W - L)"
+            return f"{input.map_name()} {gamemode_abbrs[gamemode()]} Win% (W - L)"
         
     # Title for H2H Value Box
     @render.ui

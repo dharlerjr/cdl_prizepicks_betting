@@ -40,7 +40,7 @@ team_colors = {
 }
 
 # PrizePicks Color Variable
-prizepicks_color = "#4c149f"
+prizepicks_color = "purple"
 
 # Set seaborn theme
 sns.set_theme(style = "darkgrid")
@@ -210,7 +210,7 @@ def player_kills_vs_time(
     # Add title
     axs[0].set_title(player_input, fontsize = 20, loc = "left", 
                      family = "Segoe UI", fontweight = 400, 
-                     color = "#202225", pad = 5)
+                     color = "#495057", pad = 5)
 
     # If necessary, scale y-axis due to lack of entries
     kills = queried_df["kills"].to_list()
@@ -296,7 +296,7 @@ def player_kills_vs_score_diff(
     # Add title
     axs[0].set_title(player_input, fontsize = 20, loc = "left", 
                     family = "Segoe UI", fontweight = 400, 
-                    color = "#202225", pad = 5)
+                    color = "#495057", pad = 5)
 
     # If necessary, scale y-axis due to lack of entries
     kills = queried_df["kills"].to_list()
