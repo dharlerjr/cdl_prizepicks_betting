@@ -207,7 +207,9 @@ def player_kills_vs_time(
     axs[1].axhline(y = cur_line, color = "purple", linestyle = '--')
 
     # Add title
-    axs[0].set_title(player_input, fontsize = 18, family = "Segoe UI", loc = "left")
+    axs[0].set_title(player_input, fontsize = 20, loc = "left", 
+                     family = "Segoe UI", fontweight = 400, 
+                     color = "#495057", pad = 5)
 
     # If necessary, scale y-axis due to lack of entries
     kills = queried_df["kills"].to_list()
@@ -293,7 +295,9 @@ def player_kills_vs_score_diff(
     axs[1].axhline(y = cur_line, color = "purple", linestyle = '--')
 
     # Add title
-    axs[0].set_title(player_input, fontsize = 18, family = "Segoe UI", loc = "left")
+    axs[0].set_title(player_input, fontsize = 20, loc = "left", 
+                    family = "Segoe UI", fontweight = 400, 
+                    color = "#495057", pad = 5)
 
     # If necessary, scale y-axis due to lack of entries
     kills = queried_df["kills"].to_list()
