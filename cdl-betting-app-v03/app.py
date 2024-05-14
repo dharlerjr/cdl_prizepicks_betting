@@ -4,7 +4,6 @@
 from shiny import App, reactive, render, ui
 from shiny.types import ImgData
 import shinyswatch
-import faicons as fa
 import asyncio
 
 # Import os for filepaths
@@ -17,8 +16,7 @@ from setup.setup import *
 from webscraper import *
 from seaborn_helpers import *
 from datagrid_and_value_box_helpers import *
-from app_helpers import *
-
+from app_helpers import ICONS, player_panel
 
 # Dictionary to map map_num to gamemode
 map_nums_to_gamemode = {
@@ -68,21 +66,6 @@ gamemode_abbrs = {
     "Control": "Control"
 }
 
-# Dictionary of faicons for value boxes
-ICONS = {
-    "red_crosshairs": fa.icon_svg("crosshairs", height = "48px").add_class("text-danger"), 
-    "green_crosshairs": fa.icon_svg("crosshairs", height = "48px").add_class("text-success"), 
-    "crosshairs": fa.icon_svg("crosshairs", height = "48px"),
-    "red_percent": fa.icon_svg("percent", height = "48px").add_class("text-danger"),
-    "green_percent": fa.icon_svg("percent", height = "48px").add_class("text-success"),
-    "headset": fa.icon_svg("headset", height = "48px"), 
-    "plus": fa.icon_svg("plus", height = "48px"), 
-    "minus": fa.icon_svg("minus", height = "48px"), 
-    "chevron_up": fa.icon_svg("chevron-up", height = "48px").add_class("text-purple"),
-    "chevron_down": fa.icon_svg("chevron-down", height = "48px").add_class("text-purple"), 
-    "calendar": fa.icon_svg("calendar", height = "48px")
-}
-
 # Major 3 Qualifiers Start Date (String)
 start_date = '2024-04-12' 
 
@@ -124,7 +107,7 @@ app_ui = ui.page_sidebar(
     ui.sidebar(
 
         # Theme picker
-        #shinyswatch.theme_picker_ui(),
+        # shinyswatch.theme_picker_ui(),
         
         # Set theme: cerulean
         shinyswatch.theme.cerulean,
@@ -206,7 +189,7 @@ app_ui = ui.page_sidebar(
         ui.value_box(
             title = ui.output_ui("team_a_map_record_title"),
             value = ui.output_ui("team_a_map_record"),
-            showcase = ui.output_ui("team_a_percentage_icon")
+            showcase = ui.output_ui("team_a_win_percent_icon")
         ), 
         
         # H2H W - L
@@ -220,7 +203,7 @@ app_ui = ui.page_sidebar(
         ui.value_box(
             title = ui.output_ui("team_b_map_record_title"),
             value = ui.output_ui("team_b_map_record"),
-            showcase = ui.output_ui("team_b_percentage_icon")
+            showcase = ui.output_ui("team_b_win_percent_icon")
         ), 
         
         # Team B Win Streak
@@ -297,12 +280,6 @@ app_ui = ui.page_sidebar(
 
     ),
 
-    # Import font files
-    ui.tags.link(
-        rel="stylesheet",
-        href="https://fonts.googleapis.com/css?family=Roboto"
-    ),
-
     # Import CSS Styling
     ui.include_css(
         os.path.dirname(__file__) + "\\styles.css"
@@ -322,20 +299,9 @@ def server(input, output, session):
 
     # Intialize reactive dataframe of player props
     player_props_df = reactive.value(initial_player_props)
-
-    # Reactive event to update player props dataframe
-    # @reactive.effect
-    # @reactive.event(input.scrape)
-    # def scrape_props():
-    #     newVal = merge_player_props(
-    #         player_props_df(), 
-    #         scrape_prizepicks(), 
-    #         rostersDF
-    #     )
-    #     player_props_df.set(newVal)
-
     
     # Reactive event to update player props dataframe
+    # Displays progress bar while scraping
     @reactive.effect
     @reactive.event(input.scrape)
     async def scrape_props():
@@ -390,7 +356,6 @@ def server(input, output, session):
     def team_a_series_record():
         wins = current_standings.loc[current_standings['team'] == input.team_a(), 'wins'].reset_index(drop=True)[0]
         losses = current_standings.loc[current_standings['team'] == input.team_a(), 'losses'].reset_index(drop=True)[0]
-        # return f"{wins} - {losses}"
         return f"{wins} - {losses}"
 
     # Team B Series Record for Major 3 Quals
@@ -452,16 +417,13 @@ def server(input, output, session):
     
     # Team A Map Win Percentage Icon
     @render.ui
-    def team_a_percentage_icon():
+    def team_a_win_percent_icon():
         map_to_search_for = "Overall" if input.map_name() == "All" else input.map_name()
         win_percentage = team_summaries_DF.loc[
             (team_summaries_DF['team'] == input.team_a()) &
             (team_summaries_DF['gamemode'] == gamemode()) & 
             (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
-        if win_percentage >= 0.5:
-            return ICONS["green_percent"]
-        else:
-            return ICONS["red_percent"]
+        return ICONS["check"] if win_percentage >= 0.5 else ICONS["exclamation"]
                 
 
     # Team B Map Record for User-Selected Map & Mode Combination
@@ -487,16 +449,13 @@ def server(input, output, session):
     
     # Team B Map Win Percentage Icon
     @render.ui
-    def team_b_percentage_icon():
+    def team_b_win_percent_icon():
         map_to_search_for = "Overall" if input.map_name() == "All" else input.map_name()
         win_percentage = team_summaries_DF.loc[
             (team_summaries_DF['team'] == input.team_b()) &
             (team_summaries_DF['gamemode'] == gamemode()) & 
             (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
-        if win_percentage >= 0.5:
-            return ICONS["green_percent"]
-        else:
-            return ICONS["red_percent"]
+        return ICONS["check"] if win_percentage >= 0.5 else ICONS["exclamation"]
 
     # H2H Map Record for User-Selected Map & Mode Combination
     @render.ui
@@ -548,7 +507,6 @@ def server(input, output, session):
             icon = ICONS["plus"]
         else:
             icon = ICONS["minus"]
-        icon.add_class(f"text-{('success' if win_streak > 0 else 'danger')}")
         return icon
     
     # Change Win Streak Icon Based on Sign of Win Streak
@@ -559,7 +517,6 @@ def server(input, output, session):
             icon = ICONS["plus"]
         else:
             icon = ICONS["minus"]
-        icon.add_class(f"text-{('success' if win_streak > 0 else 'danger')}")
         return icon
     
     # Team A Score Differentials Histogram
@@ -1160,102 +1117,6 @@ def server(input, output, session):
             input.map_name()
         )
         return f"{ou} {streak}"
-        
-    # Change O/U Streak Icon Based on recent O/U result
-    @render.ui
-    def player_1_ou_streak_icon():
-        start = player_over_under_streak(
-            cdlDF, 
-            rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
-            gamemode(), 
-            player_1_line(), 
-            input.map_name()
-        )[0]
-        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
-    
-    # Change O/U Streak Icon Based on recent O/U result
-    @render.ui
-    def player_2_ou_streak_icon():
-        start = player_over_under_streak(
-            cdlDF, 
-            rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'], 
-            gamemode(), 
-            player_2_line(), 
-            input.map_name()
-        )[0]
-        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
-    
-    # Change O/U Streak Icon Based on recent O/U result
-    @render.ui
-    def player_3_ou_streak_icon():
-        start = player_over_under_streak(
-            cdlDF, 
-            rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'], 
-            gamemode(), 
-            player_3_line(), 
-            input.map_name()
-        )[0]
-        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
-    
-    # Change O/U Streak Icon Based on recent O/U result
-    @render.ui
-    def player_4_ou_streak_icon():
-        start = player_over_under_streak(
-            cdlDF, 
-            rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
-            gamemode(), 
-            player_4_line(), 
-            input.map_name()
-        )[0]
-        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
-    
-    # Change O/U Streak Icon Based on recent O/U result
-    @render.ui
-    def player_5_ou_streak_icon():
-        start = player_over_under_streak(
-            cdlDF, 
-            rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
-            gamemode(), 
-            player_5_line(), 
-            input.map_name()
-        )[0]
-        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
-    
-    # Change O/U Streak Icon Based on recent O/U result
-    @render.ui
-    def player_6_ou_streak_icon():
-        start = player_over_under_streak(
-            cdlDF, 
-            rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
-            gamemode(), 
-            player_6_line(), 
-            input.map_name()
-        )[0]
-        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
-    
-    # Change O/U Streak Icon Based on recent O/U result
-    @render.ui
-    def player_7_ou_streak_icon():
-        start = player_over_under_streak(
-            cdlDF, 
-            rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
-            gamemode(), 
-            player_7_line(), 
-            input.map_name()
-        )[0]
-        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
-    
-    # Change O/U Streak Icon Based on recent O/U result
-    @render.ui
-    def player_8_ou_streak_icon():
-        start = player_over_under_streak(
-            cdlDF, 
-            rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
-            gamemode(), 
-            player_8_line(), 
-            input.map_name()
-        )[0]
-        return ICONS["red_crosshairs"] if start == "Under" else ICONS["green_crosshairs"]
 
 
 # Run app
