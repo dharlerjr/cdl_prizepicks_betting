@@ -22,9 +22,3 @@ body {
     font-weight: 400;
     text-align: center;
 }
-
-:root { 
-    --bs-primary: #1462a6; 
-    --bs-primary-rgb: 20, 98, 166;
-    
-}

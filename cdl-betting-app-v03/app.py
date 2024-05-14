@@ -66,6 +66,12 @@ gamemode_abbrs = {
     "Control": "Control"
 }
 
+# Global color variables
+theme_color_light = "#2fa4e7"
+theme_color_dark = "#003f5c"
+team_a_color = theme_color_light
+team_b_color = theme_color_dark
+
 # Major 3 Qualifiers Start Date (String)
 start_date = '2024-04-12' 
 
@@ -564,14 +570,14 @@ def server(input, output, session):
     @render.plot
     def team_a_score_diffs():
         return team_score_diffs(
-            cdlDF, input.team_a(), gamemode(), input.map_name()
+            cdlDF, input.team_a(), team_a_color, gamemode(), input.map_name()
         )
     
     # Team B Score Differentials Histogram
     @render.plot
     def team_b_score_diffs():
         return team_score_diffs(
-            cdlDF, input.team_b(), gamemode(), input.map_name()
+            cdlDF, input.team_b(), team_b_color, gamemode(), input.map_name()
         )
     
     # Team A Pie Chart of % Maps Played
@@ -591,12 +597,12 @@ def server(input, output, session):
     # Team A Series Differentials Histogram
     @render.plot
     def team_a_series_diffs():
-        return team_series_diffs(series_score_diffs, input.team_a())
+        return team_series_diffs(series_score_diffs, input.team_a(), team_a_color)
     
     # Team B Series Differentials Histogram
     @render.plot
     def team_b_series_diffs():
-        return team_series_diffs(series_score_diffs, input.team_b())
+        return team_series_diffs(series_score_diffs, input.team_b(), team_b_color)
     
     # Datagrid of Player Kills and Map Results for Selected Teams
     # Aka. Scoreboards
@@ -685,7 +691,8 @@ def server(input, output, session):
         if input.x_axis() == "Time":
             return player_kills_vs_time(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],
+                team_a_color,
                 gamemode(), 
                 player_1_line(),
                 input.map_name()
@@ -693,7 +700,8 @@ def server(input, output, session):
         else:
             return player_kills_vs_score_diff(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],  
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],
+                team_a_color,
                 gamemode(), 
                 player_1_line(),
                 input.map_name()
@@ -705,7 +713,8 @@ def server(input, output, session):
         if input.x_axis() == "Time":
             return player_kills_vs_time(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],
+                team_a_color,
                 gamemode(), 
                 player_2_line(),
                 input.map_name()
@@ -713,7 +722,8 @@ def server(input, output, session):
         else:
             return player_kills_vs_score_diff(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],  
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],
+                team_a_color,
                 gamemode(), 
                 player_2_line(),
                 input.map_name()
@@ -725,7 +735,8 @@ def server(input, output, session):
         if input.x_axis() == "Time":
             return player_kills_vs_time(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],
+                team_a_color,
                 gamemode(), 
                 player_3_line(),
                 input.map_name()
@@ -733,7 +744,8 @@ def server(input, output, session):
         else:
             return player_kills_vs_score_diff(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],  
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'],
+                team_a_color,
                 gamemode(), 
                 player_3_line(),
                 input.map_name()
@@ -745,7 +757,8 @@ def server(input, output, session):
         if input.x_axis() == "Time":
             return player_kills_vs_time(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'],  
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'],
+                team_a_color,
                 gamemode(), 
                 player_4_line(),
                 input.map_name()
@@ -753,7 +766,8 @@ def server(input, output, session):
         else:
             return player_kills_vs_score_diff(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'],
+                team_a_color,
                 gamemode(), 
                 player_4_line(),
                 input.map_name()
@@ -765,7 +779,8 @@ def server(input, output, session):
         if input.x_axis() == "Time":
             return player_kills_vs_time(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'],  
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'],
+                team_b_color,
                 gamemode(), 
                 player_5_line(),
                 input.map_name()
@@ -773,7 +788,8 @@ def server(input, output, session):
         else:
             return player_kills_vs_score_diff(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'],
+                team_b_color,
                 gamemode(), 
                 player_5_line(),
                 input.map_name()
@@ -785,7 +801,8 @@ def server(input, output, session):
         if input.x_axis() == "Time":
             return player_kills_vs_time(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'],  
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'],
+                team_b_color,
                 gamemode(), 
                 player_6_line(),
                 input.map_name()
@@ -793,7 +810,8 @@ def server(input, output, session):
         else:
             return player_kills_vs_score_diff(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'],
+                team_b_color,
                 gamemode(), 
                 player_6_line(),
                 input.map_name()
@@ -805,7 +823,8 @@ def server(input, output, session):
         if input.x_axis() == "Time":
             return player_kills_vs_time(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'],  
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'],
+                team_b_color,
                 gamemode(), 
                 player_7_line(),
                 input.map_name()
@@ -813,7 +832,8 @@ def server(input, output, session):
         else:
             return player_kills_vs_score_diff(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'],
+                team_b_color,
                 gamemode(), 
                 player_7_line(),
                 input.map_name()
@@ -825,7 +845,8 @@ def server(input, output, session):
         if input.x_axis() == "Time":
             return player_kills_vs_time(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'],  
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'],
+                team_b_color,
                 gamemode(), 
                 player_8_line(),
                 input.map_name()
@@ -833,7 +854,8 @@ def server(input, output, session):
         else:
             return player_kills_vs_score_diff(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
+                rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'],
+                team_b_color,
                 gamemode(), 
                 player_8_line(),
                 input.map_name()

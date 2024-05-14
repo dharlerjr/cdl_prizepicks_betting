@@ -3,17 +3,17 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator, MultipleLocator
 import matplotlib.dates as mdates
-import datetime as dt
 import math
 
-# Dictionary of viridis color scales by gamemode
-viridis_gamemode_color_scales = {
+# Dictionary of color palettes by gamemode
+palettes = {
   "Hardpoint":
-    ["#FDE725FF", "#56c667ff", "#21908CFF", "#3B528BFF", "#440154FF"],
+    ["#003f5c", "#08577c", "#14709f", "#2189c2", "#2fa4e7"],
   "Search & Destroy":
-    ["#FDE725FF", "#56c667ff", "#21908CFF", "#3B528BFF", "#440154FF"], 
-  "Control": ["#FDE725FF", "#56c667ff", "#21908CFF"]
+    ["#003f5c", "#08577c", "#14709f", "#2189c2", "#2fa4e7"],
+  "Control": ["#003f5c", "#14709f", "#2fa4e7"]
 }
 
 # Dictionary of bin ranges by gamemode
@@ -39,13 +39,16 @@ team_colors = {
 
 }
 
+# PrizePicks Color Variable
+prizepicks_color = "#4c149f"
+
 # Set seaborn theme
 sns.set_theme(style = "darkgrid")
 
 
 # Team Distribution of Score Differentials by Map & Mode
 def team_score_diffs(
-        cdlDF_input: pd.DataFrame, team_input: str, 
+        cdlDF_input: pd.DataFrame, team_input: str, team_color: str,
         gamemode_input: str, map_input = "All"
 ):
     
@@ -80,7 +83,7 @@ def team_score_diffs(
           
         # Plot the histogram
         sns.histplot(data = queried_df, x = "score_diff", binwidth = 50, 
-                     binrange = (-250, 250), color = team_colors[team_input])
+                     binrange = (-250, 250), color = team_color)
 
         # Get max y
         queried_df['bin'] = pd.cut(queried_df['score_diff'], bins = range(-250, 300, 50))
@@ -92,7 +95,7 @@ def team_score_diffs(
         # Plot the bar chart
         sns.histplot(data = queried_df, x = "score_diff", discrete = True, 
              binrange = gamemode_bin_ranges[gamemode_input], 
-             color = team_colors[team_input])
+             color = team_color)
         
         # Get max y
         max_y = 0 if queried_df.empty else max(queried_df["score_diff"].value_counts())
@@ -108,7 +111,7 @@ def team_score_diffs(
 
 # Team % of Maps Played by Mode
 def team_percent_maps_played(
-        team_summaries_input: pd.DataFrame, team_input: str, 
+        team_summaries_input: pd.DataFrame, team_input: str,
         gamemode_input: str
 ):
     
@@ -129,14 +132,15 @@ def team_percent_maps_played(
     # Pie Chart
     ax.pie(queried_df["total"], labels = queried_df["map_name"], 
            autopct = '%1.1f%%',  pctdistance = 0.65,
-           colors = viridis_gamemode_color_scales["Hardpoint"])
+           colors = palettes[gamemode_input])
     
     # Margins
     plt.margins(0.05)
 
 
 # Team Distribution of Series Differentials
-def team_series_diffs(series_score_diffs_input: pd.DataFrame, team_input: str):
+def team_series_diffs(series_score_diffs_input: pd.DataFrame, 
+                      team_input: str, team_color: str,):
     
     # Filter series_score_diffs by team
     queried_df = series_score_diffs_input[
@@ -148,7 +152,7 @@ def team_series_diffs(series_score_diffs_input: pd.DataFrame, team_input: str):
 
     # Histogram
     sns.histplot(data = queried_df, x = "series_score_diff", 
-                 discrete = True, color = team_colors[team_input])
+                 discrete = True, color = team_color)
 
     # Styling
     ax.set_xlabel("Series Result")
@@ -159,7 +163,7 @@ def team_series_diffs(series_score_diffs_input: pd.DataFrame, team_input: str):
 
 # Player Kills vs Time by Map & Mode
 def player_kills_vs_time(        
-        cdlDF_input: pd.DataFrame, player_input: str,
+        cdlDF_input: pd.DataFrame, player_input: str, team_color: str,
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
     
@@ -187,9 +191,6 @@ def player_kills_vs_time(
         
     # Set match_date column to dt.date type
     queried_df.loc[:, 'match_date'] = pd.to_datetime(queried_df['match_date']).dt.date
-
-    # Get team for for team_colors dictionary
-    team = queried_df.iloc[0, 4]
     
     # Create figure with gridspec
     f, axs = plt.subplots(1, 2, figsize = (6, 3), sharey = True, gridspec_kw = 
@@ -197,14 +198,14 @@ def player_kills_vs_time(
 
     # Scatterplot
     sns.scatterplot(queried_df, x = "match_date", y = "kills", ax=axs[0], 
-                    color = team_colors[team])
-    axs[0].axhline(y = cur_line, color = "purple", linestyle = '--')
+                    color = team_color)
+    axs[0].axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
 
     # Boxplot
     sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[1], 
-                color = team_colors[team], showfliers = False)
-    sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], color = team_colors[team])
-    axs[1].axhline(y = cur_line, color = "purple", linestyle = '--')
+                color = team_color, showfliers = False)
+    sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], color = team_color)
+    axs[1].axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
 
     # Add title
     axs[0].set_title(player_input, fontsize = 20, loc = "left", 
@@ -237,7 +238,8 @@ def player_kills_vs_time(
     # Label current line from PrizePicks if queried_df is not empty
     plt.sca(axs[0])
     if not queried_df.empty:
-        bbox = {'facecolor': 'purple', 'alpha': 0.5, 'pad': 0.4, 'boxstyle': 'round'}
+        bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
+                'pad': 0.4, 'boxstyle': 'round'}
         cur_line_x = min(queried_df["match_date"])
         plt.text(cur_line_x, cur_line + 1, "Line: " + str(cur_line), bbox = bbox, color = "white")
 
@@ -247,7 +249,7 @@ def player_kills_vs_time(
 
 # Player Kills vs Score Differential by Map & Mode
 def player_kills_vs_score_diff(
-        cdlDF_input: pd.DataFrame, player_input: str,
+        cdlDF_input: pd.DataFrame, player_input: str, team_color: str,
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
     
@@ -273,26 +275,23 @@ def player_kills_vs_score_diff(
             (queried_df["map_name"] == map_input)
             ]
         
-    # Get team for for team_colors dictionary
-    team = queried_df.iloc[0, 4]
-        
     # Create figure with gridspec
     f, axs = plt.subplots(1, 2, figsize = (6, 3), gridspec_kw = dict(width_ratios=[2, 0.4], wspace = 0.05), sharey = True)
 
     # Scatterplot
     sns.scatterplot(queried_df, x = "score_diff", y = "kills", ax=axs[0], 
-                    color = team_colors[team])
+                    color = team_color)
     sns.regplot(queried_df, x = "score_diff", y = "kills", lowess = True, ax=axs[0], 
-                color = team_colors[team])
-    axs[0].axhline(y = cur_line, color = "purple", linestyle = '--')
+                color = team_color)
+    axs[0].axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
     # axs[0].axvline(x = 0, color = "orange", linestyle = '--')
 
     # Boxplot
     sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[1], 
-                color = team_colors[team], showfliers = False)
+                color = team_color, showfliers = False)
     sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], 
-                  color = team_colors[team])
-    axs[1].axhline(y = cur_line, color = "purple", linestyle = '--')
+                  color = team_color)
+    axs[1].axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
 
     # Add title
     axs[0].set_title(player_input, fontsize = 20, loc = "left", 
@@ -306,6 +305,7 @@ def player_kills_vs_score_diff(
     max_y = max(kills)
     if min_y == max_y:
         y_axis_ticks = range(min_y - 2, max_y + 3)
+        plt.yticks(y_axis_ticks)
     elif max_y - min_y <= 5:
         y_axis_ticks = range(min_y, max_y + 1)
         plt.yticks(y_axis_ticks)
@@ -320,7 +320,8 @@ def player_kills_vs_score_diff(
     # Label current line from PrizePicks if queried_df is not empty
     plt.sca(axs[0])
     if not queried_df.empty:
-        bbox = {'facecolor': 'purple', 'alpha': 0.5, 'pad': 0.4, 'boxstyle': 'round'}
+        bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
+                'pad': 0.4, 'boxstyle': 'round'}
         min_score_diff = min(queried_df["score_diff"])
         text = [plt.text(min_score_diff, cur_line + 1, "Line: " + str(cur_line), bbox = bbox, color = "white")]
 
