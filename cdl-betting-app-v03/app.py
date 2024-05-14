@@ -332,7 +332,10 @@ app_ui = ui.page_navbar(
     ),
 
     # App Title
-    title = "CDL Bets on PrizePicks"
+    title = "CDL Bets on PrizePicks", 
+
+    # Background Color of Navbar
+    # bg = "#1462a6"
 
 )
 
