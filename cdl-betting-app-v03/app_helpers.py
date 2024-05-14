@@ -3,18 +3,21 @@
 from shiny import ui
 import faicons as fa
 
+# String containing value for Icon Height in Pixels
+icon_height = "48px"
+
 # Dictionary of faicons for value boxes
 ICONS = {
-    "crosshairs": fa.icon_svg("crosshairs", height = "48px"),
-    "headset": fa.icon_svg("headset", height = "48px"), 
-    "plus": fa.icon_svg("plus", height = "48px"), 
-    "minus": fa.icon_svg("minus", height = "48px"), 
-    "chevron_up": fa.icon_svg("chevron-up", height = "48px"),
-    "chevron_down": fa.icon_svg("chevron-down", height = "48px"), 
-    "calendar": fa.icon_svg("calendar", height = "48px"), 
-    "crown": fa.icon_svg("crown", height = "48px"), 
-    "check": fa.icon_svg("check", height = "48px"), 
-    "exclamation": fa.icon_svg("exclamation", height = "48px")
+    "crosshairs": fa.icon_svg("crosshairs", height = icon_height, ),
+    "headset": fa.icon_svg("headset", height = icon_height), 
+    "plus": fa.icon_svg("plus", height = icon_height), 
+    "minus": fa.icon_svg("minus", height = icon_height), 
+    "chevron_up": fa.icon_svg("chevron-up", height = icon_height),
+    "chevron_down": fa.icon_svg("chevron-down", height = icon_height), 
+    "calendar": fa.icon_svg("calendar", height = icon_height), 
+    "crown": fa.icon_svg("crown", height = icon_height), 
+    "check": fa.icon_svg("circle-check", height = icon_height), 
+    "exclamation": fa.icon_svg("circle-exclamation", height = icon_height)
 }
 
 # Function to render one ui.nav_panel per player

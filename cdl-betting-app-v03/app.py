@@ -139,12 +139,8 @@ app_ui = ui.page_sidebar(
         # Column 1 of 6: Team A Logo
         ui.output_image("team_a_logo", width = "120px", height = "120px"), 
 
-        # Column 2 of 6: Team A Standing
-        ui.value_box(
-            title = "Major III Standing",
-            value = ui.output_ui("team_a_series_record"),
-            showcase = ICONS["headset"]
-        ),
+        # Column 2 of 6: Placeholder Column
+        ui.layout_columns(),
         
         # Column 3 of 6: H2H Series Record
         ui.value_box(
@@ -160,24 +156,27 @@ app_ui = ui.page_sidebar(
             showcase = ICONS["calendar"]
         ), 
 
-        # Column 5 of 6: Team B Standing
-        ui.value_box(
-            title = "Major III Standing",
-            value = ui.output_ui("team_b_series_record"),
-            showcase = ICONS["headset"]
-        ), 
+        # Column 5 of 6: Placeholder Column
+        ui.layout_columns(),
         
         # Column 6 of 6: Team B Logo
         ui.output_image("team_b_logo", width = "120px", height = "120px"), 
 
         # Row Height
-        height = "140px"
+        height = "120px"
 
     ),
 
     # Row 2 of 4
     ui.layout_columns(
         
+        # Team A Standing
+        ui.value_box(
+            title = "Major III Standing",
+            value = ui.output_ui("team_a_series_record"),
+            showcase = ICONS["headset"]
+        ),
+
         # Team A Win Streak
         ui.value_box(
             title = ui.output_ui("team_a_win_streak_title"),
@@ -193,11 +192,11 @@ app_ui = ui.page_sidebar(
         ), 
         
         # H2H W - L
-        ui.value_box(
-            title = ui.output_ui("map_h2h_title"),
-            value = ui.output_ui("h2h_map_record"),
-            showcase = ICONS["crosshairs"]
-        ),
+        # ui.value_box(
+        #     title = ui.output_ui("map_h2h_title"),
+        #     value = ui.output_ui("h2h_map_record"),
+        #     showcase = ICONS["crosshairs"]
+        # ),
         
         # Team B Win %
         ui.value_box(
@@ -212,9 +211,16 @@ app_ui = ui.page_sidebar(
             value = ui.output_ui("team_b_win_streak"),
             showcase = ui.output_ui("change_team_b_win_streak_icon")
         ),
+
+        # Team B Standing
+        ui.value_box(
+            title = "Major III Standing",
+            value = ui.output_ui("team_b_series_record"),
+            showcase = ICONS["headset"]
+        ), 
         
         # Row Height
-        height = "140px"
+        height = "120px"
     ),
 
     # Row 3 of 4
@@ -423,7 +429,7 @@ def server(input, output, session):
             (team_summaries_DF['team'] == input.team_a()) &
             (team_summaries_DF['gamemode'] == gamemode()) & 
             (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
-        return ICONS["check"] if win_percentage >= 0.5 else ICONS["exclamation"]
+        return ICONS["plus"] if win_percentage >= 0.5 else ICONS["minus"]
                 
 
     # Team B Map Record for User-Selected Map & Mode Combination
@@ -455,7 +461,7 @@ def server(input, output, session):
             (team_summaries_DF['team'] == input.team_b()) &
             (team_summaries_DF['gamemode'] == gamemode()) & 
             (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
-        return ICONS["check"] if win_percentage >= 0.5 else ICONS["exclamation"]
+        return ICONS["plus"] if win_percentage >= 0.5 else ICONS["minus"]
 
     # H2H Map Record for User-Selected Map & Mode Combination
     @render.ui
@@ -503,21 +509,13 @@ def server(input, output, session):
     @render.ui
     def change_team_a_win_streak_icon():
         win_streak = compute_team_a_win_streak()
-        if win_streak > 0:
-            icon = ICONS["plus"]
-        else:
-            icon = ICONS["minus"]
-        return icon
+        return ICONS["check"] if win_streak > 0 else ICONS["exclamation"]
     
     # Change Win Streak Icon Based on Sign of Win Streak
     @render.ui
     def change_team_b_win_streak_icon():
         win_streak = compute_team_b_win_streak()
-        if win_streak > 0:
-            icon = ICONS["plus"]
-        else:
-            icon = ICONS["minus"]
-        return icon
+        return ICONS["check"] if win_streak > 0 else ICONS["exclamation"]
     
     # Team A Score Differentials Histogram
     @render.plot
@@ -954,73 +952,49 @@ def server(input, output, session):
     @render.ui
     def player_1_ou_icon():
         over_under = player_1_ou_stats()[0]
-        if over_under == "Over":
-            return ICONS["chevron_up"]
-        else:
-            return ICONS["chevron_down"]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
         
     # Player Two O/U Icon
     @render.ui
     def player_2_ou_icon():
         over_under = player_2_ou_stats()[0]
-        if over_under == "Over":
-            return ICONS["chevron_up"]
-        else:
-            return ICONS["chevron_down"]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
         
     # Player Three O/U Icon
     @render.ui
     def player_3_ou_icon():
         over_under = player_3_ou_stats()[0]
-        if over_under == "Over":
-            return ICONS["chevron_up"]
-        else:
-            return ICONS["chevron_down"]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
         
     # Player Four O/U Icon
     @render.ui
     def player_4_ou_icon():
         over_under = player_4_ou_stats()[0]
-        if over_under == "Over":
-            return ICONS["chevron_up"]
-        else:
-            return ICONS["chevron_down"]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
         
     # Player Five O/U Icon
     @render.ui
     def player_5_ou_icon():
         over_under = player_5_ou_stats()[0]
-        if over_under == "Over":
-            return ICONS["chevron_up"]
-        else:
-            return ICONS["chevron_down"]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
         
     # Player Six O/U Icon
     @render.ui
     def player_6_ou_icon():
         over_under = player_6_ou_stats()[0]
-        if over_under == "Over":
-            return ICONS["chevron_up"]
-        else:
-            return ICONS["chevron_down"]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
         
     # Player Seven O/U Icon
     @render.ui
     def player_7_ou_icon():
         over_under = player_7_ou_stats()[0]
-        if over_under == "Over":
-            return ICONS["chevron_up"]
-        else:
-            return ICONS["chevron_down"]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
         
     # Player Eight O/U Icon
     @render.ui
     def player_8_ou_icon():
         over_under = player_8_ou_stats()[0]
-        if over_under == "Over":
-            return ICONS["chevron_up"]
-        else:
-            return ICONS["chevron_down"]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
         
     # Player 1 O/U Streak
     @render.ui
