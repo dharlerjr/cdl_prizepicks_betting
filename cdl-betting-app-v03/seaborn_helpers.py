@@ -10,10 +10,10 @@ import math
 # Dictionary of color palettes by gamemode
 palettes = {
   "Hardpoint":
-    ["#003f5c", "#08577c", "#14709f", "#2189c2", "#2fa4e7"],
+    ["#033c73", "#105490", "#1b6ead", "#2588ca", "#2fa4e7"],
   "Search & Destroy":
-    ["#003f5c", "#08577c", "#14709f", "#2189c2", "#2fa4e7"],
-  "Control": ["#003f5c", "#14709f", "#2fa4e7"]
+    ["#033c73", "#105490", "#1b6ead", "#2588ca", "#2fa4e7"],
+  "Control": ["#033c73", "#1b6ead", "#2fa4e7"]
 }
 
 # Dictionary of bin ranges by gamemode
@@ -210,7 +210,7 @@ def player_kills_vs_time(
     # Add title
     axs[0].set_title(player_input, fontsize = 20, loc = "left", 
                      family = "Segoe UI", fontweight = 400, 
-                     color = "#495057", pad = 5)
+                     color = "#202225", pad = 5)
 
     # If necessary, scale y-axis due to lack of entries
     kills = queried_df["kills"].to_list()
@@ -296,7 +296,7 @@ def player_kills_vs_score_diff(
     # Add title
     axs[0].set_title(player_input, fontsize = 20, loc = "left", 
                     family = "Segoe UI", fontweight = 400, 
-                    color = "#495057", pad = 5)
+                    color = "#202225", pad = 5)
 
     # If necessary, scale y-axis due to lack of entries
     kills = queried_df["kills"].to_list()

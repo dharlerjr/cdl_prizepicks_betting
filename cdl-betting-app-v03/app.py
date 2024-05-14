@@ -68,7 +68,7 @@ gamemode_abbrs = {
 
 # Global color variables
 theme_color_light = "#2fa4e7"
-theme_color_dark = "#003f5c"
+theme_color_dark = "#033c73"
 team_a_color = theme_color_light
 team_b_color = theme_color_dark
 
