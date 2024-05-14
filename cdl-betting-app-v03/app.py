@@ -248,6 +248,7 @@ app_ui = ui.page_sidebar(
                 player_panel("6"), 
                 player_panel("7"), 
                 player_panel("8"), 
+                title = "Player Cards"
             ),
         ),
 
