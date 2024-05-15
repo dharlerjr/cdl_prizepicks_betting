@@ -3,9 +3,10 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator, MultipleLocator
+from matplotlib.ticker import MultipleLocator
 import matplotlib.dates as mdates
 import math
+import datetime as dt
 
 # Dictionary of color palettes by gamemode
 palettes = {
@@ -20,20 +21,6 @@ palettes = {
 gamemode_bin_ranges = {
     "Search & Destroy": (-6, 6), 
     "Control": (-3, 3)
-}
-
-# Dictionary of score limits by gamemode
-score_diff_lims = {
-    "Hardpoint": [-220, 220], 
-    "Search & Destroy": [-6.6, 6.6], 
-    "Control": [-3.25, 3.25]
-}
-
-# Dictionary of kill limits by gamemode
-kill_lims = {
-    "Hardpoint": [5, 45],
-    "Search & Destroy": [-0.2, 16.2],
-    "Control": [5, 45],
 }
 
 # Dictionary of team colors for plotting
@@ -56,9 +43,127 @@ team_colors = {
 # PrizePicks Color Variable
 prizepicks_color = "purple"
 
+# Function to round HP score differential to nearest ten
+def truncate(n, decimals = -1):
+    multiplier = 10 ** decimals
+    return int(int(n * multiplier) / multiplier)
+
+# Function to map y-axis range to padding 
+def map_range(min: int, max:int):
+    if max - min <= 1:
+        return 2.5
+    elif max - min < 4:
+        return 1.5
+    else:
+        return 0
+    
+# Function to adjust score diff ticks based on gamemode and current range
+def adjust_score_diff_ticks(gamemode: str, min_x: int, max_x: int):
+    if gamemode == "Control":
+        while max_x - min_x < 4:
+            if min_x != -3:
+                min_x -= 1
+            if max_x - min_x < 4 and max_x != 3:
+                max_x += 1
+    elif gamemode == "Search & Destroy":
+        while max_x - min_x < 4:
+            if min_x != -6:
+                min_x -= 1
+            if max_x - min_x < 4 and max_x != 6:
+                max_x += 1
+    else:
+        while max_x - min_x < 50:
+            if min_x != -250:
+                min_x -= 10
+            if max_x - min_x < 50 and max_x != 250:
+                max_x += 10
+    return min_x, max_x
+
+# Function to adjust time ticks based on current range
+def adjust_time_ticks(min_x, max_x):
+    while max_x - min_x < dt.timedelta(days = 6):
+        min_x -= dt.timedelta(days = 1)
+        if max_x - min_x < dt.timedelta(days = 6):
+            max_x += dt.timedelta(days = 1)
+    return min_x, max_x
+
+# Function to scale X & Y Axes of Player Kills Plots
+def scale_fig(queried_df: pd.DataFrame, ax: plt.axes, x_axis: str, 
+              gamemode_input: str, cur_line: int):
+
+    # Time
+    if x_axis == "time":
+
+        # Set & Scale X-Axis, if necessary
+        match_dates = queried_df["match_date"].to_list()
+        if match_dates:
+            min_x = min(match_dates)
+            max_x = max(match_dates)
+        else:
+            min_x = dt.date.today()
+            max_x = dt.date.today()
+
+        # Case 1: max_x - min_x < 6 days
+        if max_x - min_x < dt.timedelta(days = 6):
+            min_x, max_x = adjust_time_ticks(min_x, max_x)
+            ax.set_xlim(min_x, max_x)
+        
+        # Case 2: max_x - min_x <= 1 month
+        elif max_x - min_x <= dt.timedelta(days = 31):
+            ax.xaxis.set_major_locator(mdates.WeekdayLocator(1))
+
+        # Case 3: max_x - min_x <= 2 months
+        elif max_x - min_x <= dt.timedelta(days = 64):
+            ax.xaxis.set_major_locator(mdates.DayLocator(bymonthday = [1, 15]))
+    
+    # Score Diffs
+    if x_axis == "score_diff":
+
+        # Set & Scale X-Axis, if necessary
+        score_diffs = queried_df["score_diff"].to_list()
+        if score_diffs:
+            min_x = min(score_diffs)
+            max_x = max(score_diffs)
+        else:
+            min_x = 0
+            max_x = 0
+
+        # Case 1: Hardpoint
+        if gamemode_input == "Hardpoint" and max_x - min_x < 50:
+            ax.xaxis.set_major_locator(MultipleLocator(base = 10))
+            if min_x == max_x:
+                min_x = math.floor(min_x / 10) * 10
+                max_x = math.ceil(max_x / 10) * 10
+            else:
+                min_x = truncate(min_x)
+                max_x = truncate(max_x)
+            min_x, max_x = adjust_score_diff_ticks(gamemode_input, min_x, max_x)
+            ax.set_xlim(min_x - 5, max_x + 5)
+
+        # Case 2: Search & Destroy & Control
+        elif max_x - min_x < 4:
+            ax.xaxis.set_major_locator(MultipleLocator(base = 1))
+            min_x, max_x = adjust_score_diff_ticks(gamemode_input, min_x, max_x)
+            ax.set_xlim(min_x - 0.25, max_x + 0.25)
+
+    # Set & Scale Y-Axis, if necessary
+    kills = queried_df["kills"].to_list()
+    kills.append(cur_line)
+    min_y = min(kills)
+    max_y = max(kills)
+
+    # Case 1: Y-Axis Range <= 4
+    if max_y - min_y < 4:
+        ax.yaxis.set_major_locator(MultipleLocator(base = 1))
+        ax.set_ylim(min_y - map_range(min_y, max_y), 
+                        max_y + map_range(min_y, max_y))
+        
+    # Case 2: Y-Axis Range <= 15
+    elif max_y - min_y > 12 and max_y - min_y <= 15:
+        ax.yaxis.set_major_locator(MultipleLocator(base = 4))
+
 # Set seaborn theme
 sns.set_theme(style = "darkgrid")
-
 
 # Team Distribution of Score Differentials by Map & Mode
 def team_score_diffs(
@@ -226,23 +331,19 @@ def player_kills_vs_time(
                      family = "Segoe UI", fontweight = 400, 
                      color = "#495057", pad = 5)
 
-    # Set Y-Axis Limits
-    # axs[0].set_ylim(
-    #     kill_lims[gamemode_input][0], 
-    #     kill_lims[gamemode_input][1]
-    # )
-
-    # # X- & Y-Axis Labels
-    # axs[0].set_xlabel("")
-    # axs[0].set_ylabel("Kills")
-    # axs[1].set_xticks([])
-    # axs[1].set_ylabel("")
+    # X- & Y-Axis Labels
+    axs[0].set_xlabel("")
+    axs[0].set_ylabel("Kills")
+    axs[1].set_xticks([])
+    axs[1].set_ylabel("")
 
     # Date Ticks
     formatter = mdates.DateFormatter('%b %d')
     axs[0].xaxis.set_major_formatter(formatter)
     axs[0].tick_params(axis = 'x', rotation = 30)
 
+    # Scale X & Y Axes
+    scale_fig(queried_df, axs[0], "time", gamemode_input, cur_line)
 
     # Label current line from PrizePicks if queried_df is not empty
     plt.sca(axs[0])
@@ -307,24 +408,14 @@ def player_kills_vs_score_diff(
                     family = "Segoe UI", fontweight = 400, 
                     color = "#495057", pad = 5)
 
-    # # Set X-Axis Limits
-    # axs[0].set_xlim(
-    #     score_diff_lims[gamemode_input][0], 
-    #     score_diff_lims[gamemode_input][1]
-    # )
-
-    # # Set Y-Axis Limits
-    # axs[0].set_ylim(
-    #     kill_lims[gamemode_input][0], 
-    #     kill_lims[gamemode_input][1]
-    # )
-
     # X- & Y-Axis Labels
     axs[0].set_xlabel("")
     axs[0].set_ylabel("Kills")
     axs[1].set_xticks([])
     axs[1].set_ylabel("")
 
+    # Scale X & Y Axes
+    scale_fig(queried_df, axs[0], "score_diff", gamemode_input, cur_line)
 
     # Label current line from PrizePicks if queried_df is not empty
     plt.sca(axs[0])
