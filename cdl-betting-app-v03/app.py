@@ -429,17 +429,17 @@ def server(input, output, session):
     @render.ui
     def team_a_map_record_title():
         if input.map_name() == "All":
-            return f"{gamemode_abbrs[gamemode()]} Win% (W - L)"
+            return f"{gamemode_abbrs[gamemode()]} Win %"
         else:
-            return f"{input.map_name()} {gamemode_abbrs[gamemode()]} Win% (W - L)"
+            return f"{input.map_name()} {gamemode_abbrs[gamemode()]} Win %"
         
     # Title for Team B Map Record Value Box
     @render.ui
     def team_b_map_record_title():
         if input.map_name() == "All":
-            return f"{gamemode_abbrs[gamemode()]} Win% (W - L)"
+            return f"{gamemode_abbrs[gamemode()]} Win %"
         else:
-            return f"{input.map_name()} {gamemode_abbrs[gamemode()]} Win% (W - L)"
+            return f"{input.map_name()} {gamemode_abbrs[gamemode()]} Win %"
         
     # Title for H2H Value Box
     @render.ui

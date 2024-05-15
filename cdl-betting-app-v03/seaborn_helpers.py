@@ -22,6 +22,20 @@ gamemode_bin_ranges = {
     "Control": (-3, 3)
 }
 
+# Dictionary of score limits by gamemode
+score_diff_lims = {
+    "Hardpoint": [-220, 220], 
+    "Search & Destroy": [-6.6, 6.6], 
+    "Control": [-3.25, 3.25]
+}
+
+# Dictionary of kill limits by gamemode
+kill_lims = {
+    "Hardpoint": [5, 45],
+    "Search & Destroy": [-0.2, 16.2],
+    "Control": [5, 45],
+}
+
 # Dictionary of team colors for plotting
 team_colors = {
     "Atlanta FaZe": "#e43d30", 
@@ -212,22 +226,17 @@ def player_kills_vs_time(
                      family = "Segoe UI", fontweight = 400, 
                      color = "#495057", pad = 5)
 
-    # If necessary, scale y-axis due to lack of entries
-    kills = queried_df["kills"].to_list()
-    kills.append(math.floor(cur_line))
-    min_y = min(kills)
-    max_y = max(kills)
-    if min_y == max_y:
-        y_axis_ticks = range(min_y - 2, max_y + 3)
-    elif max_y - min_y <= 5:
-        y_axis_ticks = range(min_y - 1, max_y + 1)
-        plt.yticks(y_axis_ticks)
+    # Set Y-Axis Limits
+    # axs[0].set_ylim(
+    #     kill_lims[gamemode_input][0], 
+    #     kill_lims[gamemode_input][1]
+    # )
 
-    # X- & Y-Axis Labels
-    axs[0].set_xlabel("")
-    axs[0].set_ylabel("Kills")
-    axs[1].set_xticks([])
-    axs[1].set_ylabel("")
+    # # X- & Y-Axis Labels
+    # axs[0].set_xlabel("")
+    # axs[0].set_ylabel("Kills")
+    # axs[1].set_xticks([])
+    # axs[1].set_ylabel("")
 
     # Date Ticks
     formatter = mdates.DateFormatter('%b %d')
@@ -298,17 +307,17 @@ def player_kills_vs_score_diff(
                     family = "Segoe UI", fontweight = 400, 
                     color = "#495057", pad = 5)
 
-    # If necessary, scale y-axis due to lack of entries
-    kills = queried_df["kills"].to_list()
-    kills.append(math.floor(cur_line))
-    min_y = min(kills)
-    max_y = max(kills)
-    if min_y == max_y:
-        y_axis_ticks = range(min_y - 2, max_y + 3)
-        plt.yticks(y_axis_ticks)
-    elif max_y - min_y <= 5:
-        y_axis_ticks = range(min_y, max_y + 1)
-        plt.yticks(y_axis_ticks)
+    # # Set X-Axis Limits
+    # axs[0].set_xlim(
+    #     score_diff_lims[gamemode_input][0], 
+    #     score_diff_lims[gamemode_input][1]
+    # )
+
+    # # Set Y-Axis Limits
+    # axs[0].set_ylim(
+    #     kill_lims[gamemode_input][0], 
+    #     kill_lims[gamemode_input][1]
+    # )
 
     # X- & Y-Axis Labels
     axs[0].set_xlabel("")
