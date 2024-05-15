@@ -48,12 +48,14 @@ def truncate(n, decimals = -1):
     multiplier = 10 ** decimals
     return int(int(n * multiplier) / multiplier)
 
-# Function to map y-axis range to padding 
+# Function to map y-axis range to padding for y-axis limits
 def map_range(min: int, max:int):
     if max - min <= 1:
         return 2.5
     elif max - min < 4:
         return 1.5
+    elif max - min == 4:
+        return 0.5
     else:
         return 0
     
@@ -87,7 +89,7 @@ def adjust_time_ticks(min_x, max_x):
             max_x += dt.timedelta(days = 1)
     return min_x, max_x
 
-# Function to scale X & Y Axes of Player Kills Plots
+# Function to scale X & Y axes of player kills plots & return axes ranges
 def scale_fig(queried_df: pd.DataFrame, ax: plt.axes, x_axis: str, 
               gamemode_input: str, cur_line: int):
 
@@ -107,12 +109,16 @@ def scale_fig(queried_df: pd.DataFrame, ax: plt.axes, x_axis: str,
         if max_x - min_x < dt.timedelta(days = 6):
             min_x, max_x = adjust_time_ticks(min_x, max_x)
             ax.set_xlim(min_x, max_x)
-        
-        # Case 2: max_x - min_x <= 1 month
-        elif max_x - min_x <= dt.timedelta(days = 31):
-            ax.xaxis.set_major_locator(mdates.WeekdayLocator(1))
 
-        # Case 3: max_x - min_x <= 2 months
+        # Case 2: max_x - min_x <= 2 weeks
+        elif max_x - min_x <= dt.timedelta(days = 14):
+            ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday = (mdates.TU, mdates.SA)))
+        
+        # Case 3: max_x - min_x <= 1 month
+        elif max_x - min_x <= dt.timedelta(days = 31):
+            ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday = mdates.SA))
+
+        # Case 4: max_x - min_x <= 2 months
         elif max_x - min_x <= dt.timedelta(days = 64):
             ax.xaxis.set_major_locator(mdates.DayLocator(bymonthday = [1, 15]))
     
@@ -153,14 +159,17 @@ def scale_fig(queried_df: pd.DataFrame, ax: plt.axes, x_axis: str,
     max_y = max(kills)
 
     # Case 1: Y-Axis Range <= 4
-    if max_y - min_y < 4:
+    if max_y - min_y <= 4:
         ax.yaxis.set_major_locator(MultipleLocator(base = 1))
-        ax.set_ylim(min_y - map_range(min_y, max_y), 
-                        max_y + map_range(min_y, max_y))
+        min_y = min_y - map_range(min_y, max_y)
+        max_y = max_y + map_range(min_y, max_y)
+        ax.set_ylim(min_y, max_y)
         
     # Case 2: Y-Axis Range <= 15
-    elif max_y - min_y > 12 and max_y - min_y <= 15:
+    elif max_y - min_y > 12 and max_y - min_y <= 18:
         ax.yaxis.set_major_locator(MultipleLocator(base = 4))
+
+    return min_x, min_y, max_x, max_y
 
 # Set seaborn theme
 sns.set_theme(style = "darkgrid")
@@ -342,16 +351,31 @@ def player_kills_vs_time(
     axs[0].xaxis.set_major_formatter(formatter)
     axs[0].tick_params(axis = 'x', rotation = 30)
 
-    # Scale X & Y Axes
-    scale_fig(queried_df, axs[0], "time", gamemode_input, cur_line)
+    # Scale X & Y Axes & get ranges
+    min_x, min_y, max_x, max_y = \
+        scale_fig(queried_df, axs[0], "time", gamemode_input, cur_line)
 
-    # Label current line from PrizePicks if queried_df is not empty
+    # Get Y-Axis Range
+    kills = queried_df["kills"].to_list()
+    kills.append(cur_line)
+    min_y = min(kills)
+    max_y = max(kills)
+
+    # Label current line from PrizePicks
     plt.sca(axs[0])
-    if not queried_df.empty:
-        bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
-                'pad': 0.4, 'boxstyle': 'round'}
-        cur_line_x = min(queried_df["match_date"])
-        plt.text(cur_line_x, cur_line + 1, "Line: " + str(cur_line), bbox = bbox, color = "white")
+    bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
+            'pad': 0.4, 'boxstyle': 'round'}
+    if max_y - min_y <= 4:
+        y_pad = 0.25
+    elif max_y - min_y < 8:
+        y_pad = 0.5
+    else:
+        y_pad = 1
+    if max_y - cur_line <= 0.5:
+        y_pad = y_pad * -1
+    if max_x - min_x == dt.timedelta(days = 6):
+        min_x = min_x + dt.timedelta(days = 1)
+    plt.text(min_x, cur_line + y_pad, "Line: " + str(cur_line), bbox = bbox, color = "white")
 
     # Set margins
     plt.margins(0.05)
@@ -414,16 +438,23 @@ def player_kills_vs_score_diff(
     axs[1].set_xticks([])
     axs[1].set_ylabel("")
 
-    # Scale X & Y Axes
-    scale_fig(queried_df, axs[0], "score_diff", gamemode_input, cur_line)
+    # Scale X & Y Axes & get ranges
+    min_x, min_y, max_x, max_y = \
+        scale_fig(queried_df, axs[0], "score_diff", gamemode_input, cur_line)
 
     # Label current line from PrizePicks if queried_df is not empty
     plt.sca(axs[0])
-    if not queried_df.empty:
-        bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
-                'pad': 0.4, 'boxstyle': 'round'}
-        min_score_diff = min(queried_df["score_diff"])
-        text = [plt.text(min_score_diff, cur_line + 1, "Line: " + str(cur_line), bbox = bbox, color = "white")]
+    bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
+            'pad': 0.4, 'boxstyle': 'round'}
+    if max_y - min_y <= 4:
+        y_pad = 0.25
+    elif max_y - min_y < 8:
+        y_pad = 0.5
+    else:
+        y_pad = 1
+    if max_y - cur_line <= 0.5:
+        y_pad = y_pad * -1
+    plt.text(min_x, cur_line + y_pad, "Line: " + str(cur_line), bbox = bbox, color = "white")
 
     # Set margins
     plt.margins(0.05)
