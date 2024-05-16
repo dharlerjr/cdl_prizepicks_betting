@@ -161,8 +161,9 @@ def scale_fig(queried_df: pd.DataFrame, ax: plt.axes, x_axis: str,
     # Case 1: Y-Axis Range <= 4
     if max_y - min_y <= 4:
         ax.yaxis.set_major_locator(MultipleLocator(base = 1))
-        min_y = min_y - map_range(min_y, max_y)
-        max_y = max_y + map_range(min_y, max_y)
+        pad = map_range(min_y, max_y)
+        min_y = min_y - pad
+        max_y = max_y + pad
         ax.set_ylim(min_y, max_y)
         
     # Case 2: Y-Axis Range <= 15
@@ -355,17 +356,11 @@ def player_kills_vs_time(
     min_x, min_y, max_x, max_y = \
         scale_fig(queried_df, axs[0], "time", gamemode_input, cur_line)
 
-    # Get Y-Axis Range
-    kills = queried_df["kills"].to_list()
-    kills.append(cur_line)
-    min_y = min(kills)
-    max_y = max(kills)
-
     # Label current line from PrizePicks
     plt.sca(axs[0])
     bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
             'pad': 0.4, 'boxstyle': 'round'}
-    if max_y - min_y <= 4:
+    if max_y - min_y <= 5:
         y_pad = 0.25
     elif max_y - min_y < 8:
         y_pad = 0.5
@@ -446,7 +441,7 @@ def player_kills_vs_score_diff(
     plt.sca(axs[0])
     bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
             'pad': 0.4, 'boxstyle': 'round'}
-    if max_y - min_y <= 4:
+    if max_y - min_y <= 5:
         y_pad = 0.25
     elif max_y - min_y < 8:
         y_pad = 0.5
