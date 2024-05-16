@@ -955,7 +955,7 @@ def server(input, output, session):
         over_under, percentage, overs, unders, hooks = player_1_ou_stats()
         if over_under == "Never Played":
             return over_under
-        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+        return f"{over_under} {percentage}%\n({overs} - {unders} - {hooks})"
     
     # Player Two O/U %
     @render.ui
@@ -963,7 +963,7 @@ def server(input, output, session):
         over_under, percentage, overs, unders, hooks = player_2_ou_stats()
         if over_under == "Never Played":
             return over_under
-        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+        return f"{over_under} {percentage}%\n({overs} - {unders} - {hooks})"
 
     # Player Three O/U %
     @render.ui
@@ -971,7 +971,7 @@ def server(input, output, session):
         over_under, percentage, overs, unders, hooks = player_3_ou_stats()
         if over_under == "Never Played":
             return over_under
-        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+        return f"{over_under} {percentage}%\n({overs} - {unders} - {hooks})"
 
     # Player Four O/U %
     @render.ui
@@ -979,7 +979,7 @@ def server(input, output, session):
         over_under, percentage, overs, unders, hooks = player_4_ou_stats()
         if over_under == "Never Played":
             return over_under
-        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+        return f"{over_under} {percentage}%\n({overs} - {unders} - {hooks})"
 
     # Player Five O/U %
     @render.ui
@@ -987,7 +987,7 @@ def server(input, output, session):
         over_under, percentage, overs, unders, hooks = player_5_ou_stats()
         if over_under == "Never Played":
             return over_under
-        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+        return f"{over_under} {percentage}%\n({overs} - {unders} - {hooks})"
 
     # Player Six O/U %
     @render.ui
@@ -995,7 +995,7 @@ def server(input, output, session):
         over_under, percentage, overs, unders, hooks = player_6_ou_stats()
         if over_under == "Never Played":
             return over_under
-        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+        return f"{over_under} {percentage}%\n({overs} - {unders} - {hooks})"
 
     # Player Seven O/U %
     @render.ui
@@ -1003,7 +1003,7 @@ def server(input, output, session):
         over_under, percentage, overs, unders, hooks = player_7_ou_stats()
         if over_under == "Never Played":
             return over_under
-        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+        return f"{over_under} {percentage}%\n({overs} - {unders} - {hooks})"
 
     # Player Eight O/U %
     @render.ui
@@ -1011,7 +1011,7 @@ def server(input, output, session):
         over_under, percentage, overs, unders, hooks = player_8_ou_stats()
         if over_under == "Never Played":
             return over_under
-        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+        return f"{over_under} {percentage}%\n({overs} - {unders} - {hooks})"
     
     # Player One O/U Icon
     @render.ui

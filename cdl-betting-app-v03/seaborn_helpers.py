@@ -259,10 +259,11 @@ def team_percent_maps_played(
     fig, ax = plt.subplots(figsize = (4, 2))
 
     # Create chart labels
+    total = queried_df['total'].sum()
     chart_labels = []
     for index, row in queried_df.iterrows():
         chart_labels.append(
-            f"{row['map_name']}\n{row['win_percentage'] * 100:.0f}%"
+            f"{row['map_name']}\n{row['total'] * 100 / total:.0f}%"
         )
 
     # Pie Chart
