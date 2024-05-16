@@ -43,7 +43,7 @@ team_colors = {
 # PrizePicks Color Variable
 prizepicks_color = "purple"
 
-# Function to round HP score differential to nearest ten
+# Helper function to round HP score differential to nearest ten
 def truncate(n, decimals = -1):
     multiplier = 10 ** decimals
     return int(int(n * multiplier) / multiplier)
@@ -258,10 +258,21 @@ def team_percent_maps_played(
     # Create figure
     fig, ax = plt.subplots(figsize = (4, 2))
 
+    # Create chart labels
+    chart_labels = []
+    for index, row in queried_df.iterrows():
+        chart_labels.append(
+            f"{row['map_name']}\n{row['win_percentage'] * 100:.0f}%"
+        )
+
     # Pie Chart
-    ax.pie(queried_df["total"], labels = queried_df["map_name"], 
-           autopct = '%1.1f%%',  pctdistance = 0.65,
+    ax.pie(queried_df["total"], labels = chart_labels,
+           labeldistance = 1.2, 
            colors = palettes[gamemode_input])
+    
+    # Create donut by adding white inner circle with smaller radius
+    my_circle = plt.Circle( (0,0), 0.65, color = 'white')
+    ax.add_artist(my_circle)
     
     # Margins
     plt.margins(0.05)
