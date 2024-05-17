@@ -61,8 +61,8 @@ def scrape_prizepicks():
     player_props = []
 
     # Get the stat container and various stats 
-    stat_container = WebDriverWait(driver,
-                                15).until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
+    stat_container = WebDriverWait(driver, 20) \
+        .until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
     categories = driver.find_element(By.CSS_SELECTOR, ".stat-container").text.split('\n')
 
     # Remove Maps 1 - 3 Kills & Maps 1 - 3 Kills (Combo)
@@ -99,7 +99,7 @@ def scrape_prizepicks():
             player_props.append({
                 "player": player, 
                 "team_abbr": team_abbr, 
-                "prop": category.split(" ")[1], 
+                "prop": category.split(" ")[1] if category != "MAPS 1 - 3 Kills" else "0", 
                 "line": player_line
             })
 

@@ -287,14 +287,17 @@ def build_intial_props(rostersDF_input):
     initial_player_props["prop"] = 1
     initial_player_props["line"] = 22.0
 
-    # Add more rows for props 2 & 3
-    initial_player_props = pd.concat([initial_player_props, initial_player_props, initial_player_props])
+    # Add more rows for props 2, 3, & 0
+    initial_player_props = pd.concat([initial_player_props, initial_player_props, 
+                                      initial_player_props, initial_player_props])
     initial_player_props = initial_player_props.reset_index(drop = True)
 
-    # Add props 2 & 3 and arbitrary lines
+    # Add props 2, 3 & 0 and arbitrary lines
     initial_player_props.iloc[48:96, 3] = 2
     initial_player_props.iloc[48:96, 4] = 6.5
     initial_player_props.iloc[96:144, 3] = 3
+    initial_player_props.iloc[144:192, 3] = 0
+    initial_player_props.iloc[144:192, 4] = 50.5
 
     # Set type in to int
     initial_player_props["prop"] = initial_player_props["prop"].astype(int)

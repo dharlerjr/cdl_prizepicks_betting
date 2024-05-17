@@ -28,7 +28,7 @@ def player_panel(player_num: str):
         ui.layout_columns(
             ui.value_box(
                 "O/U",
-                ui.output_ui(f"player_{player_num}_ou"),
+                ui.output_text(f"player_{player_num}_ou"),
                 showcase = ui.output_ui(f"player_{player_num}_ou_icon"), 
                 showcase_layout = "left center", 
                 max_height = "100px"
@@ -39,6 +39,6 @@ def player_panel(player_num: str):
                 showcase = ICONS["crown"],
                 showcase_layout="left center", 
                 max_height = "100px"
-            ), 
+            )
         ),   
     )

@@ -350,7 +350,7 @@ def player_kills_vs_time(
 
     # Add title
     axs[0].set_title(player_input, fontsize = 20, loc = "left", 
-                     family = "Segoe UI", fontweight = 400, 
+                     # family = "Segoe UI", fontweight = 400, 
                      color = "#495057", pad = 5)
 
     # X- & Y-Axis Labels
@@ -436,7 +436,7 @@ def player_kills_vs_score_diff(
 
     # Add title
     axs[0].set_title(player_input, fontsize = 20, loc = "left", 
-                    family = "Segoe UI", fontweight = 400, 
+                    # family = "Segoe UI", fontweight = 400, 
                     color = "#495057", pad = 5)
 
     # X- & Y-Axis Labels
