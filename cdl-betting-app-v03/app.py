@@ -286,7 +286,7 @@ app_ui = ui.page_navbar(
             # Row 4 of 4: Series Score Differentials & Big Datagrid
             ui.layout_columns(
 
-                # Column 1: Team A Score Diffs
+                # Column 1: Team A Series Score Diffs
                 ui.card(ui.card_header("Series Results"), 
                         ui.output_plot("team_a_series_diffs", width = "280px", height = "240px")),
 
@@ -294,7 +294,7 @@ app_ui = ui.page_navbar(
                 ui.card(ui.card_header("Scoreboards"), 
                         ui.output_data_frame("scoreboards")),
 
-                # Column 3: Team B Score Diffs
+                # Column 3: Team B Series Score Diffs
                 ui.card(ui.card_header("Series Results"), 
                         ui.output_plot("team_b_series_diffs", width = "280px", height = "240px")),
 
@@ -333,7 +333,7 @@ app_ui = ui.page_navbar(
                 ui.input_select(id = "p2_map_three", label = "Map 3", selected = "All",
                                 choices = ["All", "Highrise", "Invasion", "Karachi"]), 
                 ui.input_select(id = "p2_x_axis", label = "X-Axis", selected = "Time",
-                                choices = ["Time", "Score Differential"])
+                                choices = ["Time", "Map", "Mapset"])
 
             ), 
 
@@ -418,10 +418,8 @@ app_ui = ui.page_navbar(
                 
                 # Row Height
                 height = "120px"
-            ),
-
+            )
         )
-    
     ),
 
     # App Title

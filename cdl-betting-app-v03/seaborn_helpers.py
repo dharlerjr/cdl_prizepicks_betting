@@ -465,3 +465,26 @@ def player_kills_vs_score_diff(
 
     # Set margins
     plt.margins(0.05)
+
+# Player Kills vs Score Differential by Map & Mode
+def player_kills_by_map(cdlDF_input: pd.DataFrame, player_input: str, 
+                        gamemode_input: str, cur_line: float):
+    
+    # Filter data based on user inputs
+    queried_df = cdlDF_input[
+        (cdlDF_input["player"] == player_input) &
+        (cdlDF_input["gamemode"] == gamemode_input)
+        ]
+    
+    # Create figure
+    fig, ax = plt.subplots(figsize = (6, 3))
+
+    # Boxplots
+    sns.boxplot(queried_df, x = "map_name", y =  "kills", 
+                showfliers = False, # fill = False, 
+                hue = "map_name", palette = palettes[gamemode_input])
+    ax.axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
+    
+    # X- & Y-Axis Labels
+    ax.set_xlabel("Map")
+    ax.set_ylabel("Kills")
