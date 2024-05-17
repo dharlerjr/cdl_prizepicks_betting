@@ -17,10 +17,12 @@ ICONS = {
     "calendar": fa.icon_svg("calendar", height = icon_height), 
     "crown": fa.icon_svg("crown", height = icon_height), 
     "check": fa.icon_svg("circle-check", height = icon_height), 
-    "exclamation": fa.icon_svg("circle-exclamation", height = icon_height)
+    "exclamation": fa.icon_svg("circle-exclamation", height = icon_height), 
+    "flag": fa.icon_svg("flag", height = icon_height), 
+    "mound": fa.icon_svg("mound", height = icon_height)
 }
 
-# Function to render one ui.nav_panel per player
+# Function to render one ui.nav_panel per player | Page 1, Kills per Map
 def player_panel(player_num: str):
     return ui.nav_panel(
         player_num, ui.output_plot(f"player_{player_num}_plot", width = "660px", height = "380px"),
@@ -42,3 +44,7 @@ def player_panel(player_num: str):
             )
         ),   
     )
+
+# Function to render one ui.nav_panel per player | Page 2, Maps 1 - 3 Kills
+def p2_player_panel(player_num: str):
+    pass

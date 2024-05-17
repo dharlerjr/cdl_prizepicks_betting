@@ -319,12 +319,12 @@ app_ui = ui.page_navbar(
         # Sidebar Layout
         ui.layout_sidebar(
 
-                        # Sidebar with inputs
+            # Sidebar with inputs
             ui.sidebar(
                 
                 # Inputs
                 ui.input_action_button(id = "p2_scrape", label = "Get PrizePicks Lines"), 
-                ui.input_select(id = "p2__team_a", label = "Team A", selected = "Carolina Royal Ravens",
+                ui.input_select(id = "p2_team_a", label = "Team A", selected = "Carolina Royal Ravens",
                                 choices = sorted(cdlDF['team'].unique())), 
                 ui.input_select(id = "p2_team_b", label = "Team B", selected = "New York Subliners",
                                 choices = sorted(cdlDF['team'].unique())), 
@@ -335,7 +335,90 @@ app_ui = ui.page_navbar(
                 ui.input_select(id = "p2_x_axis", label = "X-Axis", selected = "Time",
                                 choices = ["Time", "Score Differential"])
 
-            )
+            ), 
+
+            # Row 1 of 4
+            ui.layout_columns(
+                
+                # Column 1 of 6: Team A Logo
+                ui.output_image("p2_team_a_logo", width = "120px", height = "120px"), 
+
+                # Column 2 of 6: Placeholder Column
+                ui.layout_columns(),
+                
+                # Column 3 of 6: H2H Series Record
+                ui.value_box(
+                    title = "Series H2H (Overall)",
+                    value = ui.output_ui("p2_h2h_series_record"),
+                    showcase = ICONS["crosshairs"]
+                ), 
+
+                # Column 4 of 6: Date of Last Match
+                ui.value_box(
+                    title = "Last H2H Match",
+                    value = ui.output_ui("p2_last_match_date"),
+                    showcase = ICONS["calendar"]
+                ), 
+
+                # Column 5 of 6: Placeholder Column
+                ui.layout_columns(),
+                
+                # Column 6 of 6: Team B Logo
+                ui.output_image("p2_team_b_logo", width = "120px", height = "120px"), 
+
+                # Row Height
+                height = "120px"
+
+            ),
+
+            # Row 2 of 4
+            ui.layout_columns(
+                
+                # Team A Standing
+                ui.value_box(
+                    title = "Major III Standing",
+                    value = ui.output_ui("p2_team_a_series_record"),
+                    showcase = ICONS["headset"]
+                ),
+                
+                # Team A HP Win % 
+                ui.value_box(
+                    title = ui.output_ui("team_a_hp_title"),
+                    value = ui.output_ui("team_a_hp_record"),
+                    showcase = ICONS["mound"]
+                ), 
+
+                # Team A Ctrl Win % 
+                ui.value_box(
+                    title = ui.output_ui("team_a_ctrl_title"),
+                    value = ui.output_ui("team_a_ctrl_record"),
+                    showcase = ICONS["flag"]
+                ), 
+                
+                # Team B HP Win %
+                ui.value_box(
+                    title = ui.output_ui("team_b_hp_title"),
+                    value = ui.output_ui("team_b_hp_record"),
+                    showcase = ICONS["mound"]
+                ), 
+
+                # Team B Ctrl Win %
+                ui.value_box(
+                    title = ui.output_ui("team_b_ctrl_title"),
+                    value = ui.output_ui("team_b_ctrl_record"),
+                    showcase = ICONS["flag"]
+                ), 
+
+                # Team B Standing
+                ui.value_box(
+                    title = "Major III Standing",
+                    value = ui.output_ui("p2_team_b_series_record"),
+                    showcase = ICONS["headset"]
+                ), 
+                
+                # Row Height
+                height = "120px"
+            ),
 
         )
     
@@ -1160,6 +1243,160 @@ def server(input, output, session):
             input.map_name()
         )
         return f"{ou} {streak}"
+    
+    # Team A Logo | Page 2
+    @render.image
+    def p2_team_a_logo():
+        img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.p2_team_a()], 
+                        "width": "120px", "height": "120px"}
+        return img
+    
+    # Team B Logo | Page 2
+    @render.image
+    def p2_team_b_logo():
+        img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.p2_team_b()], 
+                        "width": "120px", "height": "120px"}
+        return img
+    
+    # Date of Last Match | Page 2
+    @render.ui
+    def p2_last_match_date():
+        return compute_last_match(cdlDF, input.p2_team_a(), input.p2_team_b())
+    
+    # Team A Series Record for Major 3 Quals | Page 2
+    @render.ui
+    def p2_team_a_series_record():
+        wins = current_standings.loc[current_standings['team'] == input.p2_team_a(), 'wins'].reset_index(drop=True)[0]
+        losses = current_standings.loc[current_standings['team'] == input.p2_team_a(), 'losses'].reset_index(drop=True)[0]
+        return f"{wins} - {losses}"
+
+    # Team B Series Record for Major 3 Quals | Page 2
+    @render.ui
+    def p2_team_b_series_record():
+        wins = current_standings.loc[current_standings['team'] == input.p2_team_b(), 'wins'].reset_index(drop=True)[0]
+        losses = current_standings.loc[current_standings['team'] == input.p2_team_b(), 'losses'].reset_index(drop=True)[0]
+        return f"{wins} - {losses}"
+    
+    # H2H Series Record for User-Selected Map & Mode Combination | Page 2
+    @render.ui
+    def p2_h2h_series_record():
+        return compute_h2h_series_record(cdlDF, input.p2_team_a(), input.p2_team_b())
+    
+    # Team A HP Record for User-Selected Map | Page 2
+    @render.ui
+    def team_a_hp_record():
+        if input.p2_map_one() == "All":
+            map_to_search_for = "Overall"
+        else:
+            map_to_search_for = input.p2_map_one()
+        wins = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_a()) &
+            (team_summaries_DF['gamemode'] == "Hardpoint") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'wins'].reset_index(drop=True)[0]
+        losses = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_a()) &
+            (team_summaries_DF['gamemode'] == "Hardpoint") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'losses'].reset_index(drop=True)[0]
+        win_percentage = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_a()) &
+            (team_summaries_DF['gamemode'] == "Hardpoint") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
+        return f"{win_percentage:.0%} ({wins} - {losses})"
+    
+    # Team B HP Record for User-Selected Map | Page 2
+    @render.ui
+    def team_b_hp_record():
+        if input.p2_map_one() == "All":
+            map_to_search_for = "Overall"
+        else:
+            map_to_search_for = input.p2_map_one()
+        wins = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_b()) &
+            (team_summaries_DF['gamemode'] == "Hardpoint") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'wins'].reset_index(drop=True)[0]
+        losses = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_b()) &
+            (team_summaries_DF['gamemode'] == "Hardpoint") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'losses'].reset_index(drop=True)[0]
+        win_percentage = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_b()) &
+            (team_summaries_DF['gamemode'] == "Hardpoint") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
+        return f"{win_percentage:.0%} ({wins} - {losses})"
+    
+    # Team A Control Record for User-Selected Map | Page 2
+    @render.ui
+    def team_a_ctrl_record():
+        if input.p2_map_three() == "All":
+            map_to_search_for = "Overall"
+        else:
+            map_to_search_for = input.p2_map_three()
+        wins = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_a()) &
+            (team_summaries_DF['gamemode'] == "Control") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'wins'].reset_index(drop=True)[0]
+        losses = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_a()) &
+            (team_summaries_DF['gamemode'] == "Control") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'losses'].reset_index(drop=True)[0]
+        win_percentage = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_a()) &
+            (team_summaries_DF['gamemode'] == "Control") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
+        return f"{win_percentage:.0%} ({wins} - {losses})"
+    
+    # Team B Control Record for User-Selected Map | Page 2
+    @render.ui
+    def team_b_ctrl_record():
+        if input.p2_map_three() == "All":
+            map_to_search_for = "Overall"
+        else:
+            map_to_search_for = input.p2_map_three()
+        wins = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_b()) &
+            (team_summaries_DF['gamemode'] == "Control") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'wins'].reset_index(drop=True)[0]
+        losses = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_b()) &
+            (team_summaries_DF['gamemode'] == "Control") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'losses'].reset_index(drop=True)[0]
+        win_percentage = team_summaries_DF.loc[
+            (team_summaries_DF['team'] == input.p2_team_b()) &
+            (team_summaries_DF['gamemode'] == "Control") & 
+            (team_summaries_DF['map_name'] == map_to_search_for), 'win_percentage'].reset_index(drop=True)[0]
+        return f"{win_percentage:.0%} ({wins} - {losses})"
+    
+    # Title for Team A HP Record Value Box | Page 2 
+    @render.ui
+    def team_a_hp_title():
+        if input.p2_map_one() == "All":
+            return "HP Win %"
+        else:
+            return f"{input.p2_map_one()} HP Win %"
+        
+    # Title for Team A HP Record Value Box | Page 2 
+    @render.ui
+    def team_b_hp_title():
+        if input.p2_map_one() == "All":
+            return "HP Win %"
+        else:
+            return f"{input.p2_map_one()} HP Win %"
+        
+    # Title for Team A HP Record Value Box | Page 2 
+    @render.ui
+    def team_a_ctrl_title():
+        if input.p2_map_one() == "All":
+            return "Control Win %"
+        else:
+            return f"{input.p2_map_three()} Control Win %"
+        
+    # Title for Team A HP Record Value Box | Page 2 
+    @render.ui
+    def team_b_ctrl_title():
+        if input.p2_map_one() == "All":
+            return "Control Win %"
+        else:
+            return f"{input.p2_map_three()} Control Win %"
 
 
 # Run app
