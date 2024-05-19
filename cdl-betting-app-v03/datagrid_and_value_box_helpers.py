@@ -10,7 +10,7 @@ def compute_last_match(cdlDF_input: pd.DataFrame, team_x: str, team_y: str):
 
 # Function to create dataframe of kills for user-selected team & gamemode
 def build_scoreboards(
-        cdlDF_input: pd.DataFrame, team_x: str, team_y: str, gamemode_input: "All", map_input = "All"
+        cdlDF_input: pd.DataFrame, team_x: str, team_y: str, gamemode_input = "All", map_input = "All"
     ):
 
     # Get maps to include based on user input
