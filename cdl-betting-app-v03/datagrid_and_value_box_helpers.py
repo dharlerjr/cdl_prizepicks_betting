@@ -10,7 +10,7 @@ def compute_last_match(cdlDF_input: pd.DataFrame, team_x: str, team_y: str):
 
 # Function to create dataframe of kills for user-selected team & gamemode
 def build_scoreboards(
-        cdlDF_input: pd.DataFrame, team_x: str, team_y: str, gamemode_input: str, map_input = "All"
+        cdlDF_input: pd.DataFrame, team_x: str, team_y: str, gamemode_input: "All", map_input = "All"
     ):
 
     # Get maps to include based on user input
@@ -149,7 +149,7 @@ def compute_win_streak(
         return 0
     
     # Sort queried_df by date descending & reset index
-    queried_df = queried_df.sort_values(by = ["match_date", "map_num"], ascending = [False, False] ) \
+    queried_df = queried_df.sort_values(by = ["match_date", "match_id", "map_num"], ascending = [False, False, False] ) \
         .reset_index(drop=True)
     
     # Replace all losses with a -1
@@ -318,7 +318,7 @@ def player_over_under_streak(
         return "Never Played", " "
     
     # Sort queried_df by date descending & reset index
-    queried_df = queried_df.sort_values(by = ["match_date", "map_num"], ascending = [False, False] ) \
+    queried_df = queried_df.sort_values(by = ["match_date", "match_id", "map_num"], ascending = [False, False, False] ) \
         .reset_index(drop=True)
     
     # Initialize streak and iterator
