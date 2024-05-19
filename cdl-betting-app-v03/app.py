@@ -331,7 +331,7 @@ app_ui = ui.page_navbar(
                                 choices = sorted(cdlDF['team'].unique())), 
                 ui.input_select(id = "p2_map_one", label = "Map 1", selected = "All",
                                 choices = ["All", "6 Star", "Karachi", "Rio", "Sub Base", "Vista"]), 
-                ui.input_select(id = "p2_map_two", label = "Map 1", selected = "All",
+                ui.input_select(id = "p2_map_two", label = "Map 2", selected = "All",
                                 choices = ["All", "6 Star", "Highrise", "Invasion", "Karachi", "Rio"]), 
                 ui.input_select(id = "p2_map_three", label = "Map 3", selected = "All",
                                 choices = ["All", "Highrise", "Invasion", "Karachi"]), 
@@ -465,7 +465,7 @@ app_ui = ui.page_navbar(
                 height = "680px",
 
                 # Column Widths
-                col_widths = [6, 3, 3]
+                col_widths = [8, 2, 2]
             ), 
 
             # Row 4 of 4: Scoreboards & Score Differentials
@@ -1515,19 +1515,17 @@ def server(input, output, session):
     
     # Datagrid of Player Kills and Map Results for Selected Teams | Page 2
     # Aka. Scoreboards
-    # @render.data_frame
-    # def p2_scoreboards():
-    #     return render.DataGrid(
-    #         build_scoreboards(
-    #             cdlDF, 
-    #             input.p2_team_a(),
-    #             input.p2_team_b(),
-    #             "All"
-    #             "All"
-    #         ), 
-    #         filters = True, 
-    #         summary = False
-    #     )
+    @render.data_frame
+    def p2_scoreboards():
+        return render.DataGrid(
+            build_scoreboards(
+                cdlDF, 
+                input.p2_team_a(),
+                input.p2_team_b()
+            ), 
+            filters = True, 
+            summary = False
+        )
 
 
 # Run app

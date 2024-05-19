@@ -31,27 +31,29 @@ def build_scoreboards(
 
     # Filter cdlDF for maps in selected_maps
     cdlDF_copy = cdlDF_copy[mask]
+
+    # Filter for gamemode
+    if gamemode_input != "All":
+        cdlDF_copy = cdlDF_copy[cdlDF_copy['gamemode'] == gamemode_input]
     
     # Get team_x scoreboards
     team_x_scoreboard = \
-        cdlDF_copy[(cdlDF_copy["team"] == team_x) & 
-                    (cdlDF_copy["gamemode"] == gamemode_input)] \
-            [["match_date", "match_id", "map_name", "map_num", "team_abbr", "player", "kills", 
-              "deaths", "score_diff", "opp_abbr"]]
+        cdlDF_copy[cdlDF_copy["team"] == team_x] \
+            [["match_date", "match_id", "gamemode", "map_name", "map_num", 
+              "team_abbr", "player", "kills", "deaths", "score_diff", "opp_abbr"]]
 
     # Get team_y scoreboards
     team_y_scoreboard = \
         cdlDF_copy[(cdlDF_copy["team"] == team_y) & 
-                    (cdlDF_copy["gamemode"] == gamemode_input) &
                     (cdlDF_copy["opp"] != team_x)] \
-            [["match_date", "match_id", "map_name", "map_num", "team_abbr", "player", "kills", 
-              "deaths", "score_diff", "opp_abbr"]]
+            [["match_date", "match_id", "gamemode", "map_name", "map_num", 
+              "team_abbr", "player", "kills", "deaths", "score_diff", "opp_abbr"]]
     
-    # Combine scoreboards and reset index
+    # Combine scoreboards
     scoreboards = pd.concat([team_x_scoreboard, team_y_scoreboard], axis=0)
 
     # Arrange by match_date, match_id, and map_num for later concatenation
-    scoreboards = scoreboards.sort_values(by = ["match_date", "match_id", "map_num"], ascending = [False, True, True]).reset_index(drop=True)
+    scoreboards = scoreboards.sort_values(by = ["match_date", "match_id", "map_num"], ascending = [False, False, True]).reset_index(drop=True)
 
     # Add player data for opposing teams
 
@@ -62,21 +64,34 @@ def build_scoreboards(
     opponents = pd.DataFrame()
 
     # Loop through matches and append player data  
-    for index, row in matches.iterrows():
-        opponents = pd.concat([
-            opponents, 
-            cdlDF_copy[
-                (cdlDF_copy["match_id"] == row["match_id"]) &
-                (cdlDF_copy["team_abbr"] == row["opp_abbr"]) &
-                (cdlDF_copy["gamemode"] == gamemode_input)
-            ] \
-                [["match_date", "match_id", "map_num", "player", "kills", 
-                  "deaths"]]
-        ], 
-        axis=0)
+    if gamemode_input != "All":
+        for index, row in matches.iterrows():
+            opponents = pd.concat([
+                opponents, 
+                cdlDF_copy[
+                    (cdlDF_copy["match_id"] == row["match_id"]) &
+                    (cdlDF_copy["team_abbr"] == row["opp_abbr"]) &
+                    (cdlDF_copy["gamemode"] == gamemode_input)
+                ] \
+                    [["match_date", "match_id", "map_num", "player", "kills", 
+                    "deaths"]]
+            ], 
+            axis=0)
+    else:
+        for index, row in matches.iterrows():
+            opponents = pd.concat([
+                opponents, 
+                cdlDF_copy[
+                    (cdlDF_copy["match_id"] == row["match_id"]) &
+                    (cdlDF_copy["team_abbr"] == row["opp_abbr"])
+                ] \
+                    [["match_date", "match_id", "map_num", "player", "kills", 
+                    "deaths"]]
+            ], 
+            axis=0)
 
     # Arrange by match_date, match_id, and map_num for later concatenation
-    opponents = opponents.sort_values(by = ["match_date", "match_id", "map_num"], ascending = [False, True, True]).reset_index(drop=True)
+    opponents = opponents.sort_values(by = ["match_date", "match_id", "map_num"], ascending = [False, False, True]).reset_index(drop=True)
 
     # Rename opponent columns
     opponents = opponents.rename(columns = {
@@ -96,10 +111,11 @@ def build_scoreboards(
     # Drop map_num & match_id
     scoreboards = scoreboards.drop(["map_num", "match_id"], axis = 1)
 
-    # Rename columns
+    # Rename columns 
     scoreboards = scoreboards.rename(columns = {
         "match_date": "Date", 
         "map_name": "Map", 
+        "gamemode": "Gamemode",
         "team_abbr": "Team", 
         "player": "Player",
         "kills": "Kills", 
@@ -111,6 +127,10 @@ def build_scoreboards(
     # Drop Map column if only one map
     if map_input != "All":
         scoreboards = scoreboards.drop("Map", axis = 1)
+
+    # Drop Gamemode Column if gamemode_input == "All"
+    if gamemode_input != "All":
+        scoreboards = scoreboards.drop("Gamemode", axis = 1)
 
     # Convert the 'Date' column to string for display purposes
     scoreboards['Date'] = scoreboards['Date'].astype(str)
@@ -310,7 +330,7 @@ def player_over_under_streak(
     
     # Get relevant columns and drop duplicates
     queried_df = queried_df[
-        ["match_date", "kills", "map_num"]
+        ["match_date", "kills", "map_num", "match_id"]
     ]
 
     # If the dataframe is empty, return "Never Played"
