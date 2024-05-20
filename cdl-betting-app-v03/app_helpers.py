@@ -25,7 +25,8 @@ ICONS = {
 # Function to render one ui.nav_panel per player | Page 1, Kills per Map
 def player_panel(player_num: str):
     return ui.nav_panel(
-        player_num, ui.output_plot(f"player_{player_num}_plot", width = "660px", height = "380px"),
+        player_num, 
+        ui.output_plot(f"player_{player_num}_plot", width = "660px", height = "380px"),
         ui.layout_columns(),
         ui.layout_columns(
             ui.value_box(
@@ -39,12 +40,32 @@ def player_panel(player_num: str):
                 "Streak", 
                 ui.output_ui(f"player_{player_num}_ou_streak"), 
                 showcase = ICONS["crown"],
-                showcase_layout="left center", 
+                showcase_layout = "left center", 
                 max_height = "100px"
             )
-        ),   
+        )
     )
 
 # Function to render one ui.nav_panel per player | Page 2, Maps 1 - 3 Kills
 def p2_player_panel(player_num: str):
-    pass
+    return ui.nav_panel(
+        player_num, 
+        ui.output_plot(f"p2_player_{player_num}_plot", width = "660px", height = "380px"),
+        ui.layout_columns(),
+        ui.layout_columns(
+            ui.value_box(
+                "O/U",
+                ui.output_text(f"p2_player_{player_num}_ou"),
+                showcase = ui.output_ui(f"p2_player_{player_num}_ou_icon"), 
+                showcase_layout = "left center", 
+                max_height = "100px"
+            ), 
+            ui.value_box(
+                "Streak", 
+                ui.output_ui(f"p2_player_{player_num}_ou_streak"), 
+                showcase = ICONS["crown"],
+                showcase_layout = "left center", 
+                max_height = "100px"
+            )
+        )
+    )

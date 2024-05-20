@@ -16,7 +16,7 @@ from setup.setup import *
 from webscraper import *
 from seaborn_helpers import *
 from datagrid_and_value_box_helpers import *
-from app_helpers import ICONS, player_panel
+from app_helpers import *
 
 # Dictionary to map map_num to gamemode
 map_nums_to_gamemode = {
@@ -89,6 +89,9 @@ team_summaries_DF = build_team_summaries(cdlDF).copy()
 
 # Build rosters
 rostersDF = build_rosters(cdlDF).copy()
+
+# Build Maps 1 - 3 Totals Dataframe
+adj_1_thru_3_totals = build_1_thru_3_totals(cdlDF)
 
 # Compute CDL Standings for Major III Qualifiers
 current_standings = \
@@ -185,7 +188,7 @@ app_ui = ui.page_navbar(
                 # Team A Standing
                 ui.value_box(
                     title = "Major III Standing",
-                    value = ui.output_ui("team_a_series_record"),
+                    value = ui.output_ui("team_a_standing"),
                     showcase = ICONS["headset"]
                 ),
 
@@ -227,7 +230,7 @@ app_ui = ui.page_navbar(
                 # Team B Standing
                 ui.value_box(
                     title = "Major III Standing",
-                    value = ui.output_ui("team_b_series_record"),
+                    value = ui.output_ui("team_b_standing"),
                     showcase = ICONS["headset"]
                 ), 
                 
@@ -250,18 +253,16 @@ app_ui = ui.page_navbar(
                 ),
 
                 # Column 2: Card with Pill Tabset of Player O/U Stats
-                ui.layout_columns(
-                    ui.navset_card_pill( 
-                        player_panel("1"), 
-                        player_panel("2"), 
-                        player_panel("3"), 
-                        player_panel("4"), 
-                        player_panel("5"), 
-                        player_panel("6"), 
-                        player_panel("7"), 
-                        player_panel("8"), 
-                        title = "Player Cards"
-                    ),
+                ui.navset_card_pill( 
+                    player_panel("1"), 
+                    player_panel("2"), 
+                    player_panel("3"), 
+                    player_panel("4"), 
+                    player_panel("5"), 
+                    player_panel("6"), 
+                    player_panel("7"), 
+                    player_panel("8"), 
+                    title = "Player Cards"
                 ),
 
                 # Column 3: Team B Stats
@@ -380,7 +381,7 @@ app_ui = ui.page_navbar(
                 # Team A Standing
                 ui.value_box(
                     title = "Major III Standing",
-                    value = ui.output_ui("p2_team_a_series_record"),
+                    value = ui.output_ui("p2_team_a_standing"),
                     showcase = ICONS["headset"]
                 ),
                 
@@ -415,7 +416,7 @@ app_ui = ui.page_navbar(
                 # Team B Standing
                 ui.value_box(
                     title = "Major III Standing",
-                    value = ui.output_ui("p2_team_b_series_record"),
+                    value = ui.output_ui("p2_team_b_standing"),
                     showcase = ICONS["headset"]
                 ), 
                 
@@ -428,6 +429,14 @@ app_ui = ui.page_navbar(
 
                 # Column 1: Card with Pill Tabset of Player O/U Stats
                 ui.navset_card_pill( 
+                    p2_player_panel("1"), 
+                    p2_player_panel("2"), 
+                    p2_player_panel("3"), 
+                    p2_player_panel("4"), 
+                    p2_player_panel("5"), 
+                    p2_player_panel("6"), 
+                    p2_player_panel("7"), 
+                    p2_player_panel("8"), 
                     title = "Player Cards"
                 ),
 
@@ -465,7 +474,7 @@ app_ui = ui.page_navbar(
                 height = "680px",
 
                 # Column Widths
-                col_widths = [8, 2, 2]
+                col_widths = [6, 3, 3]
             ), 
 
             # Row 4 of 4: Scoreboards & Score Differentials
@@ -492,10 +501,10 @@ app_ui = ui.page_navbar(
                 # Column 3: Ridgeline Plots of Map Score Differentials
 
                 # Row Height
-                height = "360px",
+                height = "560px",
                 
                 # Column Widths
-                col_widths = [6, 2, 4]
+                col_widths = [6, 3, 3]
 
             ), 
         )
@@ -572,14 +581,14 @@ def server(input, output, session):
     
     # Team A Series Record for Major 3 Quals
     @render.ui
-    def team_a_series_record():
+    def team_a_standing():
         wins = current_standings.loc[current_standings['team'] == input.team_a(), 'wins'].reset_index(drop=True)[0]
         losses = current_standings.loc[current_standings['team'] == input.team_a(), 'losses'].reset_index(drop=True)[0]
         return f"{wins} - {losses}"
 
     # Team B Series Record for Major 3 Quals
     @render.ui
-    def team_b_series_record():
+    def team_b_standing():
         wins = current_standings.loc[current_standings['team'] == input.team_b(), 'wins'].reset_index(drop=True)[0]
         losses = current_standings.loc[current_standings['team'] == input.team_b(), 'losses'].reset_index(drop=True)[0]
         return f"{wins} - {losses}"
@@ -1342,14 +1351,14 @@ def server(input, output, session):
     
     # Team A Series Record for Major 3 Quals | Page 2
     @render.ui
-    def p2_team_a_series_record():
+    def p2_team_a_standing():
         wins = current_standings.loc[current_standings['team'] == input.p2_team_a(), 'wins'].reset_index(drop=True)[0]
         losses = current_standings.loc[current_standings['team'] == input.p2_team_a(), 'losses'].reset_index(drop=True)[0]
         return f"{wins} - {losses}"
 
     # Team B Series Record for Major 3 Quals | Page 2
     @render.ui
-    def p2_team_b_series_record():
+    def p2_team_b_standing():
         wins = current_standings.loc[current_standings['team'] == input.p2_team_b(), 'wins'].reset_index(drop=True)[0]
         losses = current_standings.loc[current_standings['team'] == input.p2_team_b(), 'losses'].reset_index(drop=True)[0]
         return f"{wins} - {losses}"
@@ -1505,12 +1514,12 @@ def server(input, output, session):
     
     # Team A Series Differentials Histogram | Page 2
     @render.plot
-    def team_a_series_diffs():
+    def p2_team_a_series_diffs():
         return team_series_diffs(series_score_diffs, input.p2_team_a(), team_a_color)
     
     # Team B Series Differentials Histogram | Page 2
     @render.plot
-    def team_b_series_diffs():
+    def p2_team_b_series_diffs():
         return team_series_diffs(series_score_diffs, input.p2_team_b(), team_b_color)
     
     # Datagrid of Player Kills and Map Results for Selected Teams | Page 2
@@ -1526,6 +1535,216 @@ def server(input, output, session):
             filters = True, 
             summary = False
         )
+    
+    # Player One Line | Page 2
+    @reactive.Calc
+    def p2_player_1_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 0)] \
+                    .iloc[0]['line']
+    
+    # Player One Map One Line | Page 2
+    @reactive.Calc
+    def p2_player_1_map_1_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 1)] \
+                    .iloc[0]['line']
+    
+    # Player One Map Three Line | Page 2
+    @reactive.Calc
+    def p2_player_1_map_3_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 3)] \
+                    .iloc[0]['line']
+    
+    # Player One Line | Page 2
+    @reactive.Calc
+    def p2_player_2_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 0)] \
+                    .iloc[1]['line']
+    
+    # Player One Map One Line | Page 2
+    @reactive.Calc
+    def p2_player_2_map_1_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 1)] \
+                    .iloc[1]['line']
+    
+    # Player Two Map Three Line | Page 2
+    @reactive.Calc
+    def p2_player_2_map_3_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 3)] \
+                    .iloc[1]['line']
+    
+    # Player One Line | Page 2
+    @reactive.Calc
+    def p2_player_3_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 0)] \
+                    .iloc[2]['line']
+    
+    # Player Three Map One Line | Page 2
+    @reactive.Calc
+    def p2_player_3_map_1_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 1)] \
+                    .iloc[2]['line']
+    
+    # Player Three Map Three Line | Page 2
+    @reactive.Calc
+    def p2_player_3_map_3_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 3)] \
+                    .iloc[2]['line']
+    
+    # Player Four Line | Page 2
+    @reactive.Calc
+    def p2_player_4_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 0)] \
+                    .iloc[3]['line']
+    
+    # Player Four Map One Line | Page 2
+    @reactive.Calc
+    def p2_player_4_map_1_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 1)] \
+                    .iloc[3]['line']
+    
+    # Player Four Map Three Line | Page 2
+    @reactive.Calc
+    def p2_player_4_map_3_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_a()) &
+                (player_props_df.get()['prop'] == 3)] \
+                    .iloc[3]['line']
+    
+    # Player Five Line | Page 2
+    @reactive.Calc
+    def p2_player_5_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 0)] \
+                    .iloc[0]['line']
+    
+    # Player Five Map One Line | Page 2
+    @reactive.Calc
+    def p2_player_5_map_1_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 1)] \
+                    .iloc[0]['line']
+    
+    # Player Five Map Three Line | Page 2
+    @reactive.Calc
+    def p2_player_5_map_3_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 3)] \
+                    .iloc[0]['line']
+    
+    # Player Six Line | Page 2
+    @reactive.Calc
+    def p2_player_6_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 0)] \
+                    .iloc[1]['line']
+    
+    # Player Six Map One Line | Page 2
+    @reactive.Calc
+    def p2_player_6_map_1_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 1)] \
+                    .iloc[1]['line']
+    
+    # Player Six Map Three Line | Page 2
+    @reactive.Calc
+    def p2_player_6_map_3_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 3)] \
+                    .iloc[1]['line']
+    
+    # Player Seven Line | Page 2
+    @reactive.Calc
+    def p2_player_7_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 0)] \
+                    .iloc[2]['line']
+    
+    # Player Seven Map One Line | Page 2
+    @reactive.Calc
+    def p2_player_7_map_1_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 1)] \
+                    .iloc[2]['line']
+    
+    # Player Seven Map Three Line | Page 2
+    @reactive.Calc
+    def p2_player_7_map_3_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 3)] \
+                    .iloc[2]['line']
+    
+    # Player Eight Line | Page 2
+    @reactive.Calc
+    def p2_player_8_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 0)] \
+                    .iloc[3]['line']
+    
+    # Player Eight Map One Line | Page 2
+    @reactive.Calc
+    def p2_player_8_map_1_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 1)] \
+                    .iloc[3]['line']
+    
+    # Player Eight Map Three Line | Page 2
+    @reactive.Calc
+    def p2_player_8_map_3_line():
+        return player_props_df.get()[
+                (player_props_df.get()['team'] == input.p2_team_b()) &
+                (player_props_df.get()['prop'] == 3)] \
+                    .iloc[3]['line']
+    
+    # Player One Plot | Page 2
+    @render.plot
+    def p2_player_1_plot():
+        if input.p2_x_axis() == "Time":
+            return player_1_thru_3_kills_vs_time(
+                adj_1_thru_3_totals,
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],
+                team_a_color,
+                p2_player_1_line(),
+            )
+        elif input.p2_x_axis() == "Map":
+            return player_kills_by_hp_ctrl(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],
+                p2_player_1_map_1_line(),
+                p2_player_1_map_3_line()
+            )
 
 
 # Run app

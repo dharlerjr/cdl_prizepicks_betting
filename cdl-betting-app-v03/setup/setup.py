@@ -22,6 +22,9 @@ changed_players = {
     "Standy": "LV"
 }
 
+# Hardpoint Maps Excluded from Maps 1 - 3 Dataframe Computation
+removed_hp_maps = ['Skidrow', 'Terminal']
+
 # Function to load and clean cdl data and return as pandas dataframe
 def load_and_clean_cdl_data():
 
@@ -349,3 +352,43 @@ def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame, rosters
     # Reset index & return
     new_props = new_props.reset_index(drop=True)
     return new_props
+    
+
+# Function to build dataframe of previous player Maps 1 - 3 Kill totals based
+# on analysis performed in testing_maps_1_thru_3_kills.ipynb 
+def build_1_thru_3_totals(cdlDF_input: pd.DataFrame):
+    
+    # 1. List of match_ids with replaceable map 1, 
+    # computed in testing_maps_1_thru_3_kills.ipynb 
+    replaceable_ids = [27200, 27237, 53372, 27219, 52845, 27245, 27255, 27266,
+                       27250, 52933, 27270, 35645, 27223, 27241, 53281, 27249, 
+                       27231, 27197, 52842, 27264, 27207]
+
+    # 2. If replaceable, replace all old Map 1s with corresponding Map 4
+    adj_cdlDF = cdlDF_input[
+        ~((cdlDF_input['match_id'].isin(replaceable_ids)) & 
+        (cdlDF_input['map_num'] == 1))
+        ]
+    adj_cdlDF.loc[((adj_cdlDF['match_id'].isin(replaceable_ids)) & (adj_cdlDF['map_num'] == 4)), 'map_num'] = 1
+    adj_cdlDF
+
+    # 3. List of match_ids with irreplaceable Map 1 Skidrow or Terminal
+    # computed in testing_maps_1_thru_3_kills.ipynb 
+    irr_old_maps = [27208, 35635, 27211, 27265, 27243, 35633, 35634, 35648,
+                    27220, 27230, 27206, 27221, 27229, 27213]
+
+    # 4. Drop all matches with irreplaceable Map 1 Skidrows or Terminals
+    adj_cdlDF = adj_cdlDF[~adj_cdlDF['match_id'].isin(irr_old_maps)]
+
+    # 5. Remove All Map 4s & Map 5s from adj_cdl
+    adj_cdlDF = adj_cdlDF[adj_cdlDF['map_num'] < 4].reset_index(drop = True)
+
+    # 6. Compute adjusted Maps 1 - 3 Kills for every Player & Series
+    adj_1_thru_3_totals_df = adj_cdlDF \
+        .groupby(['match_id', 'player', 'match_date', 'team_abbr'])['kills'].sum() \
+        .reset_index()
+    
+    # 7. Sort values & return
+    adj_1_thru_3_totals_df = adj_1_thru_3_totals_df.sort_values(['match_id', 'team_abbr', "player"], ignore_index = True)
+    
+    return adj_1_thru_3_totals_df

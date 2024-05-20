@@ -466,7 +466,49 @@ def player_kills_vs_score_diff(
     # Set margins
     plt.margins(0.05)
 
-# Player Kills vs Score Differential by Map & Mode
+
+# Player Maps 1 - 3 Kills vs Time
+def player_1_thru_3_kills_vs_time(
+        map_1_thru_3_totals_df: pd.DataFrame, player_input: str, 
+        team_color: str, cur_line: float
+):
+    
+    # Filter data for selected player
+    queried_df = map_1_thru_3_totals_df[(map_1_thru_3_totals_df["player"] == player_input)]
+
+    # Create figure with gridspec
+    f, axs = plt.subplots(1, 2, figsize = (6, 3), sharey = True, gridspec_kw = 
+                          dict(width_ratios=[2, 0.4], wspace = 0.05))
+    
+    # Scatterplot
+    sns.scatterplot(queried_df, x = "match_date", y = "kills", ax=axs[0], 
+                    color = team_color)
+    axs[0].axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
+
+    # Boxplot
+    sns.boxplot(queried_df, y =  "kills", fill = False, ax=axs[1], 
+                color = team_color, showfliers = False)
+    sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], color = team_color)
+    axs[1].axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
+
+    # Add title
+    axs[0].set_title(player_input, fontsize = 20, loc = "left", 
+                     # family = "Segoe UI", fontweight = 400, 
+                     color = "#495057", pad = 5)
+
+    # X- & Y-Axis Labels
+    axs[0].set_xlabel("")
+    axs[0].set_ylabel("Kills")
+    axs[1].set_xticks([])
+    axs[1].set_ylabel("")
+
+    # Date Ticks
+    formatter = mdates.DateFormatter('%b %d')
+    axs[0].xaxis.set_major_formatter(formatter)
+    axs[0].tick_params(axis = 'x', rotation = 30)
+
+
+# Player Kills by Map for selected Gamemode
 def player_kills_by_map(cdlDF_input: pd.DataFrame, player_input: str, 
                         gamemode_input: str, cur_line: float):
     
@@ -488,3 +530,29 @@ def player_kills_by_map(cdlDF_input: pd.DataFrame, player_input: str,
     # X- & Y-Axis Labels
     ax.set_xlabel("Map")
     ax.set_ylabel("Kills")
+
+
+# Player Kills by Map: Hardpoint & Control
+def player_kills_by_hp_ctrl(
+        cdlDF_input: pd.DataFrame, player_input: str, 
+        hp_line: float, ctrl_line: float):
+    
+    # Filter data for selected player
+    queried_df = cdlDF_input[(cdlDF_input["player"] == player_input)]
+
+    # Create figure with gridspec
+    f, axs = plt.subplots(2, 1, figsize = (6, 3), gridspec_kw = dict(hspace = 0.05), sharey = True)
+
+    # Hardpoint Boxplots
+    sns.boxplot(queried_df[queried_df['gamemode'] == 'Hardpoint'], 
+                x = "map_name", y =  "kills", hue = "map_name", 
+                showfliers = False, ax = axs[0],
+                palette = palettes["Hardpoint"])
+    axs[0].axhline(y = hp_line, color = prizepicks_color, linestyle = '--')
+
+    # Control Boxplots
+    sns.boxplot(queried_df[queried_df['gamemode'] == 'Control'], 
+                x = "map_name", y =  "kills", hue = "map_name", 
+                showfliers = False, ax = axs[1],
+                palette = palettes["Control"])
+    axs[1].axhline(y = ctrl_line, color = prizepicks_color, linestyle = '--')
