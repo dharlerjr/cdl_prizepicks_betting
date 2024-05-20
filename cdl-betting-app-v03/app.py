@@ -78,6 +78,9 @@ start_date = '2024-04-12'
 # Load in four instance of cdl data for testing
 cdlDF = load_and_clean_cdl_data()
 
+# Build Maps 1 - 3 Totals Dataframe
+adj_1_thru_3_totals = build_1_thru_3_totals(cdlDF).copy()
+
 # Build series summaries
 series_score_diffs = build_series_summaries(cdlDF).copy()
 
@@ -89,9 +92,6 @@ team_summaries_DF = build_team_summaries(cdlDF).copy()
 
 # Build rosters
 rostersDF = build_rosters(cdlDF).copy()
-
-# Build Maps 1 - 3 Totals Dataframe
-adj_1_thru_3_totals = build_1_thru_3_totals(cdlDF)
 
 # Compute CDL Standings for Major III Qualifiers
 current_standings = \
@@ -796,67 +796,42 @@ def server(input, output, session):
     # Player One Line
     @reactive.Calc
     def player_1_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['prop'] == map_num())] \
-                    .iloc[0]['line']
+        return get_line(player_props_df.get(), input.team_a(), 1, map_num())
     
     # Player Two Line
     @reactive.Calc
     def player_2_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['prop'] == map_num())] \
-                    .iloc[1]['line']
+        return get_line(player_props_df.get(), input.team_a(), 2, map_num())
     
     # Player Three Line
     @reactive.Calc
     def player_3_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['prop'] == map_num())] \
-                    .iloc[2]['line']
+        return get_line(player_props_df.get(), input.team_a(), 3, map_num())
     
     # Player Four Line
     @reactive.Calc
     def player_4_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_a()) &
-                (player_props_df.get()['prop'] == map_num())] \
-                    .iloc[3]['line']
+        return get_line(player_props_df.get(), input.team_a(), 4, map_num())
     
     # Player Five Line
     @reactive.Calc
     def player_5_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['prop'] == map_num())] \
-                    .iloc[0]['line']
+        return get_line(player_props_df.get(), input.team_b(), 1, map_num())
     
     # Player Six Line
     @reactive.Calc
     def player_6_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['prop'] == map_num())] \
-                    .iloc[1]['line']
+        return get_line(player_props_df.get(), input.team_b(), 2, map_num())
     
     # Player Seven Line
     @reactive.Calc
     def player_7_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['prop'] == map_num())] \
-                    .iloc[2]['line']
+        return get_line(player_props_df.get(), input.team_b(), 3, map_num())
     
     # Player Eight Line
     @reactive.Calc
     def player_8_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.team_b()) &
-                (player_props_df.get()['prop'] == map_num())] \
-                    .iloc[3]['line']
-    
+        return get_line(player_props_df.get(), input.team_b(), 4, map_num())
     
     # Player One Plot
     @render.plot
@@ -1539,194 +1514,121 @@ def server(input, output, session):
     # Player One Line | Page 2
     @reactive.Calc
     def p2_player_1_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 0)] \
-                    .iloc[0]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 1, 0)
     
     # Player One Map One Line | Page 2
     @reactive.Calc
     def p2_player_1_map_1_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 1)] \
-                    .iloc[0]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 1, 1)
     
     # Player One Map Three Line | Page 2
     @reactive.Calc
     def p2_player_1_map_3_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 3)] \
-                    .iloc[0]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 1, 3)
     
-    # Player One Line | Page 2
+    # Player Two Line | Page 2
     @reactive.Calc
     def p2_player_2_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 0)] \
-                    .iloc[1]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 2, 0)
     
-    # Player One Map One Line | Page 2
+    # Player Two Map One Line | Page 2
     @reactive.Calc
     def p2_player_2_map_1_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 1)] \
-                    .iloc[1]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 2, 1)
     
     # Player Two Map Three Line | Page 2
     @reactive.Calc
     def p2_player_2_map_3_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 3)] \
-                    .iloc[1]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 2, 3)
     
-    # Player One Line | Page 2
+    # Player Three Line | Page 2
     @reactive.Calc
     def p2_player_3_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 0)] \
-                    .iloc[2]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 3, 0)
     
     # Player Three Map One Line | Page 2
     @reactive.Calc
     def p2_player_3_map_1_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 1)] \
-                    .iloc[2]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 3, 1)
     
     # Player Three Map Three Line | Page 2
     @reactive.Calc
     def p2_player_3_map_3_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 3)] \
-                    .iloc[2]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 3, 3)
     
     # Player Four Line | Page 2
     @reactive.Calc
     def p2_player_4_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 0)] \
-                    .iloc[3]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 4, 0)
     
     # Player Four Map One Line | Page 2
     @reactive.Calc
     def p2_player_4_map_1_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 1)] \
-                    .iloc[3]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 4, 1)
     
     # Player Four Map Three Line | Page 2
     @reactive.Calc
     def p2_player_4_map_3_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_a()) &
-                (player_props_df.get()['prop'] == 3)] \
-                    .iloc[3]['line']
+        return get_line(player_props_df.get(), input.p2_team_a(), 4, 3)
     
     # Player Five Line | Page 2
     @reactive.Calc
     def p2_player_5_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 0)] \
-                    .iloc[0]['line']
+        return get_line(player_props_df.get(), input.p2_team_b(), 1, 0)
     
     # Player Five Map One Line | Page 2
     @reactive.Calc
     def p2_player_5_map_1_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 1)] \
-                    .iloc[0]['line']
+        return get_line(player_props_df.get(), input.p2_team_b(), 1, 1)
     
     # Player Five Map Three Line | Page 2
     @reactive.Calc
     def p2_player_5_map_3_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 3)] \
-                    .iloc[0]['line']
+        return get_line(player_props_df.get(), input.p2_team_b(), 1, 3)
     
     # Player Six Line | Page 2
     @reactive.Calc
     def p2_player_6_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 0)] \
-                    .iloc[1]['line']
+        return get_line(player_props_df.get(), input.p2_team_b(), 2, 0)
     
     # Player Six Map One Line | Page 2
     @reactive.Calc
     def p2_player_6_map_1_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 1)] \
-                    .iloc[1]['line']
+        return get_line(player_props_df.get(), input.p2_team_b(), 2, 2)
     
     # Player Six Map Three Line | Page 2
     @reactive.Calc
     def p2_player_6_map_3_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 3)] \
-                    .iloc[1]['line']
+        return get_line(player_props_df.get(), input.p2_team_b(), 2, 3)
     
     # Player Seven Line | Page 2
     @reactive.Calc
     def p2_player_7_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 0)] \
-                    .iloc[2]['line']
-    
+        return get_line(player_props_df.get(), input.p2_team_b(), 3, 0)
     # Player Seven Map One Line | Page 2
     @reactive.Calc
     def p2_player_7_map_1_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 1)] \
-                    .iloc[2]['line']
+        return get_line(player_props_df.get(), input.p2_team_b(), 3, 1)
     
     # Player Seven Map Three Line | Page 2
     @reactive.Calc
     def p2_player_7_map_3_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 3)] \
-                    .iloc[2]['line']
+        return get_line(player_props_df.get(), input.p2_team_b(), 3, 3)
     
     # Player Eight Line | Page 2
     @reactive.Calc
     def p2_player_8_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 0)] \
-                    .iloc[3]['line']
+        return get_line(player_props_df.get(), input.p2_team_b(), 4, 0)
     
     # Player Eight Map One Line | Page 2
     @reactive.Calc
     def p2_player_8_map_1_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 1)] \
-                    .iloc[3]['line']
+        return get_line(player_props_df.get(), input.p2_team_b(), 4, 1)
     
     # Player Eight Map Three Line | Page 2
     @reactive.Calc
     def p2_player_8_map_3_line():
-        return player_props_df.get()[
-                (player_props_df.get()['team'] == input.p2_team_b()) &
-                (player_props_df.get()['prop'] == 3)] \
-                    .iloc[3]['line']
+        return get_line(player_props_df.get(), input.p2_team_b(), 4, 3)
     
     # Player One Plot | Page 2
     @render.plot
@@ -1734,14 +1636,14 @@ def server(input, output, session):
         if input.p2_x_axis() == "Time":
             return player_1_thru_3_kills_vs_time(
                 adj_1_thru_3_totals,
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[0]['player'],
                 team_a_color,
                 p2_player_1_line(),
             )
         elif input.p2_x_axis() == "Map":
             return player_kills_by_hp_ctrl(
                 cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[0]['player'],
                 p2_player_1_map_1_line(),
                 p2_player_1_map_3_line()
             )

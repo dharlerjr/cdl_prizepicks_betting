@@ -469,12 +469,12 @@ def player_kills_vs_score_diff(
 
 # Player Maps 1 - 3 Kills vs Time
 def player_1_thru_3_kills_vs_time(
-        map_1_thru_3_totals_df: pd.DataFrame, player_input: str, 
+        map_1_thru_3_totals_df_input: pd.DataFrame, player_input: str, 
         team_color: str, cur_line: float
 ):
     
     # Filter data for selected player
-    queried_df = map_1_thru_3_totals_df[(map_1_thru_3_totals_df["player"] == player_input)]
+    queried_df = map_1_thru_3_totals_df_input[(map_1_thru_3_totals_df_input["player"] == player_input)]
 
     # Create figure with gridspec
     f, axs = plt.subplots(1, 2, figsize = (6, 3), sharey = True, gridspec_kw = 

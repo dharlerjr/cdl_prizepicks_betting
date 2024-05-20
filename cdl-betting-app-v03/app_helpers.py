@@ -1,6 +1,6 @@
 
-# Import shiny & faicons
-from shiny import ui
+# Import shiny faicons
+from shiny import ui, module, Inputs, Outputs
 import faicons as fa
 
 # String containing value for Icon Height in Pixels
@@ -69,3 +69,4 @@ def p2_player_panel(player_num: str):
             )
         )
     )
+

@@ -366,3 +366,11 @@ def player_over_under_streak(
         i += 1
 
     return start, str(streak)
+
+# Function to get a player's PrizePicks line from a dataframe of player props
+def get_line(player_props_df_input: pd.DataFrame, team_input: str, 
+             player_num: int, map_num: int):
+    return player_props_df_input[
+                (player_props_df_input['team'] == team_input) &
+                (player_props_df_input['prop'] == map_num)] \
+                    .iloc[player_num - 1]['line']
