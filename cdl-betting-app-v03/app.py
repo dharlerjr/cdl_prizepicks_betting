@@ -245,9 +245,9 @@ app_ui = ui.page_navbar(
                 ui.layout_column_wrap(
                     
                     ui.card(ui.card_header("Map Results"), 
-                            ui.output_plot("team_a_score_diffs", width = "280px", height = "240px")),
+                            ui.output_plot("team_a_score_diffs")),
                     ui.card(ui.card_header("Maps Played"), 
-                            ui.output_plot("team_a_maps_played", width = "280px", height = "160px")),
+                            ui.output_plot("team_a_maps_played")),
 
                     width = 1
                 ),
@@ -269,9 +269,9 @@ app_ui = ui.page_navbar(
                 ui.layout_column_wrap(
 
                     ui.card(ui.card_header("Map Results"), 
-                            ui.output_plot("team_b_score_diffs", width = "280px", height = "240px")),
+                            ui.output_plot("team_b_score_diffs")),
                     ui.card(ui.card_header("Maps Played"), 
-                            ui.output_plot("team_b_maps_played", width = "280px", height = "160px")),
+                            ui.output_plot("team_b_maps_played")),
 
                     width = 1, 
                 ),
@@ -289,7 +289,7 @@ app_ui = ui.page_navbar(
 
                 # Column 1: Team A Series Score Diffs
                 ui.card(ui.card_header("Series Results"), 
-                        ui.output_plot("team_a_series_diffs", width = "280px", height = "240px")),
+                        ui.output_plot("team_a_series_diffs")),
 
                 # Column 2: Scoreboards
                 ui.card(ui.card_header("Scoreboards"), 
@@ -298,7 +298,7 @@ app_ui = ui.page_navbar(
 
                 # Column 3: Team B Series Score Diffs
                 ui.card(ui.card_header("Series Results"), 
-                        ui.output_plot("team_b_series_diffs", width = "280px", height = "240px")),
+                        ui.output_plot("team_b_series_diffs")),
 
                 # Row Height
                 height = "360px",
@@ -445,12 +445,10 @@ app_ui = ui.page_navbar(
                     
                     # Hardpoints
                     ui.card(ui.card_header("Maps Played"), 
-                            ui.output_plot("p2_team_a_hps", 
-                                           width = "280px", height = "160px")),
+                            ui.output_plot("p2_team_a_hps")),
                     # Controls
                     ui.card(ui.card_header("Maps Played"), 
-                            ui.output_plot("p2_team_a_ctrls", 
-                                           width = "280px", height = "160px")),
+                            ui.output_plot("p2_team_a_ctrls")),
                     
                     width = 1
                 ),
@@ -460,12 +458,10 @@ app_ui = ui.page_navbar(
                     
                     # Hardpoints
                     ui.card(ui.card_header("Maps Played"), 
-                            ui.output_plot("p2_team_b_hps", 
-                                           width = "280px", height = "160px")),
+                            ui.output_plot("p2_team_b_hps")),
                     # Controls
                     ui.card(ui.card_header("Maps Played"), 
-                            ui.output_plot("p2_team_b_ctrls", 
-                                           width = "280px", height = "160px")),
+                            ui.output_plot("p2_team_b_ctrls")),
                     
                     width = 1
                 ),
@@ -489,10 +485,10 @@ app_ui = ui.page_navbar(
                 ui.layout_column_wrap(
                     # Team A
                     ui.card(ui.card_header("Series Results"), 
-                            ui.output_plot("p2_team_a_series_diffs", width = "280px", height = "240px")),
+                            ui.output_plot("p2_team_a_series_diffs")),
                     # Team B
                     ui.card(ui.card_header("Series Results"), 
-                            ui.output_plot("p2_team_b_series_diffs", width = "280px", height = "240px")),
+                            ui.output_plot("p2_team_b_series_diffs")),
 
                     width = 1
 

@@ -26,7 +26,7 @@ ICONS = {
 def player_panel(player_num: str):
     return ui.nav_panel(
         player_num, 
-        ui.output_plot(f"player_{player_num}_plot", width = "660px", height = "380px"),
+        ui.output_plot(f"player_{player_num}_plot"),
         ui.layout_columns(),
         ui.layout_columns(
             ui.value_box(
@@ -50,7 +50,7 @@ def player_panel(player_num: str):
 def p2_player_panel(player_num: str):
     return ui.nav_panel(
         player_num, 
-        ui.output_plot(f"p2_player_{player_num}_plot", width = "660px", height = "380px"),
+        ui.output_plot(f"p2_player_{player_num}_plot"),
         ui.layout_columns(),
         ui.layout_columns(
             ui.value_box(

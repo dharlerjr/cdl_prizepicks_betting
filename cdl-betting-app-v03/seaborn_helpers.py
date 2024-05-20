@@ -334,7 +334,7 @@ def player_kills_vs_time(
     queried_df.loc[:, 'match_date'] = pd.to_datetime(queried_df['match_date']).dt.date
     
     # Create figure with gridspec
-    f, axs = plt.subplots(1, 2, figsize = (6, 3), sharey = True, gridspec_kw = 
+    f, axs = plt.subplots(1, 2, sharey = True, gridspec_kw = 
                           dict(width_ratios=[2, 0.4], wspace = 0.05))
 
     # Scatterplot
