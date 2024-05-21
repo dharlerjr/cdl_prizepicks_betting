@@ -189,27 +189,24 @@ def team_score_diffs(
         gamemode_input: str, map_input = "All"
 ):
     
-    # Create a copy of cdlDF_input
-    queried_df = cdlDF_input.copy()
-
     # If user selected all maps    
     if map_input == "All":
     
         # Filter data based on user inputs
-        queried_df = \
-        queried_df[(queried_df['gamemode'] == gamemode_input) & \
-                (queried_df['team'] == team_input)] \
-                [['match_id', 'map_name', 'score_diff']].drop_duplicates()
+        queried_df = cdlDF_input[
+            (cdlDF_input['gamemode'] == gamemode_input) &
+            (cdlDF_input['team'] == team_input)
+            ][['match_id', 'map_name', 'score_diff']].drop_duplicates()
     
     # User selected only one map 
     else:
 
         # Filter data based on user inputs, including map
-        queried_df = \
-        queried_df[(queried_df['gamemode'] == gamemode_input) & \
-                (queried_df['team'] == team_input) & \
-                (queried_df["map_name"] == map_input)] \
-                [['match_id', 'map_name', 'score_diff']].drop_duplicates()
+        queried_df = cdlDF_input[
+            (cdlDF_input['gamemode'] == gamemode_input) &
+            (cdlDF_input['team'] == team_input) &
+            (cdlDF_input["map_name"] == map_input)
+            ][['match_id', 'map_name', 'score_diff']].drop_duplicates()
         
 
     # Create the figure
@@ -256,16 +253,13 @@ def team_percent_maps_played(
         team_summaries_input: pd.DataFrame, team_input: str,
         gamemode_input: str
 ):
-    
-    # Create a copy of cdlDF_input
-    queried_df = team_summaries_input.copy()
 
     # Filter team_summaries_input by team & mode
-    queried_df = queried_df[
-        (queried_df["team"] == team_input) &
-        (queried_df["gamemode"] == gamemode_input) &
-        (queried_df["map_name"] != "Overall") & 
-        (queried_df["total"] != 0)
+    queried_df = team_summaries_input[
+        (team_summaries_input["team"] == team_input) &
+        (team_summaries_input["gamemode"] == gamemode_input) &
+        (team_summaries_input["map_name"] != "Overall") & 
+        (team_summaries_input["total"] != 0)
     ]
 
     # Create figure
@@ -294,17 +288,17 @@ def team_percent_maps_played(
 
 # Team Distribution of Series Differentials
 def team_series_diffs(series_score_diffs_input: pd.DataFrame, 
-                      team_input: str, team_color: str,):
+                      team_input: str, team_color: str):
     
     # Filter series_score_diffs by team
     queried_df = series_score_diffs_input[
         series_score_diffs_input["team"] == team_input
-        ].copy()
+    ]
 
     # Create figure
     fig, ax = plt.subplots()
 
-    # Histogram
+    # Bar chart
     sns.histplot(data = queried_df, x = "series_score_diff", 
                  discrete = True, color = team_color)
 
@@ -322,26 +316,26 @@ def player_kills_vs_time(
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
     
-    # Create a copy of cdlDF_input
-    queried_df = cdlDF_input.copy()
+    # Set seaborn theme
+    sns.set_theme(style = "darkgrid")
 
     # If user selected all maps
     if map_input == "All":
         
         # Filter data based on user inputs
-        queried_df = queried_df[
-            (queried_df["player"] == player_input) &
-            (queried_df["gamemode"] == gamemode_input)
+        queried_df = cdlDF_input[
+            (cdlDF_input["player"] == player_input) &
+            (cdlDF_input["gamemode"] == gamemode_input)
             ]
 
     # If user selected only one map
     else:
         
         # Filter data based on user inputs, including map
-        queried_df = queried_df[
-            (queried_df["player"] == player_input) &
-            (queried_df["gamemode"] == gamemode_input) & 
-            (queried_df["map_name"] == map_input)
+        queried_df = cdlDF_input[
+            (cdlDF_input["player"] == player_input) &
+            (cdlDF_input["gamemode"] == gamemode_input) & 
+            (cdlDF_input["map_name"] == map_input)
             ]
         
     # Set match_date column to dt.date type
@@ -408,26 +402,26 @@ def player_kills_vs_score_diff(
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
     
-    # Create a copy of cdlDF_input
-    queried_df = cdlDF_input.copy()
+    # Set seaborn theme
+    sns.set_theme(style = "darkgrid")
 
     # If user selected all maps
     if map_input == "All":
         
         # Filter data based on user inputs
-        queried_df = queried_df[
-            (queried_df["player"] == player_input) &
-            (queried_df["gamemode"] == gamemode_input)
+        queried_df = cdlDF_input[
+            (cdlDF_input["player"] == player_input) &
+            (cdlDF_input["gamemode"] == gamemode_input)
             ]
 
     # If user selected only one map
     else:
         
         # Filter data based on user inputs, including map
-        queried_df = queried_df[
-            (queried_df["player"] == player_input) &
-            (queried_df["gamemode"] == gamemode_input) & 
-            (queried_df["map_name"] == map_input)
+        queried_df = cdlDF_input[
+            (cdlDF_input["player"] == player_input) &
+            (cdlDF_input["gamemode"] == gamemode_input) & 
+            (cdlDF_input["map_name"] == map_input)
             ]
         
     # Create figure with gridspec
@@ -487,6 +481,9 @@ def player_1_thru_3_kills_vs_time(
         team_color: str, cur_line: float
 ):
     
+    # Set seaborn theme
+    sns.set_theme(style = "darkgrid")
+    
     # Filter data for selected player
     queried_df = map_1_thru_3_totals_df_input[(map_1_thru_3_totals_df_input["player"] == player_input)]
 
@@ -527,6 +524,9 @@ def player_kills_by_map(
         cdlDF_input: pd.DataFrame, player_input: str, 
         gamemode_input: str, cur_line: float):
     
+    # Set seaborn theme
+    sns.set_theme(style = "darkgrid")
+    
     # Filter data & sort by map name
     queried_df = cdlDF_input[
         (cdlDF_input["player"] == player_input) &
@@ -563,6 +563,9 @@ def player_kills_by_mapset(
         cdlDF_input: pd.DataFrame, player_input: str, 
         map_1_input: str, map_2_input: str, map_3_input: str):
     
+    # Set seaborn theme
+    sns.set_theme(style = "darkgrid")
+    
     # Query cdlDF_input
     queried_df = cdlDF_input[
         (((cdlDF_input['gamemode'] == 'Hardpoint') &  (cdlDF_input['map_name'] == map_1_input)) |
@@ -594,7 +597,7 @@ def player_kills_by_mapset(
 
 # Ridgeline Plot of Team Score Diffs
 def score_diffs_ridge(        
-        cdlDF_input: pd.DataFrame, team_x: str, team_y: str,
+        cdlDF_input: pd.DataFrame, team_abbr_x: str, team_abbr_y: str,
         x_color: str, y_color: str, gamemode_input: str, map_input = "All"
 ):
     
@@ -606,7 +609,7 @@ def score_diffs_ridge(
 
         # Query data
         queried_df = cdlDF_input[
-            ((cdlDF_input['team'] == team_x) | (cdlDF_input['team'] == team_y)) &
+            ((cdlDF_input['team_abbr'] == team_abbr_x) | (cdlDF_input['team_abbr'] == team_abbr_y)) &
             (cdlDF_input['gamemode'] == gamemode_input)
         ][['match_id', 'team_abbr', 'map_name', 'score_diff']].drop_duplicates()
 
@@ -615,15 +618,20 @@ def score_diffs_ridge(
 
         # Query data
         queried_df = cdlDF_input[
-            ((cdlDF_input['team'] == team_x) | (cdlDF_input['team'] == team_y)) &
+            ((cdlDF_input['team_abbr'] == team_abbr_x) | (cdlDF_input['team_abbr'] == team_abbr_y)) &
             (cdlDF_input['gamemode'] == gamemode_input) &
             (cdlDF_input['map_name'] == map_input)
         ][['match_id', 'team_abbr', 'map_name', 'score_diff']].drop_duplicates()
 
+    # Reorder team factor levels for graphing
+    queried_df['team_abbr'] = pd.Categorical(
+        queried_df['team_abbr'], 
+        categories = [team_abbr_x, team_abbr_y]
+        )
+
     # Initialize the FacetGrid object
     g = sns.FacetGrid(queried_df, row = "team_abbr", hue = "team_abbr", 
-                      row_order = [team_x, team_y], aspect = 3.4, 
-                      height = 2.2, palette = [x_color, y_color])
+                      aspect = 3.4, height = 2.2, palette = [x_color, y_color])
     
     # Histogram for Hardpoint
     if gamemode_input == "Hardpoint":
@@ -643,8 +651,8 @@ def score_diffs_ridge(
     # Add a horizontal line to the bottom of each plot
     g.map(plt.axhline, y = 0, lw = 2, clip_on = False)
 
-    # Get teams from queried_df for labeling
-    teams = queried_df['team_abbr'].unique()
+    # Get teams for labeling
+    teams = [team_abbr_x, team_abbr_y]
 
     # Use min_x value for labels
     min_x = min_x_values_by_gamemode[gamemode_input]
@@ -660,5 +668,62 @@ def score_diffs_ridge(
 
     # Styling
     g.set_titles("")
-    g.set(yticks = [], ylabel = "", xlabel = "Map Result")
+    g.set(yticks = [], ylabel = "", xlabel = "")
+    g.despine(bottom = True, left = True)
+
+
+# Ridgeline Plot of Team Series Diffs
+def series_diff_ridge(
+        series_score_diffs_input: pd.DataFrame, 
+        team_abbr_x: str, team_abbr_y: str,
+        x_color: str, y_color: str
+):
+
+    # Filter series_score_diffs by team
+    queried_df = series_score_diffs_input[
+        (series_score_diffs_input["team_abbr"] == team_abbr_x) |
+        (series_score_diffs_input["team_abbr"] == team_abbr_y)
+    ].copy()
+
+    # Reorder team factor levels for graphing
+    queried_df['team_abbr'] = pd.Categorical(
+        queried_df['team_abbr'], 
+        categories = [team_abbr_x, team_abbr_y]
+        )
+    
+    # Set seaborn theme
+    sns.set_theme(style="white", rc={"axes.facecolor": (0, 0, 0, 0)})
+
+    # Initialize the FacetGrid object
+    g = sns.FacetGrid(queried_df, row = "team_abbr", hue = "team_abbr", 
+                      aspect = 3.4, height = 2.2, palette = [x_color, y_color])
+    
+    # Plot the bar chart
+    g.map_dataframe(sns.histplot, x = "series_score_diff", discrete = True, 
+                    alpha = 0.9)
+    
+    # Add a horizontal line to the bottom of each plot
+    g.map(plt.axhline, y = 0, lw = 2, clip_on = False)
+
+    # Get teams for labeling
+    teams = [team_abbr_x, team_abbr_y]
+
+    # Get min_x
+    if team_abbr_x == "TOR" or team_abbr_y == "TOR":
+        min_x = -5.75
+    else:
+        min_x = -4.5
+
+    # Add team name to each axs
+    for i, ax in enumerate(g.axes.flat):
+        ax.text(min_x, 0.45, teams[i],
+                fontweight ='bold', fontsize = 15,
+                color = ax.lines[-1].get_color())
+        
+    # Overlap subplots
+    g.figure.subplots_adjust(hspace = -0.4)
+
+    # Styling
+    g.set_titles("")
+    g.set(yticks = [], ylabel = "", xlabel = "")
     g.despine(bottom = True, left = True)

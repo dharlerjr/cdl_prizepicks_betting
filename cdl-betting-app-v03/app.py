@@ -301,7 +301,7 @@ app_ui = ui.page_navbar(
                         ui.output_plot("team_b_series_diffs")),
 
                 # Row Height
-                height = "360px",
+                height = "340px",
                 
                 # Column Widths
                 col_widths = [3, 6, 3]
@@ -440,37 +440,26 @@ app_ui = ui.page_navbar(
                     title = "Player Cards"
                 ),
 
-                # Column 2: Team A Maps Played
+                # Column 2: Ridgeline Plots Wrapped
                 ui.layout_column_wrap(
-                    
-                    # Hardpoints
-                    ui.card(ui.card_header("Maps Played"), 
-                            ui.output_plot("p2_team_a_hps")),
-                    # Controls
-                    ui.card(ui.card_header("Maps Played"), 
-                            ui.output_plot("p2_team_a_ctrls")),
-                    
-                    width = 1
-                ),
 
-                # Column 3: Team B Maps Played
-                ui.layout_column_wrap(
-                    
-                    # Hardpoints
-                    ui.card(ui.card_header("Maps Played"), 
-                            ui.output_plot("p2_team_b_hps")),
-                    # Controls
-                    ui.card(ui.card_header("Maps Played"), 
-                            ui.output_plot("p2_team_b_ctrls")),
-                    
+                    # Series Score Differentials
+                    ui.card(ui.card_header("Series Results"), 
+                            ui.output_plot("p2_series_diffs")),
+
+                    # Series Score Differentials
+                    ui.card(ui.card_header("Map Results"), 
+                            ui.output_plot("p2_score_diffs")),
+
                     width = 1
+
                 ),
 
                 # Row Height
                 height = "680px",
 
                 # Column Widths
-                col_widths = [6, 3, 3]
+                col_widths = [8, 4, 4]
             ), 
 
             # Row 4 of 4: Scoreboards & Score Differentials
@@ -481,23 +470,16 @@ app_ui = ui.page_navbar(
                         ui.output_data_frame("p2_scoreboards"), 
                         full_screen = True),
 
-                # Column 2: Histograms of Series Score Differentials
-                ui.layout_column_wrap(
-                    # Team A
-                    ui.card(ui.card_header("Series Results"), 
-                            ui.output_plot("p2_team_a_series_diffs")),
-                    # Team B
-                    ui.card(ui.card_header("Series Results"), 
-                            ui.output_plot("p2_team_b_series_diffs")),
+                # Column 2: Team A Maps Played
+                ui.card(ui.card_header("Maps Played"), 
+                        ui.output_plot("p2_team_a_maps")),
 
-                    width = 1
-
-                ),
-
-                # Column 3: Ridgeline Plots of Map Score Differentials
-
+                # Column 3: Team B Maps Played
+                ui.card(ui.card_header("Maps Played"), 
+                        ui.output_plot("p2_team_b_maps")),
+                    
                 # Row Height
-                height = "560px",
+                height = "360px",
                 
                 # Column Widths
                 col_widths = [6, 3, 3]
@@ -1455,43 +1437,38 @@ def server(input, output, session):
         else:
             return f"{input.p2_map_three()} Control Win %"
         
-    # Team A Donut Chart of HPs Played | Page 2
+    # Team A Donut Chart of Maps Played | Page 2
     @render.plot
-    def p2_team_a_hps():
+    def p2_team_a_maps():
         return team_percent_maps_played(
             team_summaries_DF, input.p2_team_a(), "Hardpoint"
         )
     
-    # Team A Donut Chart of CTRLs Played | Page 2
+    # Team B Donut Chart of Maps Played | Page 2
     @render.plot
-    def p2_team_a_ctrls():
-        return team_percent_maps_played(
-            team_summaries_DF, input.p2_team_a(), "Control"
-        )
-    
-    # Team B Donut Chart of HPs Played | Page 2
-    @render.plot
-    def p2_team_b_hps():
+    def p2_team_b_maps():
         return team_percent_maps_played(
             team_summaries_DF, input.p2_team_b(), "Hardpoint"
         )
     
-    # Team B Donut Chart of CTRLs Played | Page 2
+    # Ridgeline Plot of Series Diffs | Page 2
     @render.plot
-    def p2_team_b_ctrls():
-        return team_percent_maps_played(
-            team_summaries_DF, input.p2_team_b(), "Control"
-        )
+    def p2_series_diffs():
+        return series_diff_ridge(
+            series_score_diffs, 
+            team_abbrs[input.p2_team_a()], team_abbrs[input.p2_team_b()], 
+            team_a_color, team_b_color
+            )
     
-    # Team A Series Differentials Histogram | Page 2
+    # Ridgeline Plot of Score Diffs| Page 2
     @render.plot
-    def p2_team_a_series_diffs():
-        return team_series_diffs(series_score_diffs, input.p2_team_a(), team_a_color)
-    
-    # Team B Series Differentials Histogram | Page 2
-    @render.plot
-    def p2_team_b_series_diffs():
-        return team_series_diffs(series_score_diffs, input.p2_team_b(), team_b_color)
+    def p2_score_diffs():
+        return score_diffs_ridge(
+            cdlDF, 
+            team_abbrs[input.p2_team_a()], team_abbrs[input.p2_team_b()], 
+            team_a_color, team_b_color, 
+            "Hardpoint"
+            )
     
     # Datagrid of Player Kills and Map Results for Selected Teams | Page 2
     # Aka. Scoreboards

@@ -1,6 +1,6 @@
 
 # Import shiny faicons
-from shiny import ui, module, Inputs, Outputs
+from shiny import ui
 import faicons as fa
 
 # String containing value for Icon Height in Pixels
