@@ -337,7 +337,7 @@ app_ui = ui.page_navbar(
                 ui.input_select(id = "p2_map_three", label = "Map 3", selected = "All",
                                 choices = ["All", "Highrise", "Invasion", "Karachi"]), 
                 ui.input_select(id = "p2_x_axis", label = "X-Axis", selected = "Time",
-                                choices = ["Time", "Map", "Mapset"])
+                                choices = ["Time", "Mapset", "Hardpoint Map", "Control Map"])
 
             ), 
 
@@ -1636,14 +1636,28 @@ def server(input, output, session):
                 team_a_color,
                 p2_player_1_line(),
             )
-        elif input.p2_x_axis() == "Map":
-            return player_kills_by_hp_ctrl(
+        elif input.p2_x_axis() == "Hardpoint Map":
+            return player_kills_by_map(
                 cdlDF, 
                 rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[0]['player'],
-                p2_player_1_map_1_line(),
+                "Hardpoint",
+                p2_player_1_map_1_line()
+            )
+        elif input.p2_x_axis() == "Control Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[0]['player'],
+                "Control",
                 p2_player_1_map_3_line()
             )
-
+        else:
+            return player_kills_by_mapset(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[0]['player'],
+                input.p2_map_one(),
+                input.p2_map_two(),
+                input.p2_map_three()
+            )
 
 # Run app
 app = App(app_ui, server)

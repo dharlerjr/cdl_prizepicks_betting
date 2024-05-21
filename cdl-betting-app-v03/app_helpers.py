@@ -19,7 +19,8 @@ ICONS = {
     "check": fa.icon_svg("circle-check", height = icon_height), 
     "exclamation": fa.icon_svg("circle-exclamation", height = icon_height), 
     "flag": fa.icon_svg("flag", height = icon_height), 
-    "mound": fa.icon_svg("mound", height = icon_height)
+    "mound": fa.icon_svg("mound", height = icon_height), 
+    "ellipsis": fa.icon_svg("ellipsis")
 }
 
 # Function to render one ui.nav_panel per player | Page 1, Kills per Map
