@@ -186,10 +186,10 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
     queried_df = cdlDF_input.copy()
 
     # Team Summaries by Map & Mode
-    team_summaries_DF_top = filter_maps(queried_df) \
-        [["match_id", "team", "map_name", "gamemode", "map_result"]] \
+    team_summaries_DF_top = queried_df \
+        [["match_id", "team", "team_abbr" "map_name", "gamemode", "map_result"]] \
         .drop_duplicates() \
-        .groupby(["team", "gamemode", "map_name"], observed = True) \
+        .groupby(["team", "team_abbr", "gamemode", "map_name"], observed = True) \
         .agg(
             wins = ("map_result", lambda x: sum(x)), 
             losses = ("map_result", lambda x: len(x) - sum(x)), 
@@ -200,7 +200,7 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
 
     # Some teams have not played every map & mode combination 
     # So, we will add those combinations back in manually
-    map_and_mode_combos = filter_maps(queried_df)[["gamemode", "map_name"]].drop_duplicates().sort_values(["gamemode", "map_name"]).reset_index(drop = True)
+    map_and_mode_combos = queried_df[["gamemode", "map_name"]].drop_duplicates().sort_values(["gamemode", "map_name"]).reset_index(drop = True)
     all_combinations = pd.DataFrame(
         [(team, gamemode, map_name) for team in sorted(queried_df['team'].unique()) for _, (gamemode, map_name) in map_and_mode_combos.iterrows()], 
         columns = ['team', 'gamemode', 'map_name']
@@ -220,9 +220,9 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
     
     # Team Summaries by Mode only
     team_summaries_DF_bottom = \
-        queried_df[["match_id", "team", "map_name", "gamemode", "map_result"]] \
+        queried_df[["match_id", "team", "team_abbr", "map_name", "gamemode", "map_result"]] \
         .drop_duplicates() \
-        .groupby(["team", "gamemode"], observed = True) \
+        .groupby(["team", "team_abbr", "gamemode"], observed = True) \
         .agg(
             wins = ("map_result", lambda x: sum(x)), 
             losses = ("map_result", lambda x: len(x) - sum(x)), 
@@ -234,7 +234,7 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
     # Insert map_name column into team_summaries_DF_bottom
     # for stacking
     team_summaries_DF_bottom["map_name"] = "Overall"
-    position = 2
+    position = 3
     team_summaries_DF_bottom.insert(position, "map_name", team_summaries_DF_bottom.pop("map_name"))
 
     # Concatenate the two DataFrames vertically

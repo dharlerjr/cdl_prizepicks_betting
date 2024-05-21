@@ -25,9 +25,9 @@ gamemode_bin_ranges = {
 
 # Dictionary of min_x values for score diff ridgeline plot
 min_x_values_by_gamemode = {
-    "Hardpoint": -275, 
-    "Search & Destroy": -7.25, 
-    "Control": -4.15
+    "Hardpoint": -285, 
+    "Search & Destroy": -8, 
+    "Control": -4.5
 }
 
 # Dictionary of team colors for plotting
@@ -250,13 +250,13 @@ def team_score_diffs(
 
 # Team % of Maps Played by Mode
 def team_percent_maps_played(
-        team_summaries_input: pd.DataFrame, team_input: str,
-        gamemode_input: str
+        team_summaries_input: pd.DataFrame, team_abbr: str,
+        gamemode_input: str, team_color: str
 ):
 
     # Filter team_summaries_input by team & mode
     queried_df = team_summaries_input[
-        (team_summaries_input["team"] == team_input) &
+        (team_summaries_input["team_abbr"] == team_abbr) &
         (team_summaries_input["gamemode"] == gamemode_input) &
         (team_summaries_input["map_name"] != "Overall") & 
         (team_summaries_input["total"] != 0)
@@ -281,6 +281,10 @@ def team_percent_maps_played(
     # Create donut by adding white inner circle with smaller radius
     my_circle = plt.Circle( (0,0), 0.65, color = 'white')
     ax.add_artist(my_circle)
+
+    # Add title
+    ax.set_title(team_abbr, fontweight = 'bold', loc = "left",
+                 fontsize = 15, color = team_color)
     
     # Margins
     plt.margins(0.05)
@@ -370,7 +374,6 @@ def player_kills_vs_time(
     # Date Ticks
     formatter = mdates.DateFormatter('%b %d')
     axs[0].xaxis.set_major_formatter(formatter)
-    axs[0].tick_params(axis = 'x', rotation = 30)
 
     # Scale X & Y Axes & get ranges
     min_x, min_y, max_x, max_y = \
@@ -509,14 +512,16 @@ def player_1_thru_3_kills_vs_time(
 
     # X- & Y-Axis Labels
     axs[0].set_xlabel("")
-    axs[0].set_ylabel("Kills")
+    axs[0].set_ylabel("Maps 1 - 3 Kills")
     axs[1].set_xticks([])
     axs[1].set_ylabel("")
 
     # Date Ticks
     formatter = mdates.DateFormatter('%b %d')
     axs[0].xaxis.set_major_formatter(formatter)
-    axs[0].tick_params(axis = 'x', rotation = 30)
+
+    # Set margins
+    plt.margins(0.05)
 
 
 # Player Kills by Map & Mode
@@ -561,16 +566,33 @@ def player_kills_by_map(
 # Player Kills by Mapset
 def player_kills_by_mapset(
         cdlDF_input: pd.DataFrame, player_input: str, 
-        map_1_input: str, map_2_input: str, map_3_input: str):
+        map_1_input = "All", map_2_input = "All", map_3_input = "All"):
     
     # Set seaborn theme
     sns.set_theme(style = "darkgrid")
+
+    # Get map lists for filtering
+    if map_1_input == "All":
+        hp_maps = ["All", "6 Star", "Highrise", "Invasion", "Karachi", "Rio"]
+    else:
+        hp_maps = [map_1_input]
+
+    if map_2_input == "All":
+        snd_maps = ["6 Star", "Highrise", "Invasion", "Karachi", "Rio"]
+    else:
+        snd_maps = [map_2_input]
+
+    if map_3_input == "All":
+        ctrl_maps = ["Highrise", "Invasion", "Karachi"]
+    else:
+        ctrl_maps = [map_3_input]
+
     
     # Query cdlDF_input
     queried_df = cdlDF_input[
-        (((cdlDF_input['gamemode'] == 'Hardpoint') &  (cdlDF_input['map_name'] == map_1_input)) |
-        ((cdlDF_input['gamemode'] == 'Search & Destroy') &  (cdlDF_input['map_name'] == map_2_input)) |
-        ((cdlDF_input['gamemode'] == 'Control') &  (cdlDF_input['map_name'] == map_3_input))) &
+        (((cdlDF_input['gamemode'] == 'Hardpoint') &  (cdlDF_input['map_name'].isin(hp_maps))) |
+        ((cdlDF_input['gamemode'] == 'Search & Destroy') &  (cdlDF_input['map_name'].isin(snd_maps))) |
+        ((cdlDF_input['gamemode'] == 'Control') &  (cdlDF_input['map_name'].isin(ctrl_maps)))) &
         (cdlDF_input['player'] == player_input)
     ].sort_values('map_name', ignore_index = True)
 
@@ -581,12 +603,19 @@ def player_kills_by_mapset(
     sns.boxplot(queried_df, x = 'gamemode', y = 'kills', showfliers = False,
                 fill = False, hue = 'gamemode',
                 palette = palettes["Control"])
+    sns.stripplot(queried_df, x = "gamemode", y =  "kills", 
+                  hue = "gamemode", jitter = 0.05, 
+                  palette = palettes["Control"])
+    
+    # Get X Tick Labels
+    label_1 = f'{map_1_input} HP' if map_1_input != "All" else "Hardpoint"
+    label_2 = f'{map_2_input} SnD' if map_2_input != "All" else "Search & Destroy"
+    label_3 = f'{map_3_input} Ctrl' if map_3_input != "All" else "Control"
 
     # Styling
     ax.set_xlabel("")
     ax.set_xticks(ticks = ['Hardpoint', 'Search & Destroy', 'Control'],
-                labels = [f'{map_1_input} HP', f'{map_2_input} SnD', 
-                          f'{map_3_input} Control'])
+                labels = [label_1, label_2, label_3])
     ax.set_ylabel("Kills")
 
     # Add title
@@ -700,7 +729,7 @@ def series_diff_ridge(
     
     # Plot the bar chart
     g.map_dataframe(sns.histplot, x = "series_score_diff", discrete = True, 
-                    alpha = 0.9)
+                    binrange = (-4, 3), alpha = 0.9)
     
     # Add a horizontal line to the bottom of each plot
     g.map(plt.axhline, y = 0, lw = 2, clip_on = False)
@@ -712,7 +741,7 @@ def series_diff_ridge(
     if team_abbr_x == "TOR" or team_abbr_y == "TOR":
         min_x = -5.75
     else:
-        min_x = -4.5
+        min_x = -5
 
     # Add team name to each axs
     for i, ax in enumerate(g.axes.flat):
@@ -725,5 +754,5 @@ def series_diff_ridge(
 
     # Styling
     g.set_titles("")
-    g.set(yticks = [], ylabel = "", xlabel = "")
+    g.set(xticks = [-2, 0, 2], yticks = [], ylabel = "", xlabel = "")
     g.despine(bottom = True, left = True)
