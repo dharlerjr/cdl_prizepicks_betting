@@ -1661,7 +1661,7 @@ def server(input, output, session):
         
     # Player Two Plot | Page 2
     @render.plot
-    def p2_player_1_plot():
+    def p2_player_2_plot():
         if input.p2_x_axis() == "Time":
             return player_1_thru_3_kills_vs_time(
                 adj_1_thru_3_totals,
@@ -1694,7 +1694,7 @@ def server(input, output, session):
         
     # Player Three Plot | Page 2
     @render.plot
-    def p2_player_1_plot():
+    def p2_player_3_plot():
         if input.p2_x_axis() == "Time":
             return player_1_thru_3_kills_vs_time(
                 adj_1_thru_3_totals,
@@ -1727,7 +1727,7 @@ def server(input, output, session):
         
     # Player Four Plot | Page 2
     @render.plot
-    def p2_player_1_plot():
+    def p2_player_4_plot():
         if input.p2_x_axis() == "Time":
             return player_1_thru_3_kills_vs_time(
                 adj_1_thru_3_totals,
@@ -1760,7 +1760,7 @@ def server(input, output, session):
         
     # Player Five Plot | Page 2
     @render.plot
-    def p2_player_1_plot():
+    def p2_player_5_plot():
         if input.p2_x_axis() == "Time":
             return player_1_thru_3_kills_vs_time(
                 adj_1_thru_3_totals,
@@ -1793,7 +1793,7 @@ def server(input, output, session):
         
     # Player Six Plot | Page 2
     @render.plot
-    def p2_player_1_plot():
+    def p2_player_6_plot():
         if input.p2_x_axis() == "Time":
             return player_1_thru_3_kills_vs_time(
                 adj_1_thru_3_totals,
@@ -1826,7 +1826,7 @@ def server(input, output, session):
         
     # Player Seven Plot | Page 2
     @render.plot
-    def p2_player_1_plot():
+    def p2_player_7_plot():
         if input.p2_x_axis() == "Time":
             return player_1_thru_3_kills_vs_time(
                 adj_1_thru_3_totals,
@@ -1859,7 +1859,7 @@ def server(input, output, session):
         
     # Player Eight Plot | Page 2
     @render.plot
-    def p2_player_1_plot():
+    def p2_player_8_plot():
         if input.p2_x_axis() == "Time":
             return player_1_thru_3_kills_vs_time(
                 adj_1_thru_3_totals,

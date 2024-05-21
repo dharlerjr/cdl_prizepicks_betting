@@ -23,6 +23,13 @@ gamemode_bin_ranges = {
     "Control": (-3, 3)
 }
 
+# Dictionary of min_x values for score diff ridgeline plot
+min_x_values_by_gamemode = {
+    "Hardpoint": -275, 
+    "Search & Destroy": -7.25, 
+    "Control": -4.15
+}
+
 # Dictionary of team colors for plotting
 team_colors = {
     "Atlanta FaZe": "#e43d30", 
@@ -48,7 +55,7 @@ def truncate(n, decimals = -1):
     multiplier = 10 ** decimals
     return int(int(n * multiplier) / multiplier)
 
-# Function to map y-axis range to padding for y-axis limits
+# Function to map y-axis range of kills to padding for y-axis limits
 def map_range(min: int, max:int):
     if max - min <= 1:
         return 2.5
@@ -166,7 +173,7 @@ def scale_fig(queried_df: pd.DataFrame, ax: plt.axes, x_axis: str,
         max_y = max_y + pad
         ax.set_ylim(min_y, max_y)
         
-    # Case 2: Y-Axis Range <= 15
+    # Case 2: 12 < Y-Axis Range <= 18
     elif max_y - min_y > 12 and max_y - min_y <= 18:
         ax.yaxis.set_major_locator(MultipleLocator(base = 4))
 
@@ -174,6 +181,7 @@ def scale_fig(queried_df: pd.DataFrame, ax: plt.axes, x_axis: str,
 
 # Set seaborn theme
 sns.set_theme(style = "darkgrid")
+
 
 # Team Distribution of Score Differentials by Map & Mode
 def team_score_diffs(
@@ -582,3 +590,75 @@ def player_kills_by_mapset(
     ax.set_title(player_input, fontsize = 20, loc = "left", 
                      # family = "Segoe UI", fontweight = 400, 
                      color = "#495057", pad = 5)
+    
+
+# Ridgeline Plot of Team Score Diffs
+def score_diffs_ridge(        
+        cdlDF_input: pd.DataFrame, team_x: str, team_y: str,
+        x_color: str, y_color: str, gamemode_input: str, map_input = "All"
+):
+    
+    # Set seaborn theme
+    sns.set_theme(style="white", rc={"axes.facecolor": (0, 0, 0, 0)})
+
+    # If user selected all maps    
+    if map_input == "All":
+
+        # Query data
+        queried_df = cdlDF_input[
+            ((cdlDF_input['team'] == team_x) | (cdlDF_input['team'] == team_y)) &
+            (cdlDF_input['gamemode'] == gamemode_input)
+        ][['match_id', 'team_abbr', 'map_name', 'score_diff']].drop_duplicates()
+
+    # User selected only one map
+    else:
+
+        # Query data
+        queried_df = cdlDF_input[
+            ((cdlDF_input['team'] == team_x) | (cdlDF_input['team'] == team_y)) &
+            (cdlDF_input['gamemode'] == gamemode_input) &
+            (cdlDF_input['map_name'] == map_input)
+        ][['match_id', 'team_abbr', 'map_name', 'score_diff']].drop_duplicates()
+
+    # Initialize the FacetGrid object
+    g = sns.FacetGrid(queried_df, row = "team_abbr", hue = "team_abbr", 
+                      row_order = [team_x, team_y], aspect = 3.4, 
+                      height = 2.2, palette = [x_color, y_color])
+    
+    # Histogram for Hardpoint
+    if gamemode_input == "Hardpoint":
+
+        # Plot the histogram
+        g.map_dataframe(sns.histplot, x = "score_diff", binwidth = 50, 
+                        binrange = (-250, 250), alpha = 0.9)
+        
+    # Bar chart for SnD & Control
+    else:
+
+        # Plot the bar chart
+        g.map_dataframe(sns.histplot, x = "score_diff", discrete = True, 
+                        binrange = gamemode_bin_ranges[gamemode_input], 
+                        alpha = 0.9)
+        
+    # Add a horizontal line to the bottom of each plot
+    g.map(plt.axhline, y = 0, lw = 2, clip_on = False)
+
+    # Get teams from queried_df for labeling
+    teams = queried_df['team_abbr'].unique()
+
+    # Use min_x value for labels
+    min_x = min_x_values_by_gamemode[gamemode_input]
+
+    # Add team name to each axs
+    for i, ax in enumerate(g.axes.flat):
+        ax.text(min_x, 0.45, teams[i],
+                fontweight ='bold', fontsize = 15,
+                color = ax.lines[-1].get_color())
+        
+    # Overlap subplots
+    g.figure.subplots_adjust(hspace = -0.4)
+
+    # Styling
+    g.set_titles("")
+    g.set(yticks = [], ylabel = "", xlabel = "Map Result")
+    g.despine(bottom = True, left = True)
