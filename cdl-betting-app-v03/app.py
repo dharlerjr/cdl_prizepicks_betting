@@ -1658,6 +1658,238 @@ def server(input, output, session):
                 input.p2_map_two(),
                 input.p2_map_three()
             )
+        
+    # Player Two Plot | Page 2
+    @render.plot
+    def p2_player_1_plot():
+        if input.p2_x_axis() == "Time":
+            return player_1_thru_3_kills_vs_time(
+                adj_1_thru_3_totals,
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[1]['player'],
+                team_a_color,
+                p2_player_1_line(),
+            )
+        elif input.p2_x_axis() == "Hardpoint Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[1]['player'],
+                "Hardpoint",
+                p2_player_1_map_1_line()
+            )
+        elif input.p2_x_axis() == "Control Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[1]['player'],
+                "Control",
+                p2_player_1_map_3_line()
+            )
+        else:
+            return player_kills_by_mapset(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[1]['player'],
+                input.p2_map_one(),
+                input.p2_map_two(),
+                input.p2_map_three()
+            )
+        
+    # Player Three Plot | Page 2
+    @render.plot
+    def p2_player_1_plot():
+        if input.p2_x_axis() == "Time":
+            return player_1_thru_3_kills_vs_time(
+                adj_1_thru_3_totals,
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[2]['player'],
+                team_a_color,
+                p2_player_1_line(),
+            )
+        elif input.p2_x_axis() == "Hardpoint Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[2]['player'],
+                "Hardpoint",
+                p2_player_1_map_1_line()
+            )
+        elif input.p2_x_axis() == "Control Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[2]['player'],
+                "Control",
+                p2_player_1_map_3_line()
+            )
+        else:
+            return player_kills_by_mapset(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[2]['player'],
+                input.p2_map_one(),
+                input.p2_map_two(),
+                input.p2_map_three()
+            )
+        
+    # Player Four Plot | Page 2
+    @render.plot
+    def p2_player_1_plot():
+        if input.p2_x_axis() == "Time":
+            return player_1_thru_3_kills_vs_time(
+                adj_1_thru_3_totals,
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[3]['player'],
+                team_a_color,
+                p2_player_1_line(),
+            )
+        elif input.p2_x_axis() == "Hardpoint Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[3]['player'],
+                "Hardpoint",
+                p2_player_1_map_1_line()
+            )
+        elif input.p2_x_axis() == "Control Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[3]['player'],
+                "Control",
+                p2_player_1_map_3_line()
+            )
+        else:
+            return player_kills_by_mapset(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[3]['player'],
+                input.p2_map_one(),
+                input.p2_map_two(),
+                input.p2_map_three()
+            )
+        
+    # Player Five Plot | Page 2
+    @render.plot
+    def p2_player_1_plot():
+        if input.p2_x_axis() == "Time":
+            return player_1_thru_3_kills_vs_time(
+                adj_1_thru_3_totals,
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[0]['player'],
+                team_a_color,
+                p2_player_1_line(),
+            )
+        elif input.p2_x_axis() == "Hardpoint Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[0]['player'],
+                "Hardpoint",
+                p2_player_1_map_1_line()
+            )
+        elif input.p2_x_axis() == "Control Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[0]['player'],
+                "Control",
+                p2_player_1_map_3_line()
+            )
+        else:
+            return player_kills_by_mapset(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[0]['player'],
+                input.p2_map_one(),
+                input.p2_map_two(),
+                input.p2_map_three()
+            )
+        
+    # Player Six Plot | Page 2
+    @render.plot
+    def p2_player_1_plot():
+        if input.p2_x_axis() == "Time":
+            return player_1_thru_3_kills_vs_time(
+                adj_1_thru_3_totals,
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[1]['player'],
+                team_a_color,
+                p2_player_1_line(),
+            )
+        elif input.p2_x_axis() == "Hardpoint Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[1]['player'],
+                "Hardpoint",
+                p2_player_1_map_1_line()
+            )
+        elif input.p2_x_axis() == "Control Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[1]['player'],
+                "Control",
+                p2_player_1_map_3_line()
+            )
+        else:
+            return player_kills_by_mapset(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[1]['player'],
+                input.p2_map_one(),
+                input.p2_map_two(),
+                input.p2_map_three()
+            )
+        
+    # Player Seven Plot | Page 2
+    @render.plot
+    def p2_player_1_plot():
+        if input.p2_x_axis() == "Time":
+            return player_1_thru_3_kills_vs_time(
+                adj_1_thru_3_totals,
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[2]['player'],
+                team_a_color,
+                p2_player_1_line(),
+            )
+        elif input.p2_x_axis() == "Hardpoint Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[2]['player'],
+                "Hardpoint",
+                p2_player_1_map_1_line()
+            )
+        elif input.p2_x_axis() == "Control Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[2]['player'],
+                "Control",
+                p2_player_1_map_3_line()
+            )
+        else:
+            return player_kills_by_mapset(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[2]['player'],
+                input.p2_map_one(),
+                input.p2_map_two(),
+                input.p2_map_three()
+            )
+        
+    # Player Eight Plot | Page 2
+    @render.plot
+    def p2_player_1_plot():
+        if input.p2_x_axis() == "Time":
+            return player_1_thru_3_kills_vs_time(
+                adj_1_thru_3_totals,
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[3]['player'],
+                team_a_color,
+                p2_player_1_line(),
+            )
+        elif input.p2_x_axis() == "Hardpoint Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[3]['player'],
+                "Hardpoint",
+                p2_player_1_map_1_line()
+            )
+        elif input.p2_x_axis() == "Control Map":
+            return player_kills_by_map(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[3]['player'],
+                "Control",
+                p2_player_1_map_3_line()
+            )
+        else:
+            return player_kills_by_mapset(
+                cdlDF, 
+                rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[3]['player'],
+                input.p2_map_one(),
+                input.p2_map_two(),
+                input.p2_map_three()
+            )
+        
 
 # Run app
 app = App(app_ui, server)
