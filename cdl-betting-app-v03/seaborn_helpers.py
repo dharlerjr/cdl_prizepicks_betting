@@ -235,7 +235,12 @@ def team_score_diffs(
     plt.yticks(y_axis_ticks)
         
     # Styling
-    ax.set_xlabel("Map Result")
+    ax.set_xlabel("")
+    ax.set_ylabel("")
+
+    # Set ticks for Search & Destroy
+    if gamemode_input == "Search & Destroy":
+        plt.xticks([-6, -3, 0, 3, 6])
 
 
 # Team % of Maps Played by Mode
@@ -296,7 +301,8 @@ def team_series_diffs(series_score_diffs_input: pd.DataFrame,
                  discrete = True, color = team_color)
 
     # Styling
-    ax.set_xlabel("Series Result")
+    ax.set_xlabel("")
+    ax.set_ylabel("")
 
     # Set margins
     plt.margins(0.05)
