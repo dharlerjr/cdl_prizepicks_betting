@@ -365,7 +365,7 @@ def player_kills_vs_time(
 
     # Add title
     axs[0].set_title(player_input, fontsize = 20, loc = "left", 
-                     # family = "Segoe UI", fontweight = 400, 
+                     family = "Segoe UI", fontweight = 400, 
                      color = "#495057", pad = 5)
 
     # X- & Y-Axis Labels
@@ -450,7 +450,7 @@ def player_kills_vs_score_diff(
 
     # Add title
     axs[0].set_title(player_input, fontsize = 20, loc = "left", 
-                    # family = "Segoe UI", fontweight = 400, 
+                    family = "Segoe UI", fontweight = 400, 
                     color = "#495057", pad = 5)
 
     # X- & Y-Axis Labels
@@ -510,7 +510,7 @@ def player_1_thru_3_kills_vs_time(
 
     # Add title
     axs[0].set_title(player_input, fontsize = 20, loc = "left", 
-                     # family = "Segoe UI", fontweight = 400, 
+                     family = "Segoe UI", fontweight = 400, 
                      color = "#495057", pad = 5)
 
     # X- & Y-Axis Labels
@@ -577,7 +577,7 @@ def player_kills_by_map(
 
     # Add title
     ax.set_title(player_input, fontsize = 20, loc = "left", 
-                 # family = "Segoe UI", fontweight = 400, 
+                 family = "Segoe UI", fontweight = 400, 
                  color = "#495057", pad = 5)
     
     # X- & Y-Axis Labels
@@ -658,13 +658,13 @@ def player_kills_by_mapset(
     # Styling
     ax.set_xlabel("")
     ax.set_xticks(ticks = ['Hardpoint', 'Search & Destroy', 'Control'],
-                labels = [label_1, label_2, label_3])
+                  labels = [label_1, label_2, label_3], family = "Segoe UI")
     ax.set_ylabel("Kills")
 
     # Add title
     ax.set_title(player_input, fontsize = 20, loc = "left", 
-                     # family = "Segoe UI", fontweight = 400, 
-                     color = "#495057", pad = 5)
+                 family = "Segoe UI", fontweight = 400, 
+                 color = "#495057", pad = 5)
     
     # Get y_range and y_pad for cur_line
     kills = queried_df["kills"].to_list()

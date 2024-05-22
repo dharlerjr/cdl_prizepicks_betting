@@ -144,7 +144,7 @@ app_ui = ui.page_navbar(
                 shinyswatch.theme.cerulean,
                 
                 # Inputs
-                ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines"), 
+                ui.input_action_button(id = "scrape", label = "Get PrizePicks Lines", class_ = "btn-info"), 
                 ui.input_select(id = "team_a", label = "Team A", selected = "OpTic Texas",
                                 choices = sorted(cdlDF['team'].unique())), 
                 ui.input_select(id = "team_b", label = "Team B", selected = "Atlanta FaZe",
@@ -163,8 +163,8 @@ app_ui = ui.page_navbar(
                                 choices = ["Time", "Score Differential"]),
 
                 # BG & FG Colors for Sidebar
-                bg = "#033c73",
-                fg = "#ffffff"
+                # bg = "#033c73",
+                # fg = "#ffffff"
 
             ),
 
@@ -336,7 +336,7 @@ app_ui = ui.page_navbar(
             ui.sidebar(
                 
                 # Inputs
-                ui.input_action_button(id = "p2_scrape", label = "Get PrizePicks Lines"), 
+                ui.input_action_button(id = "p2_scrape", label = "Get PrizePicks Lines", class_ = "btn-info"), 
                 ui.input_select(id = "p2_team_a", label = "Team A", selected = "Carolina Royal Ravens",
                                 choices = sorted(cdlDF['team'].unique())), 
                 ui.input_select(id = "p2_team_b", label = "Team B", selected = "New York Subliners",
@@ -351,8 +351,8 @@ app_ui = ui.page_navbar(
                                 choices = ["Time", "Mapset", "Hardpoint Map", "Control Map"]), 
                 
                 # BG & FG Colors for Sidebar
-                bg = "#033c73",
-                fg = "#ffffff"
+                # bg = "#033c73",
+                # fg = "#ffffff"
             ), 
 
             # Row 1 of 4
@@ -462,21 +462,12 @@ app_ui = ui.page_navbar(
                             ui.output_plot("p2_series_diffs")),
 
                     # Map Results Differentials
-                    ui.card(
-                        ui.card_header(
-                            "Map Results", 
-                            ui.popover(
-                                ICONS["ellipsis"], 
-                                ui.input_radio_buttons(
-                                    "p2_ridge_gamemode", 
-                                    None,
-                                    ["Hardpoint", "Control"]
-                                ), 
-                                title = "Select Gamemode"
-                            ), 
-                            class_ = "d-flex justify-content-between align-items-center"
-                        ), 
-                        ui.output_plot("p2_score_diffs")),
+                    ui.navset_card_pill(
+                        ui.nav_panel("Hardpoint", ui.output_plot("p2_hp_score_diffs")), 
+                        ui.nav_panel("Control", ui.output_plot("p2_ctrl_score_diffs")),
+                        title = "Map Results"
+                        
+                    ),
 
                     width = 1
 
@@ -497,39 +488,19 @@ app_ui = ui.page_navbar(
                         ui.output_data_frame("p2_scoreboards"), 
                         full_screen = True),
 
-                # Column 2: Team A Maps Played
-                ui.card(
-                    ui.card_header(
-                        ui.output_text("p2_team_a_name"),
-                        ui.popover(
-                            ICONS["ellipsis"], 
-                            ui.input_radio_buttons(
-                                "p2_team_a_maps_gamemode", 
-                                None,
-                                ["Hardpoint", "Control"]
-                            ), 
-                            title = "Select Gamemode"
-                        ), 
-                        class_ = "d-flex justify-content-between align-items-center"
-                    ), 
-                    ui.output_plot("p2_team_a_maps")),
+                # Column 2: Team A Maps Played: HP & Ctrl
+                ui.navset_card_pill( 
+                    ui.nav_panel("Hardpoint", ui.output_plot("p2_team_a_hps")), 
+                    ui.nav_panel("Control", ui.output_plot("p2_team_a_ctrls")),
+                    title = ui.output_text("p2_team_a_name")
+                ),
 
                 # Column 3: Team B Maps Played
-                ui.card(
-                    ui.card_header(
-                        ui.output_text("p2_team_b_name"),
-                        ui.popover(
-                            ICONS["ellipsis"], 
-                            ui.input_radio_buttons(
-                                "p2_team_b_maps_gamemode", 
-                                None,
-                                ["Hardpoint", "Control"]
-                            ), 
-                            title = "Select Gamemode"
-                        ), 
-                        class_ = "d-flex justify-content-between align-items-center"
-                    ), 
-                    ui.output_plot("p2_team_b_maps")),
+                ui.navset_card_pill( 
+                    ui.nav_panel("Hardpoint", ui.output_plot("p2_team_b_hps")), 
+                    ui.nav_panel("Control", ui.output_plot("p2_team_b_ctrls")),
+                    title = ui.output_text("p2_team_b_name")
+                ),
                     
                 # Row Height
                 height = "360px",
@@ -541,11 +512,21 @@ app_ui = ui.page_navbar(
         )
     ),
 
+    # 4th Page: Map Vetoes
+    ui.nav_panel("Vetoes",
+
+        # ui.card(ui.card_header("Vetoes"), 
+        #         ui.output_data_frame("vetoes"), 
+        #         full_screen = True),
+
+
+    ),
+
     # App Title
     title = "CDL Bets on PrizePicks", 
 
     # Background Color of Navbar
-    # bg = "#343a40"
+    # bg = "#e9ecef"
     inverse = True
 
 )
@@ -1507,18 +1488,32 @@ def server(input, output, session):
         else:
             return f"{input.p2_map_three()} Control Win %"
         
-    # Team A Donut Chart of Maps Played | Page 2
+    # Team A Donut Chart of HPs Played | Page 2
     @render.plot
-    def p2_team_a_maps():
+    def p2_team_a_hps():
         return team_percent_maps_played(
             team_summaries_DF, team_icons[input.p2_team_a()], "Hardpoint"
         )
     
-    # Team B Donut Chart of Maps Played | Page 2
+    # Team A Donut Chart of Controls Played | Page 2
     @render.plot
-    def p2_team_b_maps():
+    def p2_team_a_ctrls():
+        return team_percent_maps_played(
+            team_summaries_DF, team_icons[input.p2_team_a()], "Control"
+        )
+    
+    # Team B Donut Chart of HPs Played | Page 2
+    @render.plot
+    def p2_team_b_hps():
         return team_percent_maps_played(
             team_summaries_DF, team_icons[input.p2_team_b()], "Hardpoint"
+        )
+    
+    # Team B Donut Chart of Controls Played | Page 2
+    @render.plot
+    def p2_team_b_ctrls():
+        return team_percent_maps_played(
+            team_summaries_DF, team_icons[input.p2_team_b()], "Control"
         )
     
     # Ridgeline Plot of Series Diffs | Page 2
@@ -1530,14 +1525,25 @@ def server(input, output, session):
             team_a_color, team_b_color
             )
     
-    # Ridgeline Plot of Score Diffs | Page 2
+    # Ridgeline Plot of Hardpoint Score Diffs | Page 2
     @render.plot
-    def p2_score_diffs():
+    def p2_hp_score_diffs():
         return score_diffs_ridge(
             cdlDF, 
             team_icons[input.p2_team_a()], team_icons[input.p2_team_b()], 
             team_a_color, team_b_color, 
             "Hardpoint", 
+            input.p2_map_one()
+            )
+    
+    # Ridgeline Plot of Control Score Diffs | Page 2
+    @render.plot
+    def p2_hp_score_diffs():
+        return score_diffs_ridge(
+            cdlDF, 
+            team_icons[input.p2_team_a()], team_icons[input.p2_team_b()], 
+            team_a_color, team_b_color, 
+            "Control", 
             input.p2_map_one()
             )
     

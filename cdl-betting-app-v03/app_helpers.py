@@ -3,6 +3,9 @@
 from shiny import ui
 import faicons as fa
 
+# Import PrizePicks Purple from seaborn_helpers.py
+from seaborn_helpers import prizepicks_color
+
 # String containing value for Icon Height in Pixels
 icon_height = "48px"
 
@@ -13,17 +16,16 @@ ICONS = {
     "plus": fa.icon_svg("plus", height = icon_height), 
     "minus": fa.icon_svg("minus", height = icon_height), 
     "chevron_up": fa.icon_svg("chevron-up", height = icon_height, 
-                              fill = "purple", fill_opacity = 0.85),
+                              fill = prizepicks_color, fill_opacity = 0.85),
     "chevron_down": fa.icon_svg("chevron-down", height = icon_height,
-                                fill = "purple", fill_opacity = 0.85),
+                                fill = prizepicks_color, fill_opacity = 0.85),
     "calendar": fa.icon_svg("calendar", height = icon_height), 
     "crown": fa.icon_svg("crown", height = icon_height, 
-                         fill = "purple", fill_opacity = 0.85),
+                         fill = prizepicks_color, fill_opacity = 0.85),
     "check": fa.icon_svg("circle-check", height = icon_height), 
     "exclamation": fa.icon_svg("circle-exclamation", height = icon_height), 
     "flag": fa.icon_svg("flag", height = icon_height), 
-    "mound": fa.icon_svg("mound", height = icon_height), 
-    "ellipsis": fa.icon_svg("ellipsis")
+    "mound": fa.icon_svg("mound", height = icon_height)
 }
 
 # Function to render one ui.nav_panel per player | Page 1, Kills per Map
