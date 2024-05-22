@@ -463,8 +463,8 @@ app_ui = ui.page_navbar(
 
                     # Map Results Differentials
                     ui.navset_card_pill(
-                        ui.nav_panel("Hardpoint", ui.output_plot("p2_hp_score_diffs")), 
-                        ui.nav_panel("Control", ui.output_plot("p2_ctrl_score_diffs")),
+                        ui.nav_panel("HP", ui.output_plot("p2_hp_score_diffs")), 
+                        ui.nav_panel("Ctrl", ui.output_plot("p2_ctrl_score_diffs")),
                         title = "Map Results"
                         
                     ),
@@ -490,15 +490,15 @@ app_ui = ui.page_navbar(
 
                 # Column 2: Team A Maps Played: HP & Ctrl
                 ui.navset_card_pill( 
-                    ui.nav_panel("Hardpoint", ui.output_plot("p2_team_a_hps")), 
-                    ui.nav_panel("Control", ui.output_plot("p2_team_a_ctrls")),
+                    ui.nav_panel("HP", ui.output_plot("p2_team_a_hps")), 
+                    ui.nav_panel("Ctrl", ui.output_plot("p2_team_a_ctrls")),
                     title = ui.output_text("p2_team_a_name")
                 ),
 
                 # Column 3: Team B Maps Played
                 ui.navset_card_pill( 
-                    ui.nav_panel("Hardpoint", ui.output_plot("p2_team_b_hps")), 
-                    ui.nav_panel("Control", ui.output_plot("p2_team_b_ctrls")),
+                    ui.nav_panel("HP", ui.output_plot("p2_team_b_hps")), 
+                    ui.nav_panel("Ctrl", ui.output_plot("p2_team_b_ctrls")),
                     title = ui.output_text("p2_team_b_name")
                 ),
                     
@@ -1538,7 +1538,7 @@ def server(input, output, session):
     
     # Ridgeline Plot of Control Score Diffs | Page 2
     @render.plot
-    def p2_hp_score_diffs():
+    def p2_ctrl_score_diffs():
         return score_diffs_ridge(
             cdlDF, 
             team_icons[input.p2_team_a()], team_icons[input.p2_team_b()], 
