@@ -12,10 +12,13 @@ ICONS = {
     "headset": fa.icon_svg("headset", height = icon_height), 
     "plus": fa.icon_svg("plus", height = icon_height), 
     "minus": fa.icon_svg("minus", height = icon_height), 
-    "chevron_up": fa.icon_svg("chevron-up", height = icon_height),
-    "chevron_down": fa.icon_svg("chevron-down", height = icon_height), 
+    "chevron_up": fa.icon_svg("chevron-up", height = icon_height, 
+                              fill = "purple", fill_opacity = 0.85),
+    "chevron_down": fa.icon_svg("chevron-down", height = icon_height,
+                                fill = "purple", fill_opacity = 0.85),
     "calendar": fa.icon_svg("calendar", height = icon_height), 
-    "crown": fa.icon_svg("crown", height = icon_height), 
+    "crown": fa.icon_svg("crown", height = icon_height, 
+                         fill = "purple", fill_opacity = 0.85),
     "check": fa.icon_svg("circle-check", height = icon_height), 
     "exclamation": fa.icon_svg("circle-exclamation", height = icon_height), 
     "flag": fa.icon_svg("flag", height = icon_height), 
@@ -38,7 +41,7 @@ def player_panel(player_num: str):
                 max_height = "100px"
             ), 
             ui.value_box(
-                "Streak", 
+                "O/U Streak", 
                 ui.output_ui(f"player_{player_num}_ou_streak"), 
                 showcase = ICONS["crown"],
                 showcase_layout = "left center", 
@@ -62,7 +65,7 @@ def p2_player_panel(player_num: str):
                 max_height = "100px"
             ), 
             ui.value_box(
-                "Streak", 
+                "O/U Streak", 
                 ui.output_ui(f"p2_player_{player_num}_ou_streak"), 
                 showcase = ICONS["crown"],
                 showcase_layout = "left center", 

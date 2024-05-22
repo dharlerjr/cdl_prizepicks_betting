@@ -19,15 +19,22 @@ palettes = {
 
 # Dictionary of bin ranges by gamemode
 gamemode_bin_ranges = {
-    "Search & Destroy": (-6, 6), 
-    "Control": (-3, 3)
+    "Search & Destroy": (-9, 6), 
+    "Control": (-5, 3)
 }
 
 # Dictionary of min_x values for score diff ridgeline plot
 min_x_values_by_gamemode = {
-    "Hardpoint": -300, 
-    "Search & Destroy": -9, 
-    "Control": -5
+    "Hardpoint": -345, 
+    "Search & Destroy": -10.75, 
+    "Control": -6
+}
+
+# Dictionary of xticks for ridgeline plot by gamemode
+gamemode_xticks = {
+    "Hardpoint": [-200, -100, 0, 100, 200], 
+    "Search & Destroy": [-6, -3, 0, 3, 6], 
+    "Control": [-3, 0, 3]
 }
 
 # Dictionary of team colors for plotting
@@ -251,7 +258,7 @@ def team_score_diffs(
 # Team % of Maps Played by Mode
 def team_percent_maps_played(
         team_summaries_input: pd.DataFrame, team_icon: str,
-        gamemode_input: str, team_color: str
+        gamemode_input: str
 ):
 
     # Filter team_summaries_input by team & mode
@@ -275,16 +282,12 @@ def team_percent_maps_played(
 
     # Pie Chart
     ax.pie(queried_df["total"], labels = chart_labels,
-           labeldistance = 1.2, 
+           labeldistance = 1.25, 
            colors = palettes[gamemode_input])
     
     # Create donut by adding white inner circle with smaller radius
     my_circle = plt.Circle( (0,0), 0.65, color = 'white')
     ax.add_artist(my_circle)
-
-    # Add title
-    ax.set_title(team_icon, fontweight = 'bold',
-                 fontsize = 15, color = team_color, pad = 16)
     
     # Margins
     plt.margins(0.05)
@@ -642,6 +645,7 @@ def score_diffs_ridge(
             (cdlDF_input['gamemode'] == gamemode_input)
         ][['match_id', 'team_icon', 'map_name', 'score_diff']].drop_duplicates()
 
+
     # User selected only one map
     else:
 
@@ -650,7 +654,7 @@ def score_diffs_ridge(
             ((cdlDF_input['team_icon'] == team_icon_x) | (cdlDF_input['team_icon'] == team_icon_y)) &
             (cdlDF_input['gamemode'] == gamemode_input) &
             (cdlDF_input['map_name'] == map_input)
-        ][['match_id', 'team_abbr', 'map_name', 'score_diff']].drop_duplicates()
+        ][['match_id', 'team_icon', 'map_name', 'score_diff']].drop_duplicates()
 
     # Reorder team factor levels for graphing
     queried_df['team_icon'] = pd.Categorical(
@@ -667,7 +671,11 @@ def score_diffs_ridge(
 
         # Plot the histogram
         g.map_dataframe(sns.histplot, x = "score_diff", binwidth = 50, 
-                        binrange = (-250, 250), alpha = 0.9)
+                        binrange = (-300, 250), alpha = 0.9)
+        
+        # Get max y
+        queried_df['bin'] = pd.cut(queried_df['score_diff'], bins = range(-250, 300, 50))
+        max_y = max(queried_df['bin'].value_counts())
         
     # Bar chart for SnD & Control
     else:
@@ -676,6 +684,9 @@ def score_diffs_ridge(
         g.map_dataframe(sns.histplot, x = "score_diff", discrete = True, 
                         binrange = gamemode_bin_ranges[gamemode_input], 
                         alpha = 0.9)
+        
+        # Get max y
+        max_y = 0 if queried_df.empty else max(queried_df["score_diff"].value_counts())
         
     # Add a horizontal line to the bottom of each plot
     g.map(plt.axhline, y = 0, lw = 2, clip_on = False)
@@ -686,9 +697,21 @@ def score_diffs_ridge(
     # Use min_x value for labels
     min_x = min_x_values_by_gamemode[gamemode_input]
 
+    # Get y_coord for label by using max_y
+    if max_y == 1:
+        y_coord = 0.05
+    elif max_y == 2:
+        y_coord = 0.1
+    elif max_y == 3:
+        y_coord = 0.25
+    elif max_y < 8:
+        y_coord = 0.35
+    else:
+        y_coord = 0.45
+
     # Add team name to each axs
     for i, ax in enumerate(g.axes.flat):
-        ax.text(min_x, 0.45, teams[i],
+        ax.text(min_x, y_coord, teams[i],
                 fontweight ='bold', fontsize = 15,
                 color = ax.lines[-1].get_color())
         
@@ -697,7 +720,8 @@ def score_diffs_ridge(
 
     # Styling
     g.set_titles("")
-    g.set(yticks = [], ylabel = "", xlabel = "")
+    g.set(yticks = [], ylabel = "", xlabel = "", 
+          xticks = gamemode_xticks[gamemode_input])
     g.despine(bottom = True, left = True)
 
 
@@ -729,7 +753,7 @@ def series_diff_ridge(
     
     # Plot the bar chart
     g.map_dataframe(sns.histplot, x = "series_score_diff", discrete = True, 
-                    binrange = (-4, 3), alpha = 0.9)
+                    binrange = (-5, 3), alpha = 0.9)
     
     # Add a horizontal line to the bottom of each plot
     g.map(plt.axhline, y = 0, lw = 2, clip_on = False)
@@ -739,9 +763,9 @@ def series_diff_ridge(
 
     # Get min_x
     if team_icon_x == "TOR" or team_icon_y == "TOR":
-        min_x = -5.75
+        min_x = -6.75
     else:
-        min_x = -5
+        min_x = -6
 
     # Add team name to each axs
     for i, ax in enumerate(g.axes.flat):
@@ -754,5 +778,5 @@ def series_diff_ridge(
 
     # Styling
     g.set_titles("")
-    g.set(xticks = [-2, 0, 2], yticks = [], ylabel = "", xlabel = "")
+    g.set(xticks = [-3, 0, 3], yticks = [], ylabel = "", xlabel = "")
     g.despine(bottom = True, left = True)

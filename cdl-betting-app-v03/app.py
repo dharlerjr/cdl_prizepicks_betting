@@ -159,7 +159,7 @@ app_ui = ui.page_navbar(
                                 ]), 
                 ui.input_select(id = "map_name", label = "Map", selected = "All",
                                 choices = ["All"] + sorted(filter_maps(cdlDF)['map_name'].unique())), 
-                ui.input_select(id = "x_axis", label = "X-Axis", selected = "Time",
+                ui.input_select(id = "x_axis", label = "Player Card X-Axis", selected = "Time",
                                 choices = ["Time", "Score Differential"])
 
             ),
@@ -300,11 +300,11 @@ app_ui = ui.page_navbar(
                         full_screen = True),
 
                 # Column 2: Team A Maps Played
-                ui.card(ui.card_header("Maps Played"), 
+                ui.card(ui.card_header(ui.output_text("team_a_name")), 
                         ui.output_plot("team_a_maps_played")),
 
                 # Column 3: Team B Maps Played
-                ui.card(ui.card_header("Maps Played"), 
+                ui.card(ui.card_header(ui.output_text("team_b_name")), 
                         ui.output_plot("team_b_maps_played")),
 
                 # Row Height
@@ -343,7 +343,7 @@ app_ui = ui.page_navbar(
                                 choices = ["All", "6 Star", "Highrise", "Invasion", "Karachi", "Rio"]), 
                 ui.input_select(id = "p2_map_three", label = "Map 3", selected = "All",
                                 choices = ["All", "Highrise", "Invasion", "Karachi"]), 
-                ui.input_select(id = "p2_x_axis", label = "X-Axis", selected = "Time",
+                ui.input_select(id = "p2_x_axis", label = "Player Card X-Axis", selected = "Time",
                                 choices = ["Time", "Mapset", "Hardpoint Map", "Control Map"])
 
             ), 
@@ -493,7 +493,7 @@ app_ui = ui.page_navbar(
                 # Column 2: Team A Maps Played
                 ui.card(
                     ui.card_header(
-                        "Maps Played", 
+                        ui.output_text("p2_team_a_name"),
                         ui.popover(
                             ICONS["ellipsis"], 
                             ui.input_radio_buttons(
@@ -510,7 +510,7 @@ app_ui = ui.page_navbar(
                 # Column 3: Team B Maps Played
                 ui.card(
                     ui.card_header(
-                        "Maps Played", 
+                        ui.output_text("p2_team_b_name"),
                         ui.popover(
                             ICONS["ellipsis"], 
                             ui.input_radio_buttons(
@@ -778,14 +778,14 @@ def server(input, output, session):
     @render.plot
     def team_a_maps_played():
         return team_percent_maps_played(
-            team_summaries_DF, team_icons[input.team_a()], gamemode(), team_a_color
+            team_summaries_DF, team_icons[input.team_a()], gamemode()
         )
     
     # Team B Donut Chart of % Maps Played
     @render.plot
     def team_b_maps_played():
         return team_percent_maps_played(
-            team_summaries_DF, team_icons[input.team_b()], gamemode(), team_b_color
+            team_summaries_DF, team_icons[input.team_b()], gamemode()
         )
     
     # Team A Series Differentials Histogram
@@ -1325,6 +1325,26 @@ def server(input, output, session):
         )
         return f"{ou} {streak}"
     
+    # Team A Name for Maps Played Card Header
+    @render.text
+    def team_a_name():
+        return team_icons[input.team_a()] + " Maps Played"
+    
+    # Team B Name for Maps Played Card Header
+    @render.text
+    def team_b_name():
+        return team_icons[input.team_b()] + " Maps Played"
+    
+    # Team A Name for Maps Played Card Header | Page 2
+    @render.text
+    def p2_team_a_name():
+        return team_icons[input.p2_team_a()] + " Maps Played"
+    
+    # Team B Name for Maps Played Card Header | Page2
+    @render.text
+    def p2_team_b_name():
+        return team_icons[input.p2_team_b()] + " Maps Played"
+    
     # Team A Logo | Page 2
     @render.image
     def p2_team_a_logo():
@@ -1483,14 +1503,14 @@ def server(input, output, session):
     @render.plot
     def p2_team_a_maps():
         return team_percent_maps_played(
-            team_summaries_DF, team_icons[input.p2_team_a()], "Hardpoint", team_a_color
+            team_summaries_DF, team_icons[input.p2_team_a()], "Hardpoint"
         )
     
     # Team B Donut Chart of Maps Played | Page 2
     @render.plot
     def p2_team_b_maps():
         return team_percent_maps_played(
-            team_summaries_DF, team_icons[input.p2_team_b()], "Hardpoint", team_b_color
+            team_summaries_DF, team_icons[input.p2_team_b()], "Hardpoint"
         )
     
     # Ridgeline Plot of Series Diffs | Page 2
