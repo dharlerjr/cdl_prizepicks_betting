@@ -669,7 +669,6 @@ def player_kills_by_mapset(
     # Get y_range and y_pad for cur_line
     kills = queried_df["kills"].to_list()
     y_range = max(kills) - min(kills) 
-    y_pad = y_range * 0.05
 
     # Set margins
     plt.margins(0.05)

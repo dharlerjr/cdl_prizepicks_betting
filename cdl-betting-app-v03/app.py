@@ -160,7 +160,11 @@ app_ui = ui.page_navbar(
                 ui.input_select(id = "map_name", label = "Map", selected = "All",
                                 choices = ["All"] + sorted(filter_maps(cdlDF)['map_name'].unique())), 
                 ui.input_select(id = "x_axis", label = "Player Card X-Axis", selected = "Time",
-                                choices = ["Time", "Score Differential"])
+                                choices = ["Time", "Score Differential"]),
+
+                # BG & FG Colors for Sidebar
+                bg = "#033c73",
+                fg = "#ffffff"
 
             ),
 
@@ -344,8 +348,11 @@ app_ui = ui.page_navbar(
                 ui.input_select(id = "p2_map_three", label = "Map 3", selected = "All",
                                 choices = ["All", "Highrise", "Invasion", "Karachi"]), 
                 ui.input_select(id = "p2_x_axis", label = "Player Card X-Axis", selected = "Time",
-                                choices = ["Time", "Mapset", "Hardpoint Map", "Control Map"])
-
+                                choices = ["Time", "Mapset", "Hardpoint Map", "Control Map"]), 
+                
+                # BG & FG Colors for Sidebar
+                bg = "#033c73",
+                fg = "#ffffff"
             ), 
 
             # Row 1 of 4
@@ -538,7 +545,8 @@ app_ui = ui.page_navbar(
     title = "CDL Bets on PrizePicks", 
 
     # Background Color of Navbar
-    # bg = "#1462a6"
+    # bg = "#343a40"
+    inverse = True
 
 )
 
