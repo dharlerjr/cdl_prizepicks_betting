@@ -309,8 +309,7 @@ def player_over_under_percentage(
 # Function to compete O/U streak
 def player_over_under_streak(
         cdlDF_input: pd.DataFrame, player_input: str, 
-        gamemode_input: str, cur_line: float, map_input = "All"
-):
+        gamemode_input: str, cur_line: float, map_input = "All"):
     
     # Create a copy of cdlDF_input
     queried_df = cdlDF_input.copy()
@@ -370,7 +369,60 @@ def player_over_under_streak(
 # Function to get a player's PrizePicks line from a dataframe of player props
 def get_line(player_props_df_input: pd.DataFrame, team_input: str, 
              player_num: int, map_num: int):
+    
     return player_props_df_input[
                 (player_props_df_input['team'] == team_input) &
                 (player_props_df_input['prop'] == map_num)] \
                     .iloc[player_num - 1]['line']
+
+# Helper function to get list of match_ids containing user-selected map & mode for user-selected player
+def get_match_ids(
+    cdlDF_input: pd.DataFrame, player_input: str, 
+    gamemode_input: str, map_input = str
+):
+    player_match_ids = cdlDF_input[
+        (cdlDF_input['map_num'] <= 3) &
+        (cdlDF_input['player'] == player_input) &
+        (cdlDF_input['gamemode'] == gamemode_input) &
+        (cdlDF_input['map_name'] == map_input)
+    ][['match_id']]
+
+    return player_match_ids['match_id'].to_list()
+
+# Function to compute Player O/U Streak
+def player_1_thru_3_ou_streak(
+        maps_1_thru_3_DF_input: pd.DataFrame, 
+        player_input: str, cur_line: float):
+
+    # Query data and sort by date, descending
+    queried_df = maps_1_thru_3_DF_input[
+        maps_1_thru_3_DF_input['player'] == player_input
+    ][["match_date", "match_id", "kills"]] \
+        .sort_values(['match_date', 'match_id'], ascending = [False, False], 
+                    ignore_index = True)
+
+    # Initialize streak and iterator
+    streak = 1
+    i = 1
+
+    # # Compute starting over_under
+    start = queried_df.iloc[0, 2] - cur_line
+    if start >= 0:
+        ou = "Over"
+    else:
+        ou = "Under"
+
+    while i < len(queried_df):
+        if ou == "Under":
+            if queried_df.iloc[i, 2] - cur_line > 0:
+                break
+            else:
+                streak += 1
+        else:
+            if queried_df.iloc[i, 2] - cur_line < 0:
+                break
+            else:
+                streak +=1
+        i += 1
+
+    return ou, streak

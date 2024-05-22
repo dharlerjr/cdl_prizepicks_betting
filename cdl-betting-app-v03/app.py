@@ -43,7 +43,7 @@ team_logos = {
     "Toronto Ultra": "\\team_logos\\TOR.webp"
 }
 
-# Dictionary of team names to abbreviations
+# Dictionary of team abbreviations by team name
 team_abbrs = {
     "Atlanta FaZe": "ATL",
     "Boston Breach": "BOS",
@@ -57,6 +57,22 @@ team_abbrs = {
     "OpTic Texas": "TX", 
     "Seattle Surge": "SEA", 
     "Toronto Ultra": "TOR"
+}
+
+# Dictionary of team icons by team name
+team_icons = {
+    "Atlanta FaZe": "FaZe",
+    "Boston Breach": "Breach",
+    "Carolina Royal Ravens": "Ravens", 
+    "Las Vegas Legion": "Legion",
+    "Los Angeles Guerrillas": "Guerrillas", 
+    "Los Angeles Thieves": "Thieves", 
+    "Miami Heretics": "Heretics", 
+    "Minnesota ROKKR": "ROKKR", 
+    "New York Subliners": "Subliners",
+    "OpTic Texas": "OpTic", 
+    "Seattle Surge": "Surge", 
+    "Toronto Ultra": "Ultra"
 }
 
 # Dictionary of gamemode abbreviations for value box titles
@@ -752,7 +768,7 @@ def server(input, output, session):
     def score_diffs():
         return score_diffs_ridge(
             cdlDF, 
-            team_abbrs[input.team_a()], team_abbrs[input.team_b()], 
+            team_icons[input.team_a()], team_icons[input.team_b()], 
             team_a_color, team_b_color,
             gamemode(), 
             input.map_name()
@@ -762,14 +778,14 @@ def server(input, output, session):
     @render.plot
     def team_a_maps_played():
         return team_percent_maps_played(
-            team_summaries_DF, team_abbrs[input.team_a()], gamemode()
+            team_summaries_DF, team_icons[input.team_a()], gamemode(), team_a_color
         )
     
     # Team B Donut Chart of % Maps Played
     @render.plot
     def team_b_maps_played():
         return team_percent_maps_played(
-            team_summaries_DF, team_abbrs[input.team_b()], gamemode()
+            team_summaries_DF, team_icons[input.team_b()], gamemode(), team_b_color
         )
     
     # Team A Series Differentials Histogram
@@ -777,7 +793,7 @@ def server(input, output, session):
     def series_diffs():
         return series_diff_ridge(
             series_score_diffs,
-            team_abbrs[input.team_a()], team_abbrs[input.team_b()], 
+            team_icons[input.team_a()], team_icons[input.team_b()], 
             team_a_color, team_b_color
         )
     
@@ -1467,14 +1483,14 @@ def server(input, output, session):
     @render.plot
     def p2_team_a_maps():
         return team_percent_maps_played(
-            team_summaries_DF, team_abbrs[input.p2_team_a()], "Hardpoint"
+            team_summaries_DF, team_icons[input.p2_team_a()], "Hardpoint", team_a_color
         )
     
     # Team B Donut Chart of Maps Played | Page 2
     @render.plot
     def p2_team_b_maps():
         return team_percent_maps_played(
-            team_summaries_DF, team_abbrs[input.p2_team_b()], "Hardpoint"
+            team_summaries_DF, team_icons[input.p2_team_b()], "Hardpoint", team_b_color
         )
     
     # Ridgeline Plot of Series Diffs | Page 2
@@ -1482,7 +1498,7 @@ def server(input, output, session):
     def p2_series_diffs():
         return series_diff_ridge(
             series_score_diffs, 
-            team_abbrs[input.p2_team_a()], team_abbrs[input.p2_team_b()], 
+            team_icons[input.p2_team_a()], team_icons[input.p2_team_b()], 
             team_a_color, team_b_color
             )
     
@@ -1491,7 +1507,7 @@ def server(input, output, session):
     def p2_score_diffs():
         return score_diffs_ridge(
             cdlDF, 
-            team_abbrs[input.p2_team_a()], team_abbrs[input.p2_team_b()], 
+            team_icons[input.p2_team_a()], team_icons[input.p2_team_b()], 
             team_a_color, team_b_color, 
             "Hardpoint", 
             input.p2_map_one()
@@ -1893,6 +1909,86 @@ def server(input, output, session):
                 input.p2_map_two(),
                 input.p2_map_three()
             )
+        
+    # Player 1 O/U Streak | Page 2
+    @render.ui
+    def p2_player_1_ou_streak():
+        ou, streak = player_1_thru_3_ou_streak(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[0]['player'], 
+            p2_player_1_line()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 2 O/U Streak | Page 2
+    @render.ui
+    def p2_player_2_ou_streak():
+        ou, streak = player_1_thru_3_ou_streak(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[1]['player'], 
+            p2_player_2_line()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 3 O/U Streak | Page 2
+    @render.ui
+    def p2_player_3_ou_streak():
+        ou, streak = player_1_thru_3_ou_streak(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[2]['player'], 
+            p2_player_3_line()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 4 O/U Streak | Page 2
+    @render.ui
+    def p2_player_4_ou_streak():
+        ou, streak = player_1_thru_3_ou_streak(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[3]['player'], 
+            p2_player_4_line()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 5 O/U Streak | Page 2
+    @render.ui
+    def p2_player_5_ou_streak():
+        ou, streak = player_1_thru_3_ou_streak(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[0]['player'], 
+            p2_player_5_line()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 6 O/U Streak | Page 2
+    @render.ui
+    def p2_player_6_ou_streak():
+        ou, streak = player_1_thru_3_ou_streak(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[1]['player'], 
+            p2_player_6_line()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 7 O/U Streak | Page 2
+    @render.ui
+    def p2_player_7_ou_streak():
+        ou, streak = player_1_thru_3_ou_streak(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[2]['player'], 
+            p2_player_7_line()
+        )
+        return f"{ou} {streak}"
+    
+    # Player 8 O/U Streak | Page 2
+    @render.ui
+    def p2_player_8_ou_streak():
+        ou, streak = player_1_thru_3_ou_streak(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[3]['player'], 
+            p2_player_8_line()
+        )
+        return f"{ou} {streak}"
         
 
 # Run app

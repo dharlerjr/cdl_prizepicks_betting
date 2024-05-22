@@ -124,9 +124,9 @@ def load_and_clean_cdl_data():
 # Build dataframe of series scores & differentials
 def build_series_summaries(cdlDF_input):
     series_score_diffs = \
-        cdlDF_input[["match_id", "match_date", "team", "team_abbr", "map_num", "gamemode", "map_result"]] \
+        cdlDF_input[["match_id", "match_date", "team", "team_icon", "map_num", "gamemode", "map_result"]] \
         .drop_duplicates() \
-        .groupby(["match_id", "team", "team_abbr"], observed = True) \
+        .groupby(["match_id", "team", "team_icon"], observed = True) \
         .agg(
             map_wins = ("map_result", lambda x: sum(x)), 
             map_losses = ("map_result", lambda x: len(x) - sum(x)), 
@@ -152,8 +152,8 @@ def build_series_summaries(cdlDF_input):
     
     # Get opponents
     opps = series_score_diffs.sort_values(by = ['match_date', 'match_id', 'team'], ascending = [True, True, False]) \
-        [['team_abbr']] \
-        .rename(columns = {"team_abbr": "opp"}) \
+        [['team_icon']] \
+        .rename(columns = {"team_icon": "opp"}) \
         .reset_index(drop=True) 
 
     opps
@@ -187,9 +187,9 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
 
     # Team Summaries by Map & Mode
     team_summaries_DF_top = queried_df \
-        [["match_id", "team", "team_abbr" "map_name", "gamemode", "map_result"]] \
+        [["match_id", "team", "team_icon", "map_name", "gamemode", "map_result"]] \
         .drop_duplicates() \
-        .groupby(["team", "team_abbr", "gamemode", "map_name"], observed = True) \
+        .groupby(["team", "team_icon", "gamemode", "map_name"], observed = True) \
         .agg(
             wins = ("map_result", lambda x: sum(x)), 
             losses = ("map_result", lambda x: len(x) - sum(x)), 
@@ -220,9 +220,9 @@ def build_team_summaries(cdlDF_input: pd.DataFrame):
     
     # Team Summaries by Mode only
     team_summaries_DF_bottom = \
-        queried_df[["match_id", "team", "team_abbr", "map_name", "gamemode", "map_result"]] \
+        queried_df[["match_id", "team", "team_icon", "map_name", "gamemode", "map_result"]] \
         .drop_duplicates() \
-        .groupby(["team", "team_abbr", "gamemode"], observed = True) \
+        .groupby(["team", "team_icon", "gamemode"], observed = True) \
         .agg(
             wins = ("map_result", lambda x: sum(x)), 
             losses = ("map_result", lambda x: len(x) - sum(x)), 

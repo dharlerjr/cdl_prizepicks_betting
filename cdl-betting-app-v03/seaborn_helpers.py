@@ -25,9 +25,9 @@ gamemode_bin_ranges = {
 
 # Dictionary of min_x values for score diff ridgeline plot
 min_x_values_by_gamemode = {
-    "Hardpoint": -285, 
-    "Search & Destroy": -8, 
-    "Control": -4.5
+    "Hardpoint": -300, 
+    "Search & Destroy": -9, 
+    "Control": -5
 }
 
 # Dictionary of team colors for plotting
@@ -250,13 +250,13 @@ def team_score_diffs(
 
 # Team % of Maps Played by Mode
 def team_percent_maps_played(
-        team_summaries_input: pd.DataFrame, team_abbr: str,
+        team_summaries_input: pd.DataFrame, team_icon: str,
         gamemode_input: str, team_color: str
 ):
 
     # Filter team_summaries_input by team & mode
     queried_df = team_summaries_input[
-        (team_summaries_input["team_abbr"] == team_abbr) &
+        (team_summaries_input["team_icon"] == team_icon) &
         (team_summaries_input["gamemode"] == gamemode_input) &
         (team_summaries_input["map_name"] != "Overall") & 
         (team_summaries_input["total"] != 0)
@@ -283,8 +283,8 @@ def team_percent_maps_played(
     ax.add_artist(my_circle)
 
     # Add title
-    ax.set_title(team_abbr, fontweight = 'bold', loc = "left",
-                 fontsize = 15, color = team_color)
+    ax.set_title(team_icon, fontweight = 'bold',
+                 fontsize = 15, color = team_color, pad = 16)
     
     # Margins
     plt.margins(0.05)
@@ -512,7 +512,7 @@ def player_1_thru_3_kills_vs_time(
 
     # X- & Y-Axis Labels
     axs[0].set_xlabel("")
-    axs[0].set_ylabel("Maps 1 - 3 Kills")
+    axs[0].set_ylabel("Maps 1 - 3 Kills", labelpad = 6)
     axs[1].set_xticks([])
     axs[1].set_ylabel("")
 
@@ -626,7 +626,7 @@ def player_kills_by_mapset(
 
 # Ridgeline Plot of Team Score Diffs
 def score_diffs_ridge(        
-        cdlDF_input: pd.DataFrame, team_abbr_x: str, team_abbr_y: str,
+        cdlDF_input: pd.DataFrame, team_icon_x: str, team_icon_y: str,
         x_color: str, y_color: str, gamemode_input: str, map_input = "All"
 ):
     
@@ -638,28 +638,28 @@ def score_diffs_ridge(
 
         # Query data
         queried_df = cdlDF_input[
-            ((cdlDF_input['team_abbr'] == team_abbr_x) | (cdlDF_input['team_abbr'] == team_abbr_y)) &
+            ((cdlDF_input['team_icon'] == team_icon_x) | (cdlDF_input['team_icon'] == team_icon_y)) &
             (cdlDF_input['gamemode'] == gamemode_input)
-        ][['match_id', 'team_abbr', 'map_name', 'score_diff']].drop_duplicates()
+        ][['match_id', 'team_icon', 'map_name', 'score_diff']].drop_duplicates()
 
     # User selected only one map
     else:
 
         # Query data
         queried_df = cdlDF_input[
-            ((cdlDF_input['team_abbr'] == team_abbr_x) | (cdlDF_input['team_abbr'] == team_abbr_y)) &
+            ((cdlDF_input['team_icon'] == team_icon_x) | (cdlDF_input['team_icon'] == team_icon_y)) &
             (cdlDF_input['gamemode'] == gamemode_input) &
             (cdlDF_input['map_name'] == map_input)
         ][['match_id', 'team_abbr', 'map_name', 'score_diff']].drop_duplicates()
 
     # Reorder team factor levels for graphing
-    queried_df['team_abbr'] = pd.Categorical(
-        queried_df['team_abbr'], 
-        categories = [team_abbr_x, team_abbr_y]
+    queried_df['team_icon'] = pd.Categorical(
+        queried_df['team_icon'], 
+        categories = [team_icon_x, team_icon_y]
         )
 
     # Initialize the FacetGrid object
-    g = sns.FacetGrid(queried_df, row = "team_abbr", hue = "team_abbr", 
+    g = sns.FacetGrid(queried_df, row = "team_icon", hue = "team_icon", 
                       aspect = 3.4, height = 2.2, palette = [x_color, y_color])
     
     # Histogram for Hardpoint
@@ -681,7 +681,7 @@ def score_diffs_ridge(
     g.map(plt.axhline, y = 0, lw = 2, clip_on = False)
 
     # Get teams for labeling
-    teams = [team_abbr_x, team_abbr_y]
+    teams = [team_icon_x, team_icon_y]
 
     # Use min_x value for labels
     min_x = min_x_values_by_gamemode[gamemode_input]
@@ -704,27 +704,27 @@ def score_diffs_ridge(
 # Ridgeline Plot of Team Series Diffs
 def series_diff_ridge(
         series_score_diffs_input: pd.DataFrame, 
-        team_abbr_x: str, team_abbr_y: str,
+        team_icon_x: str, team_icon_y: str,
         x_color: str, y_color: str
 ):
 
     # Filter series_score_diffs by team
     queried_df = series_score_diffs_input[
-        (series_score_diffs_input["team_abbr"] == team_abbr_x) |
-        (series_score_diffs_input["team_abbr"] == team_abbr_y)
+        (series_score_diffs_input["team_icon"] == team_icon_x) |
+        (series_score_diffs_input["team_icon"] == team_icon_y)
     ].copy()
 
     # Reorder team factor levels for graphing
-    queried_df['team_abbr'] = pd.Categorical(
-        queried_df['team_abbr'], 
-        categories = [team_abbr_x, team_abbr_y]
+    queried_df['team_icon'] = pd.Categorical(
+        queried_df['team_icon'], 
+        categories = [team_icon_x, team_icon_y]
         )
     
     # Set seaborn theme
     sns.set_theme(style="white", rc={"axes.facecolor": (0, 0, 0, 0)})
 
     # Initialize the FacetGrid object
-    g = sns.FacetGrid(queried_df, row = "team_abbr", hue = "team_abbr", 
+    g = sns.FacetGrid(queried_df, row = "team_icon", hue = "team_icon", 
                       aspect = 3.4, height = 2.2, palette = [x_color, y_color])
     
     # Plot the bar chart
@@ -735,10 +735,10 @@ def series_diff_ridge(
     g.map(plt.axhline, y = 0, lw = 2, clip_on = False)
 
     # Get teams for labeling
-    teams = [team_abbr_x, team_abbr_y]
+    teams = [team_icon_x, team_icon_y]
 
     # Get min_x
-    if team_abbr_x == "TOR" or team_abbr_y == "TOR":
+    if team_icon_x == "TOR" or team_icon_y == "TOR":
         min_x = -5.75
     else:
         min_x = -5
