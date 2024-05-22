@@ -228,7 +228,7 @@ def team_score_diffs(
 
         # Get max y
         queried_df['bin'] = pd.cut(queried_df['score_diff'], bins = range(-250, 300, 50))
-        max_y = max(queried_df['bin'].value_counts())
+        max_y = max(queried_df[['bin', 'team']].value_counts())
 
     # Bar chart for SnD & Control
     else:
@@ -239,7 +239,7 @@ def team_score_diffs(
              color = team_color)
         
         # Get max y
-        max_y = 0 if queried_df.empty else max(queried_df["score_diff"].value_counts())
+        max_y = 0 if queried_df.empty else max(queried_df[["score_diff", "team"]].value_counts())
         
     # Set y-axis to integer values only
     step_y = 1 if max_y < 6 else 2
@@ -523,8 +523,30 @@ def player_1_thru_3_kills_vs_time(
     formatter = mdates.DateFormatter('%b %d')
     axs[0].xaxis.set_major_formatter(formatter)
 
+    # Get min_x
+    min_x = min(queried_df["match_date"].to_list())
+
+    # Get y_range and y_pad for cur_line
+    kills = queried_df["kills"].to_list()
+    kills.append(cur_line)
+    y_range = max(kills) - min(kills) 
+    y_pad = y_range * 0.05
+
+
+    # Label current line from PrizePicks
+    plt.sca(axs[0])
+    bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
+            'pad': 0.4, 'boxstyle': 'round'}
+    plt.text(min_x, cur_line + y_pad, "Line: " + str(cur_line), bbox = bbox, color = "white")
+
     # Set margins
     plt.margins(0.05)
+
+    # Scaling
+    if y_range <= 20:
+        axs[0].yaxis.set_major_locator(MultipleLocator(base = 5))
+    else:
+        axs[0].yaxis.set_major_locator(MultipleLocator(base = 10))
 
 
 # Player Kills by Map & Mode
@@ -562,8 +584,26 @@ def player_kills_by_map(
     ax.set_xlabel("")
     ax.set_ylabel("Kills")
 
+    # Get y_range and y_pad for cur_line
+    kills = queried_df["kills"].to_list()
+    kills.append(cur_line)
+    y_range = max(kills) - min(kills) 
+    y_pad = y_range * 0.05
+
+
+    # Label current line from PrizePicks
+    bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
+            'pad': 0.4, 'boxstyle': 'round'}
+    plt.text(-0.5, cur_line + y_pad, "Line: " + str(cur_line), bbox = bbox, color = "white")
+
     # Set margins
     plt.margins(0.05)
+
+    # Scaling
+    if y_range <= 20:
+        ax.yaxis.set_major_locator(MultipleLocator(base = 5))
+    else:
+        ax.yaxis.set_major_locator(MultipleLocator(base = 10))
     
 
 # Player Kills by Mapset
@@ -626,6 +666,20 @@ def player_kills_by_mapset(
                      # family = "Segoe UI", fontweight = 400, 
                      color = "#495057", pad = 5)
     
+    # Get y_range and y_pad for cur_line
+    kills = queried_df["kills"].to_list()
+    y_range = max(kills) - min(kills) 
+    y_pad = y_range * 0.05
+
+    # Set margins
+    plt.margins(0.05)
+
+    # Scaling
+    if y_range <= 20:
+        ax.yaxis.set_major_locator(MultipleLocator(base = 5))
+    else:
+        ax.yaxis.set_major_locator(MultipleLocator(base = 10))
+    
 
 # Ridgeline Plot of Team Score Diffs
 def score_diffs_ridge(        
@@ -675,7 +729,7 @@ def score_diffs_ridge(
         
         # Get max y
         queried_df['bin'] = pd.cut(queried_df['score_diff'], bins = range(-250, 300, 50))
-        max_y = max(queried_df['bin'].value_counts())
+        max_y = max(queried_df[['bin', "team_icon"]].value_counts())
         
     # Bar chart for SnD & Control
     else:
@@ -686,7 +740,7 @@ def score_diffs_ridge(
                         alpha = 0.9)
         
         # Get max y
-        max_y = 0 if queried_df.empty else max(queried_df["score_diff"].value_counts())
+        max_y = 0 if queried_df.empty else max(queried_df[["score_diff", "team_icon"]].value_counts())
         
     # Add a horizontal line to the bottom of each plot
     g.map(plt.axhline, y = 0, lw = 2, clip_on = False)
@@ -697,21 +751,9 @@ def score_diffs_ridge(
     # Use min_x value for labels
     min_x = min_x_values_by_gamemode[gamemode_input]
 
-    # Get y_coord for label by using max_y
-    if max_y == 1:
-        y_coord = 0.05
-    elif max_y == 2:
-        y_coord = 0.1
-    elif max_y == 3:
-        y_coord = 0.25
-    elif max_y < 8:
-        y_coord = 0.35
-    else:
-        y_coord = 0.45
-
     # Add team name to each axs
     for i, ax in enumerate(g.axes.flat):
-        ax.text(min_x, y_coord, teams[i],
+        ax.text(min_x, max_y * 0.05, teams[i],
                 fontweight ='bold', fontsize = 15,
                 color = ax.lines[-1].get_color())
         
