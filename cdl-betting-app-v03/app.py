@@ -157,8 +157,9 @@ app_ui = ui.page_navbar(
                                     "Map 4 Hardpoint", 
                                     "Map 5 Search & Destroy"
                                 ]), 
-                ui.input_select(id = "map_name", label = "Map", selected = "All",
-                                choices = ["All"] + sorted(filter_maps(cdlDF)['map_name'].unique())), 
+                ui.input_select(id = "map_name", label = "Map", selected = "All", 
+                                choices = ['All', '6 Star', 'Karachi', 'Rio', 'Sub Base', 'Vista']),
+                                #choices = ["All"] + sorted(filter_maps(cdlDF)['map_name'].unique())), 
                 ui.input_select(id = "x_axis", label = "Player Card X-Axis", selected = "Time",
                                 choices = ["Time", "Score Differential"]),
 
@@ -349,6 +350,7 @@ app_ui = ui.page_navbar(
                                 choices = ["All", "Highrise", "Invasion", "Karachi"]), 
                 ui.input_select(id = "p2_x_axis", label = "Player Card X-Axis", selected = "Time",
                                 choices = ["Time", "Mapset", "Hardpoint Map", "Control Map"]), 
+                ui.input_action_button(id = "p2_reset_maps", label = "Reset maps")
                 
                 # BG & FG Colors for Sidebar
                 # bg = "#033c73",
@@ -572,6 +574,28 @@ def server(input, output, session):
     @reactive.calc
     def gamemode():
         return map_nums_to_gamemode[map_num()]
+    
+    # Reactive event to update map_name list based on map_num input
+    @reactive.effect
+    def _():
+        x = map_num()
+
+        if map_num() == 1 or map_num() == 4:
+            map_list = ['All', '6 Star', 'Karachi', 'Rio', 'Sub Base', 'Vista']
+        elif map_num() == 2 or map_num() == 5:
+            map_list = ['All', '6 Star', 'Highrise', 'Invasion', 'Karachi', 'Rio']
+        else:
+            map_list = ['All', 'Highrise', 'Invasion', 'Karachi']
+
+        ui.update_select("map_name", choices = map_list, selected = "All")
+    
+    # Reactive event to reset map filters | Page 2
+    @reactive.effect
+    @reactive.event(input.p2_reset_maps)
+    def __():
+        ui.update_select("p2_map_one", selected = "All")
+        ui.update_select("p2_map_two", selected = "All")
+        ui.update_select("p2_map_three", selected = "All")
     
     # Team A Logo
     @render.image
