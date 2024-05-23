@@ -617,27 +617,29 @@ def scale_time_axis(queried_df: pd.DataFrame, ax: plt.axes):
     else:
         min_x = dt.date.today()
         max_x = dt.date.today()
-    x_range = (max_x - min_x).days
+    x_range = max_x - min_x
 
     # Case 1: x_range < 6 days
-    if max_x - min_x < 6:
-        min_x = min_x - dt.timedelta(days = math.ceil(x_range / 2))
-        max_x = max_x + dt.timedelta(days = math.floor(x_range / 2))
+    if max_x - min_x < dt.timedelta(days = 6):
+        min_x = min_x - dt.timedelta(days = math.ceil((6 - x_range.days) / 2))
+        max_x = max_x + dt.timedelta(days = math.floor((6 - x_range.days) / 2))
         ax.set_xlim(min_x, max_x)
+        # Add 6 hours to min_x for labeling purposes
+        min_x += dt.timedelta(hours = 6)
 
     # Case 2: x_range <= 2 weeks
-    elif x_range <= 14:
+    elif x_range <= dt.timedelta(days = 14):
         ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday = (mdates.TU, mdates.SA)))
     
     # Case 3: x_range <= 1 month
-    elif x_range <= 31:
+    elif x_range <= dt.timedelta(days = 31):
         ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday = mdates.SA))
 
     # Case 4: x_range <= 2 months
-    elif x_range <= 64:
+    elif x_range <= dt.timedelta(days = 64):
         ax.xaxis.set_major_locator(mdates.DayLocator(bymonthday = [1, 15]))
 
-    # Return min_x to label PrizePicks line
+    # Return min_x for PrizePicks line label
     return min_x
 
 
@@ -661,11 +663,15 @@ def scale_score_diff_axis(queried_df: pd.DataFrame, ax: plt.axes, gamemode_input
         min_x, max_x = adjust_score_diff_ticks(gamemode_input, min_x, max_x)
         ax.set_xlim(min_x - 5, max_x + 5)
 
-    # Case 2: Search & Destroy & Control
-    elif max_x - min_x < 4:
-        ax.xaxis.set_major_locator(MultipleLocator(base = 1))
+    # Case 2: Search & Destroy & Control: need to add more ticks
+    elif gamemode_input != "Hardpoint" and max_x - min_x < 4:
         min_x, max_x = adjust_score_diff_ticks(gamemode_input, min_x, max_x)
         ax.set_xlim(min_x - 0.25, max_x + 0.25)
+        ax.xaxis.set_major_locator(MultipleLocator(base = 1))
+
+    # Case 3: Search & Destroy & Control, Set Major Locator only
+    elif gamemode_input != "Hardpoint" and max_x - min_x == 4:
+        ax.xaxis.set_major_locator(MultipleLocator(base = 1))
 
     # Return min_x to label PrizePicks line
     return min_x
@@ -684,13 +690,19 @@ def scale_kills_axis(queried_df: pd.DataFrame, ax: plt.axes, cur_line: float):
         
     # Scaling
     if y_range <= 1:
-        ax.set_ylim(min_y - 2.5, max_y + 2.5)
+        min_y -= 2.5
+        max_y += 2.5
+        ax.set_ylim(min_y, max_y)
         ax.yaxis.set_major_locator(MultipleLocator(base = 1))
     elif y_range < 4:
-        ax.set_ylim(min_y - 1.5, max_y + 1.5)
+        min_y -= 1.5
+        max_y += 1.5
+        ax.set_ylim(min_y, max_y)
         ax.yaxis.set_major_locator(MultipleLocator(base = 1))
     elif y_range == 4:
-        ax.set_ylim(min_y - 0.5, max_y + 0.5)
+        min_y -= 0.5
+        max_y += 0.5
+        ax.set_ylim(min_y, max_y)
         ax.yaxis.set_major_locator(MultipleLocator(base = 1))
     elif y_range < 16:
         ax.yaxis.set_major_locator(MultipleLocator(base = 2))
@@ -702,11 +714,11 @@ def scale_kills_axis(queried_df: pd.DataFrame, ax: plt.axes, cur_line: float):
         ax.yaxis.set_major_locator(MultipleLocator(base = 10))
 
     # Get y_pad for style_player_plot
-    y_pad = (max_y - min_y) * 0.04
+    y_pad = (max_y - min_y) * 0.05
 
     # Make y_pad negative if cur_line is close to the max y-limit
-    if (max_y - cur_line) / (max_y - min_y) < 0.15:
-        y_pad = -1 * y_pad
+    if (max_y - (cur_line + y_pad)) / (max_y - min_y) < 0.15:
+        y_pad = -1.2 * y_pad
 
     # Return y_pad
     return y_pad
