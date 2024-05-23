@@ -25,7 +25,8 @@ ICONS = {
     "check": fa.icon_svg("circle-check", height = icon_height), 
     "exclamation": fa.icon_svg("circle-exclamation", height = icon_height), 
     "flag": fa.icon_svg("flag", height = icon_height), 
-    "mound": fa.icon_svg("mound", height = icon_height)
+    "mound": fa.icon_svg("mound", height = icon_height), 
+    "circle_question": fa.icon_svg("circle-question", height = "16px"), 
 }
 
 # Function to render one ui.nav_panel per player | Page 1, Kills per Map
@@ -76,3 +77,10 @@ def p2_player_panel(player_num: str):
         )
     )
 
+# Function to display modal of helper text
+def info_modal():
+    ui.modal_show(
+        ui.modal(
+            footer = ui.modal_button("Close")
+        )
+    )

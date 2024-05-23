@@ -173,7 +173,10 @@ app_ui = ui.page_navbar(
             ui.layout_columns(
                 
                 # Column 1 of 6: Team A Logo
-                ui.output_image("team_a_logo", width = "120px", height = "120px"), 
+                ui.layout_columns(
+                    ui.output_image("team_a_logo", width = "120px", height = "120px"), 
+                    class_ = "d-flex justify-content-center"
+                ),
 
                 # Column 2 of 6: Placeholder Column
                 ui.layout_columns(),
@@ -196,10 +199,13 @@ app_ui = ui.page_navbar(
                 ui.layout_columns(),
                 
                 # Column 6 of 6: Team B Logo
-                ui.output_image("team_b_logo", width = "120px", height = "120px"), 
+                ui.layout_columns(
+                    ui.output_image("team_b_logo", width = "120px", height = "120px"), 
+                    class_ = "d-flex justify-content-center"
+                ),
 
                 # Row Height
-                height = "120px"
+                height = "120px", 
 
             ),
 
@@ -279,11 +285,31 @@ app_ui = ui.page_navbar(
                 ui.layout_column_wrap(
 
                     # Series Results
-                    ui.card(ui.card_header("Series Results"), 
-                            ui.output_plot("series_diffs")),
+                    ui.card(
+                        ui.card_header(
+                            "Series Results", 
+                            ui.tooltip(
+                                ui.span(ICONS["circle_question"]),
+                                "Distribution of Series Results by Team",
+                                placement = "right"
+                            ), 
+                            class_ = "d-flex justify-content-between align-items-center",
+                        ), 
+                        ui.output_plot("series_diffs")
+                    ),
                     # Map Results
-                    ui.card(ui.card_header("Map Results"), 
-                            ui.output_plot("score_diffs")),
+                    ui.card(
+                        ui.card_header(
+                            "Map Results", 
+                            ui.tooltip(
+                                ui.span(ICONS["circle_question"]),
+                                "Distribution of Map Results by Team, for selected Gamemode",
+                                placement = "right"
+                            ), 
+                            class_ = "d-flex justify-content-between align-items-center",
+                        ), 
+                        ui.output_plot("score_diffs")
+                    ),
 
                     width = 1, 
                 ),
@@ -361,7 +387,10 @@ app_ui = ui.page_navbar(
             ui.layout_columns(
                 
                 # Column 1 of 6: Team A Logo
-                ui.output_image("p2_team_a_logo", width = "120px", height = "120px"), 
+                ui.layout_columns(
+                    ui.output_image("p2_team_a_logo", width = "120px", height = "120px"), 
+                    class_ = "d-flex justify-content-center"
+                ), 
 
                 # Column 2 of 6: Placeholder Column
                 ui.layout_columns(),
@@ -384,7 +413,10 @@ app_ui = ui.page_navbar(
                 ui.layout_columns(),
                 
                 # Column 6 of 6: Team B Logo
-                ui.output_image("p2_team_b_logo", width = "120px", height = "120px"), 
+                ui.layout_columns(
+                    ui.output_image("p2_team_b_logo", width = "120px", height = "120px"), 
+                    class_ = "d-flex justify-content-center"
+                ),
 
                 # Row Height
                 height = "120px"
@@ -460,14 +492,27 @@ app_ui = ui.page_navbar(
                 ui.layout_column_wrap(
 
                     # Series Results
-                    ui.card(ui.card_header("Series Results"), 
-                            ui.output_plot("p2_series_diffs")),
+                    ui.card(
+                        ui.card_header(
+                            "Series Results",
+                            ui.tooltip(
+                                ui.span(ICONS["circle_question"]),
+                                "Distribution of Series Results by Team",
+                                placement = "right"
+                            ), 
+                            class_ = "d-flex justify-content-between align-items-center",
+                        ), 
+                        ui.output_plot("p2_series_diffs")),
 
                     # Map Results Differentials
                     ui.navset_card_pill(
                         ui.nav_panel("HP", ui.output_plot("p2_hp_score_diffs")), 
                         ui.nav_panel("Ctrl", ui.output_plot("p2_ctrl_score_diffs")),
-                        title = "Map Results"
+                        title = ui.tooltip(
+                            ui.span("Map Results ", ICONS["circle_question"]),
+                            "Distribution of Map Results by Team, for selected Gamemode",
+                            placement = "right"
+                        )
                         
                     ),
 
@@ -536,6 +581,8 @@ app_ui = ui.page_navbar(
 
 # Define server logic
 def server(input, output, session):
+
+    # info_modal()
     
     # Theme picker
     # shinyswatch.theme_picker_server()
