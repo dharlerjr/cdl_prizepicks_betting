@@ -57,22 +57,7 @@ team_colors = {
 # PrizePicks Color Variable
 prizepicks_color = "purple"
 
-# Helper function to round HP score differential to nearest ten
-def truncate(n, decimals = -1):
-    multiplier = 10 ** decimals
-    return int(int(n * multiplier) / multiplier)
 
-# Function to map y-axis range of kills to padding for y-axis limits
-def map_range(min: int, max:int):
-    if max - min <= 1:
-        return 2.5
-    elif max - min < 4:
-        return 1.5
-    elif max - min == 4:
-        return 0.5
-    else:
-        return 0
-    
 # Function to adjust score diff ticks based on gamemode and current range
 def adjust_score_diff_ticks(gamemode: str, min_x: int, max_x: int):
     if gamemode == "Control":
@@ -94,97 +79,6 @@ def adjust_score_diff_ticks(gamemode: str, min_x: int, max_x: int):
             if max_x - min_x < 50 and max_x != 250:
                 max_x += 10
     return min_x, max_x
-
-# Function to adjust time ticks based on current range
-def adjust_time_ticks(min_x, max_x):
-    while max_x - min_x < dt.timedelta(days = 6):
-        min_x -= dt.timedelta(days = 1)
-        if max_x - min_x < dt.timedelta(days = 6):
-            max_x += dt.timedelta(days = 1)
-    return min_x, max_x
-
-# Function to scale X & Y axes of player kills plots & return axes ranges
-def scale_fig(queried_df: pd.DataFrame, ax: plt.axes, x_axis: str, 
-              gamemode_input: str, cur_line: int):
-
-    # Time
-    if x_axis == "time":
-
-        # Set & Scale X-Axis, if necessary
-        match_dates = queried_df["match_date"].to_list()
-        if match_dates:
-            min_x = min(match_dates)
-            max_x = max(match_dates)
-        else:
-            min_x = dt.date.today()
-            max_x = dt.date.today()
-
-        # Case 1: max_x - min_x < 6 days
-        if max_x - min_x < dt.timedelta(days = 6):
-            min_x, max_x = adjust_time_ticks(min_x, max_x)
-            ax.set_xlim(min_x, max_x)
-
-        # Case 2: max_x - min_x <= 2 weeks
-        elif max_x - min_x <= dt.timedelta(days = 14):
-            ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday = (mdates.TU, mdates.SA)))
-        
-        # Case 3: max_x - min_x <= 1 month
-        elif max_x - min_x <= dt.timedelta(days = 31):
-            ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday = mdates.SA))
-
-        # Case 4: max_x - min_x <= 2 months
-        elif max_x - min_x <= dt.timedelta(days = 64):
-            ax.xaxis.set_major_locator(mdates.DayLocator(bymonthday = [1, 15]))
-    
-    # Score Diffs
-    if x_axis == "score_diff":
-
-        # Set & Scale X-Axis, if necessary
-        score_diffs = queried_df["score_diff"].to_list()
-        if score_diffs:
-            min_x = min(score_diffs)
-            max_x = max(score_diffs)
-        else:
-            min_x = 0
-            max_x = 0
-
-        # Case 1: Hardpoint
-        if gamemode_input == "Hardpoint" and max_x - min_x < 50:
-            ax.xaxis.set_major_locator(MultipleLocator(base = 10))
-            if min_x == max_x:
-                min_x = math.floor(min_x / 10) * 10
-                max_x = math.ceil(max_x / 10) * 10
-            else:
-                min_x = truncate(min_x)
-                max_x = truncate(max_x)
-            min_x, max_x = adjust_score_diff_ticks(gamemode_input, min_x, max_x)
-            ax.set_xlim(min_x - 5, max_x + 5)
-
-        # Case 2: Search & Destroy & Control
-        elif max_x - min_x < 4:
-            ax.xaxis.set_major_locator(MultipleLocator(base = 1))
-            min_x, max_x = adjust_score_diff_ticks(gamemode_input, min_x, max_x)
-            ax.set_xlim(min_x - 0.25, max_x + 0.25)
-
-    # Set & Scale Y-Axis, if necessary
-    kills = queried_df["kills"].to_list()
-    kills.append(cur_line)
-    min_y = min(kills)
-    max_y = max(kills)
-
-    # Case 1: Y-Axis Range <= 4
-    if max_y - min_y <= 4:
-        ax.yaxis.set_major_locator(MultipleLocator(base = 1))
-        pad = map_range(min_y, max_y)
-        min_y = min_y - pad
-        max_y = max_y + pad
-        ax.set_ylim(min_y, max_y)
-        
-    # Case 2: 12 < Y-Axis Range <= 18
-    elif max_y - min_y > 12 and max_y - min_y <= 18:
-        ax.yaxis.set_major_locator(MultipleLocator(base = 4))
-
-    return min_x, min_y, max_x, max_y
 
 
 # Team Distribution of Score Differentials by Map & Mode
@@ -279,8 +173,8 @@ def team_percent_maps_played(
 
     # Pie Chart
     ax.pie(queried_df["total"], labels = chart_labels,
-           labeldistance = 1.25, 
-           colors = palettes[gamemode_input])
+           labeldistance = 1.25, colors = palettes[gamemode_input], 
+           textprops = dict(family = "Segoe UI"))
     
     # Create donut by adding white inner circle with smaller radius
     my_circle = plt.Circle( (0,0), 0.65, color = 'white')
@@ -357,43 +251,19 @@ def player_kills_vs_time(
     sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], color = team_color)
     axs[1].axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
 
-    # Add title
-    axs[0].set_title(player_input, fontsize = 20, loc = "left", 
-                     family = "Segoe UI", fontweight = 400, 
-                     color = "#495057", pad = 5)
-
     # X- & Y-Axis Labels
-    axs[0].set_xlabel("")
-    axs[0].set_ylabel("Kills")
-    axs[1].set_xticks([])
+    axs[0].set_ylabel("Kills", family = "Segoe UI")
     axs[1].set_ylabel("")
+    axs[1].set_xticks([])
 
     # Date Ticks
     formatter = mdates.DateFormatter('%b %d')
     axs[0].xaxis.set_major_formatter(formatter)
 
-    # Scale X & Y Axes & get ranges
-    min_x, min_y, max_x, max_y = \
-        scale_fig(queried_df, axs[0], "time", gamemode_input, cur_line)
-
-    # Label current line from PrizePicks
-    plt.sca(axs[0])
-    bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
-            'pad': 0.4, 'boxstyle': 'round'}
-    if max_y - min_y <= 5:
-        y_pad = 0.25
-    elif max_y - min_y < 8:
-        y_pad = 0.5
-    else:
-        y_pad = 1
-    if max_y - cur_line <= 0.5:
-        y_pad = y_pad * -1
-    if max_x - min_x == dt.timedelta(days = 6):
-        min_x = min_x + dt.timedelta(days = 1)
-    plt.text(min_x, cur_line + y_pad, "Line: " + str(cur_line), bbox = bbox, color = "white")
-
-    # Set margins
-    plt.margins(0.05)
+    # Scale and style
+    min_x = scale_time_axis(queried_df, axs[0])
+    y_pad = scale_kills_axis(queried_df, axs[0], cur_line)
+    style_player_plot(axs[0], min_x, y_pad, player_input, cur_line)
     
 
 # Player Kills vs Score Differential by Map & Mode
@@ -442,37 +312,15 @@ def player_kills_vs_score_diff(
                   color = team_color)
     axs[1].axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
 
-    # Add title
-    axs[0].set_title(player_input, fontsize = 20, loc = "left", 
-                    family = "Segoe UI", fontweight = 400, 
-                    color = "#495057", pad = 5)
-
-    # X- & Y-Axis Labels
-    axs[0].set_xlabel("")
-    axs[0].set_ylabel("Kills")
-    axs[1].set_xticks([])
+    # X- & Y-Axis Label
+    axs[0].set_ylabel("Kills", family = "Segoe UI")
     axs[1].set_ylabel("")
+    axs[1].set_xticks([])
 
-    # Scale X & Y Axes & get ranges
-    min_x, min_y, max_x, max_y = \
-        scale_fig(queried_df, axs[0], "score_diff", gamemode_input, cur_line)
-
-    # Label current line from PrizePicks if queried_df is not empty
-    plt.sca(axs[0])
-    bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
-            'pad': 0.4, 'boxstyle': 'round'}
-    if max_y - min_y <= 5:
-        y_pad = 0.25
-    elif max_y - min_y < 8:
-        y_pad = 0.5
-    else:
-        y_pad = 1
-    if max_y - cur_line <= 0.5:
-        y_pad = y_pad * -1
-    plt.text(min_x, cur_line + y_pad, "Line: " + str(cur_line), bbox = bbox, color = "white")
-
-    # Set margins
-    plt.margins(0.05)
+    # Scale and style
+    min_x = scale_score_diff_axis(queried_df, axs[0], gamemode_input)
+    y_pad = scale_kills_axis(queried_df, axs[0], cur_line)
+    style_player_plot(axs[0], min_x, y_pad, player_input, cur_line)
 
 
 # Player Maps 1 - 3 Kills vs Time
@@ -505,7 +353,7 @@ def player_1_thru_3_kills_vs_time(
     axs[1].axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
 
     # X- & Y-Axis Labels
-    axs[0].set_ylabel("Maps 1 - 3 Kills", labelpad = 6)
+    axs[1].set_ylabel("Maps 1 - 3 Kills", labelpad = 6, family = "Segoe UI")
     axs[1].set_xticks([])
     axs[1].set_ylabel("")
 
@@ -513,10 +361,8 @@ def player_1_thru_3_kills_vs_time(
     formatter = mdates.DateFormatter('%b %d')
     axs[0].xaxis.set_major_formatter(formatter)
 
-    # Get min_x
-    min_x = min(queried_df["match_date"].to_list()).to_pydatetime()
-
     # Scale and style
+    min_x = scale_time_axis(queried_df, axs[0])
     y_pad = scale_kills_axis(queried_df, axs[0], cur_line)
     style_player_plot(axs[0], min_x, y_pad, player_input, cur_line)
 
@@ -548,10 +394,10 @@ def player_kills_by_map(
     ax.axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
 
     # Y-Axis Label
-    ax.set_ylabel("Kills")
+    ax.set_ylabel("Kills", family = "Segoe UI")
 
     # Scale and style
-    min_x = -0.5
+    min_x = ax.get_xlim()[0] + ((ax.get_xlim()[1] - ax.get_xlim()[0]) * 0.02)
     y_pad = scale_kills_axis(queried_df, ax, cur_line)
     style_player_plot(ax, min_x, y_pad, player_input, cur_line)
     
@@ -608,12 +454,11 @@ def player_kills_by_mapset(
     # X Ticks & Y-Axis Label
     ax.set_xticks(ticks = ['Hardpoint', 'Search & Destroy', 'Control'],
                   labels = [label_1, label_2, label_3])
-    ax.set_ylabel("Kills")
+    ax.set_ylabel("Kills", family = "Segoe UI")
 
     # Scale and style
-    min_x = -0.5
     y_pad = scale_kills_axis(queried_df, ax, 0)
-    style_player_plot(ax, min_x, y_pad, player_input, 0)
+    style_player_plot(ax, 0, y_pad, player_input, 0)
     
     
 # Ridgeline Plot of Team Score Diffs
@@ -688,8 +533,8 @@ def score_diffs_ridge(
 
     # Add team name to each axs and change font
     for i, ax in enumerate(g.axes.flat):
-        ax.text(min_x, max_y * 0.05, teams[i],
-                fontweight ='bold', fontsize = 15,
+        ax.text(min_x, max_y * 0.05, teams[i], family = "Segoe UI", 
+                fontweight ='bold', fontsize = 15, 
                 color = ax.lines[-1].get_color())
         
     # Overlap subplots
@@ -747,7 +592,7 @@ def series_diff_ridge(
 
     # Add team name to each axs
     for i, ax in enumerate(g.axes.flat):
-        ax.text(min_x, 0.45, teams[i],
+        ax.text(min_x, 0.45, teams[i], family = "Segoe UI", 
                 fontweight ='bold', fontsize = 15,
                 color = ax.lines[-1].get_color())
         
@@ -763,11 +608,68 @@ def series_diff_ridge(
 
 # Helper function to scale time axis of player plots
 def scale_time_axis(queried_df: pd.DataFrame, ax: plt.axes):
-    pass
+        
+    # Set & Scale X-Axis, if necessary
+    match_dates = queried_df["match_date"].to_list()
+    if match_dates:
+        min_x = min(match_dates)
+        max_x = max(match_dates)
+    else:
+        min_x = dt.date.today()
+        max_x = dt.date.today()
+    x_range = (max_x - min_x).days
+
+    # Case 1: x_range < 6 days
+    if max_x - min_x < 6:
+        min_x = min_x - dt.timedelta(days = math.ceil(x_range / 2))
+        max_x = max_x + dt.timedelta(days = math.floor(x_range / 2))
+        ax.set_xlim(min_x, max_x)
+
+    # Case 2: x_range <= 2 weeks
+    elif x_range <= 14:
+        ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday = (mdates.TU, mdates.SA)))
+    
+    # Case 3: x_range <= 1 month
+    elif x_range <= 31:
+        ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday = mdates.SA))
+
+    # Case 4: x_range <= 2 months
+    elif x_range <= 64:
+        ax.xaxis.set_major_locator(mdates.DayLocator(bymonthday = [1, 15]))
+
+    # Return min_x to label PrizePicks line
+    return min_x
+
 
 # Helper function to scale score_diff axis of player plots
 def scale_score_diff_axis(queried_df: pd.DataFrame, ax: plt.axes, gamemode_input: str):
-    pass
+    
+    # Get min_x and x_range
+    score_diffs = queried_df["score_diff"].to_list()
+    if score_diffs:
+        min_x = min(score_diffs)
+        max_x = max(score_diffs)
+    else:
+        min_x = 0
+        max_x = 0
+
+    # Case 1: Hardpoint
+    if gamemode_input == "Hardpoint" and max_x - min_x < 50:
+        ax.xaxis.set_major_locator(MultipleLocator(base = 10))
+        min_x = math.floor(min_x / 10) * 10
+        max_x = math.ceil(max_x / 10) * 10
+        min_x, max_x = adjust_score_diff_ticks(gamemode_input, min_x, max_x)
+        ax.set_xlim(min_x - 5, max_x + 5)
+
+    # Case 2: Search & Destroy & Control
+    elif max_x - min_x < 4:
+        ax.xaxis.set_major_locator(MultipleLocator(base = 1))
+        min_x, max_x = adjust_score_diff_ticks(gamemode_input, min_x, max_x)
+        ax.set_xlim(min_x - 0.25, max_x + 0.25)
+
+    # Return min_x to label PrizePicks line
+    return min_x
+
 
 # Helper function to scale kills axis of player plots
 def scale_kills_axis(queried_df: pd.DataFrame, ax: plt.axes, cur_line: float):
@@ -809,6 +711,7 @@ def scale_kills_axis(queried_df: pd.DataFrame, ax: plt.axes, cur_line: float):
     # Return y_pad
     return y_pad
 
+
 # Helper function to style player plots
 def style_player_plot(
         ax: plt.axes, min_x: float, y_pad: float,
@@ -826,6 +729,7 @@ def style_player_plot(
 
     # Label current line from PrizePicks
     if cur_line != 0:
+        plt.sca(ax)
         bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
                 'pad': 0.4, 'boxstyle': 'round'}
         plt.text(min_x, cur_line + y_pad, "Line: " + str(cur_line), bbox = bbox, color = "white")
