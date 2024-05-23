@@ -767,14 +767,14 @@ def server(input, output, session):
     @render.plot
     def team_a_maps_played():
         return team_percent_maps_played(
-            team_summaries_DF, team_icons[input.team_a()], gamemode()
+            team_summaries_DF, input.team_a(), gamemode()
         )
     
     # Team B Donut Chart of % Maps Played
     @render.plot
     def team_b_maps_played():
         return team_percent_maps_played(
-            team_summaries_DF, team_icons[input.team_b()], gamemode()
+            team_summaries_DF, input.team_b(), gamemode()
         )
     
     # Team A Series Differentials Histogram
@@ -1492,28 +1492,28 @@ def server(input, output, session):
     @render.plot
     def p2_team_a_hps():
         return team_percent_maps_played(
-            team_summaries_DF, team_icons[input.p2_team_a()], "Hardpoint"
+            team_summaries_DF, input.p2_team_a(), "Hardpoint"
         )
     
     # Team A Donut Chart of Controls Played | Page 2
     @render.plot
     def p2_team_a_ctrls():
         return team_percent_maps_played(
-            team_summaries_DF, team_icons[input.p2_team_a()], "Control"
+            team_summaries_DF, input.p2_team_a(), "Control"
         )
     
     # Team B Donut Chart of HPs Played | Page 2
     @render.plot
     def p2_team_b_hps():
         return team_percent_maps_played(
-            team_summaries_DF, team_icons[input.p2_team_b()], "Hardpoint"
+            team_summaries_DF, input.p2_team_b(), "Hardpoint"
         )
     
     # Team B Donut Chart of Controls Played | Page 2
     @render.plot
     def p2_team_b_ctrls():
         return team_percent_maps_played(
-            team_summaries_DF, team_icons[input.p2_team_b()], "Control"
+            team_summaries_DF, input.p2_team_b(), "Control"
         )
     
     # Ridgeline Plot of Series Diffs | Page 2

@@ -186,9 +186,6 @@ def scale_fig(queried_df: pd.DataFrame, ax: plt.axes, x_axis: str,
 
     return min_x, min_y, max_x, max_y
 
-# Set seaborn theme
-sns.set_theme(style = "darkgrid")
-
 
 # Team Distribution of Score Differentials by Map & Mode
 def team_score_diffs(
@@ -228,7 +225,7 @@ def team_score_diffs(
 
         # Get max y
         queried_df['bin'] = pd.cut(queried_df['score_diff'], bins = range(-250, 300, 50))
-        max_y = max(queried_df[['bin', 'team']].value_counts())
+        max_y = max(queried_df['bin'].value_counts())
 
     # Bar chart for SnD & Control
     else:
@@ -239,7 +236,7 @@ def team_score_diffs(
              color = team_color)
         
         # Get max y
-        max_y = 0 if queried_df.empty else max(queried_df[["score_diff", "team"]].value_counts())
+        max_y = 0 if queried_df.empty else max(queried_df["score_diff"].value_counts())
         
     # Set y-axis to integer values only
     step_y = 1 if max_y < 6 else 2
@@ -257,13 +254,13 @@ def team_score_diffs(
 
 # Team % of Maps Played by Mode
 def team_percent_maps_played(
-        team_summaries_input: pd.DataFrame, team_icon: str,
+        team_summaries_input: pd.DataFrame, team_input: str,
         gamemode_input: str
 ):
 
     # Filter team_summaries_input by team & mode
     queried_df = team_summaries_input[
-        (team_summaries_input["team_icon"] == team_icon) &
+        (team_summaries_input["team"] == team_input) &
         (team_summaries_input["gamemode"] == gamemode_input) &
         (team_summaries_input["map_name"] != "Overall") & 
         (team_summaries_input["total"] != 0)
@@ -344,9 +341,6 @@ def player_kills_vs_time(
             (cdlDF_input["gamemode"] == gamemode_input) & 
             (cdlDF_input["map_name"] == map_input)
             ]
-        
-    # Set match_date column to dt.date type
-    queried_df.loc[:, 'match_date'] = pd.to_datetime(queried_df['match_date']).dt.date
     
     # Create figure with gridspec
     f, axs = plt.subplots(1, 2, sharey = True, gridspec_kw = 
@@ -493,6 +487,8 @@ def player_1_thru_3_kills_vs_time(
     # Filter data for selected player
     queried_df = map_1_thru_3_totals_df_input[(map_1_thru_3_totals_df_input["player"] == player_input)]
 
+    # Convert match_date column to dt.datetime
+
     # Create figure with gridspec
     f, axs = plt.subplots(1, 2, sharey = True, gridspec_kw = 
                           dict(width_ratios=[2, 0.4], wspace = 0.05))
@@ -508,13 +504,7 @@ def player_1_thru_3_kills_vs_time(
     sns.stripplot(queried_df, y = "kills", jitter = 0.05, ax=axs[1], color = team_color)
     axs[1].axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
 
-    # Add title
-    axs[0].set_title(player_input, fontsize = 20, loc = "left", 
-                     family = "Segoe UI", fontweight = 400, 
-                     color = "#495057", pad = 5)
-
     # X- & Y-Axis Labels
-    axs[0].set_xlabel("")
     axs[0].set_ylabel("Maps 1 - 3 Kills", labelpad = 6)
     axs[1].set_xticks([])
     axs[1].set_ylabel("")
@@ -524,29 +514,11 @@ def player_1_thru_3_kills_vs_time(
     axs[0].xaxis.set_major_formatter(formatter)
 
     # Get min_x
-    min_x = min(queried_df["match_date"].to_list())
+    min_x = min(queried_df["match_date"].to_list()).to_pydatetime()
 
-    # Get y_range and y_pad for cur_line
-    kills = queried_df["kills"].to_list()
-    kills.append(cur_line)
-    y_range = max(kills) - min(kills) 
-    y_pad = y_range * 0.05
-
-
-    # Label current line from PrizePicks
-    plt.sca(axs[0])
-    bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
-            'pad': 0.4, 'boxstyle': 'round'}
-    plt.text(min_x, cur_line + y_pad, "Line: " + str(cur_line), bbox = bbox, color = "white")
-
-    # Set margins
-    plt.margins(0.05)
-
-    # Scaling
-    if y_range <= 20:
-        axs[0].yaxis.set_major_locator(MultipleLocator(base = 5))
-    else:
-        axs[0].yaxis.set_major_locator(MultipleLocator(base = 10))
+    # Scale and style
+    y_pad = scale_kills_axis(queried_df, axs[0], cur_line)
+    style_player_plot(axs[0], min_x, y_pad, player_input, cur_line)
 
 
 # Player Kills by Map & Mode
@@ -575,37 +547,15 @@ def player_kills_by_map(
                   palette = palettes[gamemode_input])
     ax.axhline(y = cur_line, color = prizepicks_color, linestyle = '--')
 
-    # Add title
-    ax.set_title(player_input, fontsize = 20, loc = "left", 
-                 family = "Segoe UI", fontweight = 400, 
-                 color = "#495057", pad = 5)
-    
-    # X- & Y-Axis Labels
-    ax.set_xlabel("")
+    # Y-Axis Label
     ax.set_ylabel("Kills")
 
-    # Get y_range and y_pad for cur_line
-    kills = queried_df["kills"].to_list()
-    kills.append(cur_line)
-    y_range = max(kills) - min(kills) 
-    y_pad = y_range * 0.05
-
-
-    # Label current line from PrizePicks
-    bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
-            'pad': 0.4, 'boxstyle': 'round'}
-    plt.text(-0.5, cur_line + y_pad, "Line: " + str(cur_line), bbox = bbox, color = "white")
-
-    # Set margins
-    plt.margins(0.05)
-
-    # Scaling
-    if y_range <= 20:
-        ax.yaxis.set_major_locator(MultipleLocator(base = 5))
-    else:
-        ax.yaxis.set_major_locator(MultipleLocator(base = 10))
+    # Scale and style
+    min_x = -0.5
+    y_pad = scale_kills_axis(queried_df, ax, cur_line)
+    style_player_plot(ax, min_x, y_pad, player_input, cur_line)
     
-
+    
 # Player Kills by Mapset
 def player_kills_by_mapset(
         cdlDF_input: pd.DataFrame, player_input: str, 
@@ -655,31 +605,17 @@ def player_kills_by_mapset(
     label_2 = f'{map_2_input} SnD' if map_2_input != "All" else "Search & Destroy"
     label_3 = f'{map_3_input} Ctrl' if map_3_input != "All" else "Control"
 
-    # Styling
-    ax.set_xlabel("")
+    # X Ticks & Y-Axis Label
     ax.set_xticks(ticks = ['Hardpoint', 'Search & Destroy', 'Control'],
-                  labels = [label_1, label_2, label_3], family = "Segoe UI")
+                  labels = [label_1, label_2, label_3])
     ax.set_ylabel("Kills")
 
-    # Add title
-    ax.set_title(player_input, fontsize = 20, loc = "left", 
-                 family = "Segoe UI", fontweight = 400, 
-                 color = "#495057", pad = 5)
+    # Scale and style
+    min_x = -0.5
+    y_pad = scale_kills_axis(queried_df, ax, 0)
+    style_player_plot(ax, min_x, y_pad, player_input, 0)
     
-    # Get y_range and y_pad for cur_line
-    kills = queried_df["kills"].to_list()
-    y_range = max(kills) - min(kills) 
-
-    # Set margins
-    plt.margins(0.05)
-
-    # Scaling
-    if y_range <= 20:
-        ax.yaxis.set_major_locator(MultipleLocator(base = 5))
-    else:
-        ax.yaxis.set_major_locator(MultipleLocator(base = 10))
     
-
 # Ridgeline Plot of Team Score Diffs
 def score_diffs_ridge(        
         cdlDF_input: pd.DataFrame, team_icon_x: str, team_icon_y: str,
@@ -750,7 +686,7 @@ def score_diffs_ridge(
     # Use min_x value for labels
     min_x = min_x_values_by_gamemode[gamemode_input]
 
-    # Add team name to each axs
+    # Add team name to each axs and change font
     for i, ax in enumerate(g.axes.flat):
         ax.text(min_x, max_y * 0.05, teams[i],
                 fontweight ='bold', fontsize = 15,
@@ -764,6 +700,7 @@ def score_diffs_ridge(
     g.set(yticks = [], ylabel = "", xlabel = "", 
           xticks = gamemode_xticks[gamemode_input])
     g.despine(bottom = True, left = True)
+    g.tick_params(labelfontfamily = "Segoe UI")
 
 
 # Ridgeline Plot of Team Series Diffs
@@ -821,3 +758,77 @@ def series_diff_ridge(
     g.set_titles("")
     g.set(xticks = [-3, 0, 3], yticks = [], ylabel = "", xlabel = "")
     g.despine(bottom = True, left = True)
+    g.tick_params(labelfontfamily = "Segoe UI")
+
+
+# Helper function to scale time axis of player plots
+def scale_time_axis(queried_df: pd.DataFrame, ax: plt.axes):
+    pass
+
+# Helper function to scale score_diff axis of player plots
+def scale_score_diff_axis(queried_df: pd.DataFrame, ax: plt.axes, gamemode_input: str):
+    pass
+
+# Helper function to scale kills axis of player plots
+def scale_kills_axis(queried_df: pd.DataFrame, ax: plt.axes, cur_line: float):
+    
+    # Get y_range and y_pad for cur_line
+    kills = queried_df["kills"].to_list()
+    if cur_line != 0:
+        kills.append(cur_line)
+    min_y = min(kills) if kills else 5
+    max_y = max(kills) if kills else 10
+    y_range = max_y - min_y
+        
+    # Scaling
+    if y_range <= 1:
+        ax.set_ylim(min_y - 2.5, max_y + 2.5)
+        ax.yaxis.set_major_locator(MultipleLocator(base = 1))
+    elif y_range < 4:
+        ax.set_ylim(min_y - 1.5, max_y + 1.5)
+        ax.yaxis.set_major_locator(MultipleLocator(base = 1))
+    elif y_range == 4:
+        ax.set_ylim(min_y - 0.5, max_y + 0.5)
+        ax.yaxis.set_major_locator(MultipleLocator(base = 1))
+    elif y_range < 16:
+        ax.yaxis.set_major_locator(MultipleLocator(base = 2))
+    elif y_range < 25:
+        ax.yaxis.set_major_locator(MultipleLocator(base = 4))
+    elif y_range < 32:
+        ax.yaxis.set_major_locator(MultipleLocator(base = 5))
+    else:
+        ax.yaxis.set_major_locator(MultipleLocator(base = 10))
+
+    # Get y_pad for style_player_plot
+    y_pad = (max_y - min_y) * 0.04
+
+    # Make y_pad negative if cur_line is close to the max y-limit
+    if (max_y - cur_line) / (max_y - min_y) < 0.15:
+        y_pad = -1 * y_pad
+
+    # Return y_pad
+    return y_pad
+
+# Helper function to style player plots
+def style_player_plot(
+        ax: plt.axes, min_x: float, y_pad: float,
+        player_input: str, cur_line: float
+        ):
+    
+    # Add title
+    ax.set_title(player_input, fontsize = 20, loc = "left", 
+                 family = "Segoe UI", fontweight = 400, 
+                 color = "#495057", pad = 5)
+    
+    # Styling
+    ax.set_xlabel("")
+    ax.tick_params(labelfontfamily = "Segoe UI")
+
+    # Label current line from PrizePicks
+    if cur_line != 0:
+        bbox = {'facecolor': prizepicks_color, 'alpha': 0.5, 
+                'pad': 0.4, 'boxstyle': 'round'}
+        plt.text(min_x, cur_line + y_pad, "Line: " + str(cur_line), bbox = bbox, color = "white")
+
+    # Set margins
+    plt.margins(0.05)

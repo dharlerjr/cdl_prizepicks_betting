@@ -353,7 +353,6 @@ def merge_player_props(old_props: pd.DataFrame, new_props: pd.DataFrame, rosters
     new_props = new_props.reset_index(drop=True)
     return new_props
     
-
 # Function to build dataframe of previous player Maps 1 - 3 Kill totals based
 # on analysis performed in testing_maps_1_thru_3_kills.ipynb 
 def build_1_thru_3_totals(cdlDF_input: pd.DataFrame):
@@ -390,5 +389,8 @@ def build_1_thru_3_totals(cdlDF_input: pd.DataFrame):
     
     # 7. Sort values & return
     adj_1_thru_3_totals_df = adj_1_thru_3_totals_df.sort_values(['match_id', 'team_abbr', "player"], ignore_index = True)
+
+    # 8. Convert match_date column to datetime
+    adj_1_thru_3_totals_df["match_date"] = pd.to_datetime(adj_1_thru_3_totals_df['match_date'])
     
     return adj_1_thru_3_totals_df
