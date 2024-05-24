@@ -60,11 +60,11 @@ Multiple versions of the same Shiny application for betting on CDL player props 
     - Combined boxplot and scatterplot into single matplotlib figure by using gridspecs
   - Added new visualizations
     - Donut chart to display each team's most-played maps
-    - Histograms, eventually replaced with ridgeline plots, to display series and map differentials for each team
-    - Added Last Match Value Box
+    - Replaced faceted plots with ridgeline plots
+    - Added Value Box to display date of Last Head-to-Head Match
   - Added **app_helpers.py** to condense **app.py** code
 - Added 2nd Page: Player Kills per Maps 1 - 3
-  - Identical format as Page 1, with more user inputs
+  - Identical format as Page 1, with more user inputs, and visualizations focused on the Kills per Maps 1 - 3 statistic
 - Added 4th Page: Vetoes
   - Built Excel sheet of map vetoes for each match and loaded into pandas dataframe
   - Created histograms to visualize pick and ban selections for each team
