@@ -95,7 +95,7 @@ start_date = '2024-04-12'
 cdlDF = load_and_clean_cdl_data()
 
 # Build Maps 1 - 3 Totals Dataframe
-adj_1_thru_3_totals = build_1_thru_3_totals(cdlDF).copy()
+adj_1_thru_3_totals = build_1_thru_3_totals(cdlDF)
 
 # Build series summaries
 series_score_diffs = build_series_summaries(cdlDF).copy()
@@ -303,7 +303,7 @@ app_ui = ui.page_navbar(
                             "Map Results", 
                             ui.tooltip(
                                 ui.span(ICONS["circle_question"]),
-                                "Distribution of Map Results by Team, for selected Gamemode",
+                                "Distribution of Map Results by Team, for selected Map & Mode",
                                 placement = "right"
                             ), 
                             class_ = "d-flex justify-content-between align-items-center",
@@ -510,7 +510,7 @@ app_ui = ui.page_navbar(
                         ui.nav_panel("Ctrl", ui.output_plot("p2_ctrl_score_diffs")),
                         title = ui.tooltip(
                             ui.span("Map Results ", ICONS["circle_question"]),
-                            "Distribution of Map Results by Team, for selected Gamemode",
+                            "Distribution of Map Results by Team, for selected Map & Mode",
                             placement = "right"
                         )
                         
@@ -562,11 +562,63 @@ app_ui = ui.page_navbar(
     # 4th Page: Map Vetoes
     ui.nav_panel("Vetoes",
 
-        # ui.card(ui.card_header("Vetoes"), 
-        #         ui.output_data_frame("vetoes"), 
-        #         full_screen = True),
+        # Sidebar Layout
+        ui.layout_sidebar(
 
+            # Sidebar with inputs
+            ui.sidebar(
+                # Inputs
+                ui.input_select(id = "p4_team_a", label = "Team A", selected = "Toronto Ultra",
+                                choices = sorted(cdlDF['team'].unique())), 
+                ui.input_select(id = "p4_team_b", label = "Team B", selected = "Los Angeles Thieves",
+                                choices = sorted(cdlDF['team'].unique())), 
+                ui.input_select(id = "p4_gamemode", label = "Gamemode", selected = "New York Subliners",
+                                choices = ["Hardpoint", "Search & Destroy", "Control"]), 
+                ui.input_slider(id = "p4_stage", label = "Stage", min = 1, max = 4, value = [1, 4])
+            ), 
 
+            # Row 1 of 3: Team Logos
+            ui.layout_columns(
+                ui.output_image("p4_team_a_logo", width = "120px", height = "120px"), 
+                ui.output_image("p4_team_b_logo", width = "120px", height = "120px"), 
+                class_ = "d-flex justify-content-around", 
+                height = "120px"
+            ),
+
+            # Row 2 of 3
+            ui.layout_columns(
+
+                # Column 1: Team A Picks
+                ui.card(ui.card_header(ui.output_text("p4_team_a_picks_title")),
+                        ui.output_plot("team_a_picks")),
+                # Column 2: Team A Bans
+                ui.card(ui.card_header(ui.output_text("p4_team_a_bans_title")),
+                        ui.output_plot("team_a_bans")),
+                # Column 3: Team B Picks
+                ui.card(ui.card_header(ui.output_text("p4_team_b_picks_title")),
+                        ui.output_plot("team_b_picks")),
+                # Column 4: Team B Bans
+                ui.card(ui.card_header(ui.output_text("p4_team_b_bans_title")),
+                        ui.output_plot("team_b_bans")),
+
+                # Row Height
+                height = "420px"
+
+            ), 
+
+            # Row 3 of 3
+            ui.layout_columns(
+                
+                # Vetoes Datatable
+                ui.card(ui.card_header("Vetoes"), 
+                        ui.output_data_frame("vetoes"), 
+                        full_screen = True),
+
+                # Column Widths
+                col_widths = [-2, 8, -2]
+            )
+        
+        )
     ),
 
     # App Title
@@ -1092,7 +1144,7 @@ def server(input, output, session):
     # Player One O/U Calcs
     @reactive.calc
     def player_1_ou_stats():
-        return player_over_under_percentage(
+        return player_ou(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'], 
             gamemode(), 
@@ -1103,7 +1155,7 @@ def server(input, output, session):
     # Player Two O/U Calcs
     @reactive.calc
     def player_2_ou_stats():
-        return player_over_under_percentage(
+        return player_ou(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'], 
             gamemode(), 
@@ -1114,7 +1166,7 @@ def server(input, output, session):
     # Player Three O/U Calcs
     @reactive.calc
     def player_3_ou_stats():
-        return player_over_under_percentage(
+        return player_ou(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[2]['player'], 
             gamemode(), 
@@ -1125,7 +1177,7 @@ def server(input, output, session):
     # Player Four O/U Calcs
     @reactive.calc
     def player_4_ou_stats():
-        return player_over_under_percentage(
+        return player_ou(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_a()].iloc[3]['player'], 
             gamemode(), 
@@ -1136,7 +1188,7 @@ def server(input, output, session):
     # Player Five O/U Calcs
     @reactive.calc
     def player_5_ou_stats():
-        return player_over_under_percentage(
+        return player_ou(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[0]['player'], 
             gamemode(), 
@@ -1147,7 +1199,7 @@ def server(input, output, session):
     # Player Six O/U Calcs
     @reactive.calc
     def player_6_ou_stats():
-        return player_over_under_percentage(
+        return player_ou(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[1]['player'], 
             gamemode(), 
@@ -1158,7 +1210,7 @@ def server(input, output, session):
     # Player Seven O/U Calcs
     @reactive.calc
     def player_7_ou_stats():
-        return player_over_under_percentage(
+        return player_ou(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[2]['player'], 
             gamemode(), 
@@ -1169,7 +1221,7 @@ def server(input, output, session):
     # Player Eight O/U Calcs
     @reactive.calc
     def player_8_ou_stats():
-        return player_over_under_percentage(
+        return player_ou(
             cdlDF, 
             rostersDF[rostersDF['team'] == input.team_b()].iloc[3]['player'], 
             gamemode(), 
@@ -1615,7 +1667,7 @@ def server(input, output, session):
             team_icons[input.p2_team_a()], team_icons[input.p2_team_b()], 
             team_a_color, team_b_color, 
             "Control", 
-            input.p2_map_one()
+            input.p2_map_three()
             )
     
     # Datagrid of Player Kills and Map Results for Selected Teams | Page 2
@@ -2015,6 +2067,190 @@ def server(input, output, session):
                 input.p2_map_three()
             )
         
+    # Player One O/U Calcs | Page 2
+    @reactive.calc
+    def p2_player_1_ou_stats():
+        return player_1_thru_3_ou(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[0]['player'], 
+            p2_player_1_line()
+        )
+    
+    # Player Two O/U Calcs | Page 2
+    @reactive.calc
+    def p2_player_2_ou_stats():
+        return player_1_thru_3_ou(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[1]['player'], 
+            p2_player_2_line()
+        )
+    
+    # Player Three O/U Calcs | Page 2
+    @reactive.calc
+    def p2_player_3_ou_stats():
+        return player_1_thru_3_ou(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[2]['player'], 
+            p2_player_3_line()
+        )
+    
+    # Player Four O/U Calcs | Page 2
+    @reactive.calc
+    def p2_player_4_ou_stats():
+        return player_1_thru_3_ou(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[3]['player'], 
+            p2_player_4_line()
+        )
+    
+    # Player Five O/U Calcs | Page 2
+    @reactive.calc
+    def p2_player_5_ou_stats():
+        return player_1_thru_3_ou(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[0]['player'], 
+            p2_player_5_line()
+        )
+    
+    # Player Six O/U Calcs | Page 2
+    @reactive.calc
+    def p2_player_6_ou_stats():
+        return player_1_thru_3_ou(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[1]['player'], 
+            p2_player_6_line()
+        )
+    
+    # Player Seven O/U Calcs | Page 2
+    @reactive.calc
+    def p2_player_7_ou_stats():
+        return player_1_thru_3_ou(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[2]['player'], 
+            p2_player_7_line()
+        )
+    
+    # Player Eight O/U Calcs | Page 2
+    @reactive.calc
+    def p2_player_8_ou_stats():
+        return player_1_thru_3_ou(
+            adj_1_thru_3_totals, 
+            rostersDF[rostersDF['team'] == input.p2_team_b()].iloc[3]['player'], 
+            p2_player_8_line()
+        )
+    
+    # Player One O/U % | Page 2
+    @render.text
+    def p2_player_1_ou():
+        over_under, percentage, overs, unders, hooks = p2_player_1_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+    
+    # Player Two O/U % | Page 2
+    @render.text
+    def p2_player_2_ou():
+        over_under, percentage, overs, unders, hooks = p2_player_2_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+    
+    # Player Three O/U % | Page 2
+    @render.text
+    def p2_player_3_ou():
+        over_under, percentage, overs, unders, hooks = p2_player_3_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+    
+    # Player Four O/U % | Page 2
+    @render.text
+    def p2_player_4_ou():
+        over_under, percentage, overs, unders, hooks = p2_player_4_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+    
+    # Player Five O/U % | Page 2
+    @render.text
+    def p2_player_5_ou():
+        over_under, percentage, overs, unders, hooks = p2_player_5_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+    
+    # Player Six O/U % | Page 2
+    @render.text
+    def p2_player_6_ou():
+        over_under, percentage, overs, unders, hooks = p2_player_6_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+    
+    # Player Seven O/U % | Page 2
+    @render.text
+    def p2_player_7_ou():
+        over_under, percentage, overs, unders, hooks = p2_player_7_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+    
+    # Player Eight O/U % | Page 2
+    @render.text
+    def p2_player_8_ou():
+        over_under, percentage, overs, unders, hooks = p2_player_8_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
+    
+    # Player One O/U Icon | Page 2
+    @render.ui
+    def p2_player_1_ou_icon():
+        over_under = p2_player_1_ou_stats()[0]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
+    
+    # Player Two O/U Icon | Page 2
+    @render.ui
+    def p2_player_2_ou_icon():
+        over_under = p2_player_2_ou_stats()[0]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
+    
+    # Player Three O/U Icon | Page 2
+    @render.ui
+    def p2_player_3_ou_icon():
+        over_under = p2_player_3_ou_stats()[0]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
+    
+    # Player Four O/U Icon | Page 2
+    @render.ui
+    def p2_player_4_ou_icon():
+        over_under = p2_player_4_ou_stats()[0]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
+    
+    # Player Five O/U Icon | Page 2
+    @render.ui
+    def p2_player_5_ou_icon():
+        over_under = p2_player_5_ou_stats()[0]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
+    
+    # Player Six O/U Icon | Page 2
+    @render.ui
+    def p2_player_6_ou_icon():
+        over_under = p2_player_6_ou_stats()[0]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
+    
+    # Player Seven O/U Icon | Page 2
+    @render.ui
+    def p2_player_7_ou_icon():
+        over_under = p2_player_7_ou_stats()[0]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
+    
+    # Player Eight O/U Icon | Page 2
+    @render.ui
+    def p2_player_8_ou_icon():
+        over_under = p2_player_8_ou_stats()[0]
+        return ICONS["chevron_up"] if over_under == "Over" else ICONS["chevron_down"]
+        
     # Player 1 O/U Streak | Page 2
     @render.ui
     def p2_player_1_ou_streak():
@@ -2094,6 +2330,40 @@ def server(input, output, session):
             p2_player_8_line()
         )
         return f"{ou} {streak}"
+    
+    # Team A Logo | Page 4
+    @render.image
+    def p4_team_a_logo():
+        img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.p4_team_a()], 
+                        "width": "120px", "height": "120px"}
+        return img
+    
+    # Team B Logo | Page 4
+    @render.image
+    def p4_team_b_logo():
+        img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.p4_team_b()], 
+                        "width": "120px", "height": "120px"}
+        return img
+    
+    # Title for Team A Picks Bar Chart | Page 4
+    @render.text
+    def p4_team_a_picks_title():
+        return f"{team_icons[input.p4_team_a()]} {input.p4_gamemode()} Picks"
+    
+    # Title for Team A Bans Bar Chart | Page 4
+    @render.text
+    def p4_team_a_bans_title():
+        return f"{team_icons[input.p4_team_a()]} {input.p4_gamemode()} Bans"
+    
+    # Title for Team B Picks Bar Chart | Page 4
+    @render.text
+    def p4_team_b_picks_title():
+        return f"{team_icons[input.p4_team_b()]} {input.p4_gamemode()} Picks"
+    
+    # Title for Team B Bans Bar Chart | Page 4
+    @render.text
+    def p4_team_b_bans_title():
+        return f"{team_icons[input.p4_team_b()]} {input.p4_gamemode()} Bans"
         
 
 # Run app

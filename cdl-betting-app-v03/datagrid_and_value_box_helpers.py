@@ -261,7 +261,7 @@ def compute_h2h_series_record(cdlDF_input: pd.DataFrame, team_x: str, team_y: st
             return f"{wins} - {losses}"
         
 # Function to compute player over/under %
-def player_over_under_percentage(
+def player_ou(
         cdlDF_input: pd.DataFrame, player_input: str, 
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
@@ -388,6 +388,35 @@ def get_match_ids(
     ][['match_id']]
 
     return player_match_ids['match_id'].to_list()
+
+# Function to compute player maps 1 - 3 kills over/under %
+def player_1_thru_3_ou(     
+    maps_1_thru_3_DF_input: pd.DataFrame, player_input: str, cur_line: float, 
+):
+            
+    # Query data
+    queried_df = maps_1_thru_3_DF_input[
+        maps_1_thru_3_DF_input["player"] == player_input
+    ]
+
+    # If the dataframe is empty, return "Never Played"
+    if queried_df.empty:
+        return "Never Played", "", "", "", ""
+
+    # Compute overs, unders, and hooks
+    overs = len(queried_df[queried_df['kills'] > cur_line])
+    unders = len(queried_df[queried_df['kills'] < cur_line])
+    hooks = len(queried_df[queried_df['kills'] == cur_line])
+
+    # Compute over & under percentages
+    over_percentage = int(round((overs / len(queried_df) * 100), 0))
+    under_percentage = int(round((unders / len(queried_df) * 100), 0))
+    
+    # Return recommended bet based on percentages
+    if over_percentage >= under_percentage:
+        return "Over", str(over_percentage), str(overs), str(unders), str(hooks)
+    else:
+        return "Under", str(under_percentage), str(overs), str(unders), str(hooks)
 
 # Function to compute Player O/U Streak
 def player_1_thru_3_ou_streak(
