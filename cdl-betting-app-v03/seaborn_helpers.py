@@ -748,3 +748,37 @@ def style_player_plot(
 
     # Set margins
     plt.margins(0.05)
+
+
+# Function to create bar chart of vetoes based on user inputs
+def chart_vetoes(vetoes_input: pd.DataFrame, team_input: str, select_input: str, gamemode_input: str, team_color: str, stage_min = 1, stage_max = 4):
+
+    # Set seaborn theme
+    sns.set_theme(style="white", rc={"axes.facecolor": (0, 0, 0, 0)})
+    
+    # Query vetoes
+    queried_df = vetoes_input[
+        (vetoes_input["team"] == team_input) &
+        (vetoes_input["select"] == select_input) &
+        (vetoes_input["gamemode"] == gamemode_input) &
+        ((vetoes_input["stage"] >= stage_min) &
+        (vetoes_input["stage"] <= stage_max))
+    ]
+
+    # Create the figure
+    fig, ax = plt.subplots()
+
+    # Plot the bar chart
+    sns.countplot(data = queried_df, y = "map_name", color = team_color, 
+                  order = queried_df.map_name.value_counts().index)
+    
+    # Add counts
+    ax.bar_label(ax.containers[0], padding = 4, family = "Segoe UI")
+        
+    # Styling
+    plt.xticks([])
+    plt.xlabel("")
+    plt.ylabel("")
+    plt.yticks(family = "Segoe UI")
+    sns.despine(bottom = True, left = True)
+    plt.margins(0.05)

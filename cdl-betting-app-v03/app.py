@@ -110,6 +110,7 @@ team_summaries_DF = build_team_summaries(cdlDF).copy()
 rostersDF = build_rosters(cdlDF).copy()
 
 # Load vetoes
+vetoes = load_vetoes()
 
 
 # Compute CDL Standings for Major III Qualifiers
@@ -580,7 +581,7 @@ app_ui = ui.page_navbar(
                 ui.input_slider(id = "p4_stage", label = "Stage", min = 1, max = 4, value = [1, 4])
             ), 
 
-            # Row 1 of 3: Team Logos
+            # Row 1 of 2: Team Logos
             ui.layout_columns(
                 ui.output_image("p4_team_a_logo", width = "120px", height = "120px"), 
                 ui.output_image("p4_team_b_logo", width = "120px", height = "120px"), 
@@ -588,7 +589,7 @@ app_ui = ui.page_navbar(
                 height = "120px"
             ),
 
-            # Row 2 of 3
+            # Row 2 of 2
             ui.layout_columns(
 
                 # Column 1: Team A Picks
@@ -597,6 +598,9 @@ app_ui = ui.page_navbar(
                 # Column 2: Team A Bans
                 ui.card(ui.card_header(ui.output_text("p4_team_a_bans_title")),
                         ui.output_plot("team_a_bans")),
+                    ui.card(ui.card_header("Vetoes"), 
+                        ui.output_data_frame("vetoes"), 
+                        full_screen = True),
                 # Column 3: Team B Picks
                 ui.card(ui.card_header(ui.output_text("p4_team_b_picks_title")),
                         ui.output_plot("team_b_picks")),
@@ -604,23 +608,13 @@ app_ui = ui.page_navbar(
                 ui.card(ui.card_header(ui.output_text("p4_team_b_bans_title")),
                         ui.output_plot("team_b_bans")),
 
+                # Col Widths
+                col_widths = [2, 2, 4, 2, 2],
+
                 # Row Height
                 height = "420px"
 
-            ), 
-
-            # Row 3 of 3
-            ui.layout_columns(
-                
-                # Vetoes Datatable
-                ui.card(ui.card_header("Vetoes"), 
-                        ui.output_data_frame("vetoes"), 
-                        full_screen = True),
-
-                # Column Widths
-                col_widths = [-2, 8, -2]
             )
-        
         )
     ),
 
@@ -2367,6 +2361,34 @@ def server(input, output, session):
     @render.text
     def p4_team_b_bans_title():
         return f"{team_icons[input.p4_team_b()]} {input.p4_gamemode()} Bans"
+    
+    # Function to chart Team A Picks for Selected Gamemode | Page 4 
+    @render.plot
+    def team_a_picks():
+        return chart_vetoes(vetoes, input.p4_team_a(), "pick", 
+                            input.p4_gamemode(), team_a_color, 
+                            input.p4_stage()[0], input.p4_stage()[1])
+    
+    # Function to chart Team A Bans for Selected Gamemode | Page 4 
+    @render.plot
+    def team_a_bans():
+        return chart_vetoes(vetoes, input.p4_team_a(), "ban", 
+                            input.p4_gamemode(), team_a_color, 
+                            input.p4_stage()[0], input.p4_stage()[1])
+    
+    # Function to chart Team B Picks for Selected Gamemode | Page 4 
+    @render.plot
+    def team_b_picks():
+        return chart_vetoes(vetoes, input.p4_team_b(), "pick", 
+                            input.p4_gamemode(), team_b_color, 
+                            input.p4_stage()[0], input.p4_stage()[1])
+    
+    # Function to chart Team B Bans for Selected Gamemode | Page 4 
+    @render.plot
+    def team_b_bans():
+        return chart_vetoes(vetoes, input.p4_team_b(), "ban", 
+                            input.p4_gamemode(), team_b_color, 
+                            input.p4_stage()[0], input.p4_stage()[1])
         
 
 # Run app

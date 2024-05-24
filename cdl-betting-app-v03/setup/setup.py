@@ -400,7 +400,7 @@ def build_1_thru_3_totals(cdlDF_input: pd.DataFrame):
 def load_vetoes():
     
     # Read in data
-    vetoes = pd.read_excel("data/vetoes.xlsx")
+    vetoes = pd.read_excel("03 CDL PrizePicks Betting\\cdl_prizepicks_betting\\cdl-betting-app-v03\\data\\vetoes.xlsx")
 
     # Pivot and sort
     vetoes = pd.melt(
