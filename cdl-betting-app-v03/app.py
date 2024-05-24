@@ -581,7 +581,7 @@ app_ui = ui.page_navbar(
                 ui.input_slider(id = "p4_stage", label = "Stage", min = 1, max = 4, value = [1, 4])
             ), 
 
-            # Row 1 of 2: Team Logos
+            # Row 1 of 3: Team Logos
             ui.layout_columns(
                 ui.output_image("p4_team_a_logo", width = "120px", height = "120px"), 
                 ui.output_image("p4_team_b_logo", width = "120px", height = "120px"), 
@@ -589,7 +589,7 @@ app_ui = ui.page_navbar(
                 height = "120px"
             ),
 
-            # Row 2 of 2
+            # Row 2 of 3
             ui.layout_columns(
 
                 # Column 1: Team A Picks
@@ -598,9 +598,6 @@ app_ui = ui.page_navbar(
                 # Column 2: Team A Bans
                 ui.card(ui.card_header(ui.output_text("p4_team_a_bans_title")),
                         ui.output_plot("team_a_bans")),
-                    ui.card(ui.card_header("Vetoes"), 
-                        ui.output_data_frame("vetoes"), 
-                        full_screen = True),
                 # Column 3: Team B Picks
                 ui.card(ui.card_header(ui.output_text("p4_team_b_picks_title")),
                         ui.output_plot("team_b_picks")),
@@ -608,12 +605,23 @@ app_ui = ui.page_navbar(
                 ui.card(ui.card_header(ui.output_text("p4_team_b_bans_title")),
                         ui.output_plot("team_b_bans")),
 
-                # Col Widths
-                col_widths = [2, 2, 4, 2, 2],
-
                 # Row Height
                 height = "420px"
 
+            ), 
+
+            # Row 3 of 3
+            ui.layout_columns(
+                
+                ui.card(ui.card_header("Vetoes"), 
+                    ui.output_data_frame("vetoes"), 
+                    full_screen = True),
+
+                # Column Widths
+                col_widths = [-2, 8, -2],
+
+                # Row Height
+                height = "360px"
             )
         )
     ),

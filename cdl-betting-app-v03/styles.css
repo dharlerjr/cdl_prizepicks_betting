@@ -35,9 +35,17 @@ body {
     --bs-nav-link-hover-color: #033c73;
 }
 
-/* .popover {
-    --bs-popover-header-bg: #033c73;
-    --bs-popover-header-color: #ffffff;
-} */
+.control-label {
+    font-size: 16px;
+}
 
+.irs--shiny .irs-bar {
+    background: #033c73;
+    border-top: 1px solid #033c73;
+    border-bottom: 1px solid #033c73;
+}
+
+.irs--shiny .irs-from, .irs--shiny .irs-to {
+    background-color: #033c73;
+}
 

@@ -755,7 +755,7 @@ def chart_vetoes(vetoes_input: pd.DataFrame, team_input: str, select_input: str,
 
     # Set seaborn theme
     sns.set_theme(style="white", rc={"axes.facecolor": (0, 0, 0, 0)})
-    
+
     # Query vetoes
     queried_df = vetoes_input[
         (vetoes_input["team"] == team_input) &
@@ -768,12 +768,23 @@ def chart_vetoes(vetoes_input: pd.DataFrame, team_input: str, select_input: str,
     # Create the figure
     fig, ax = plt.subplots()
 
+    # Get order
+    bar_order = queried_df.map_name.value_counts().to_frame() \
+        .reset_index().sort_values(["count", "map_name"], ascending = [False, True]).map_name
+
     # Plot the bar chart
     sns.countplot(data = queried_df, y = "map_name", color = team_color, 
-                  order = queried_df.map_name.value_counts().index)
-    
+                    order = bar_order)
+
     # Add counts
     ax.bar_label(ax.containers[0], padding = 4, family = "Segoe UI")
+
+    # Color bars
+    total = queried_df["map_name"].value_counts().sum()
+    threshold = 1 / len(queried_df["map_name"].value_counts())
+    for i in range(len(ax.containers[0])):
+        if ax.containers[0].datavalues[i] / total < threshold:
+            ax.containers[0][i].set_color("#ced4da")
         
     # Styling
     plt.xticks([])
