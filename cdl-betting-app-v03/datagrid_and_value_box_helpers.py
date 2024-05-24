@@ -477,15 +477,16 @@ def display_vetoes(vetoes_input: pd.DataFrame, team_x: str, team_y: str):
     # Convert the 'match_date' column to string for display purposes
     vetoes_df['match_date'] = vetoes_df['match_date'].astype(str)
     
-    # Drop the match_id and team columns
-    vetoes_df = vetoes_df.drop(["match_id", "team"], axis = 1)
+    # Drop the team column
+    vetoes_df = vetoes_df.drop("team", axis = 1)
 
     # Reorder columns
-    vetoes_df = vetoes_df[["match_date", "stage", "team_abbr", "hp_ban", 
+    vetoes_df = vetoes_df[["match_id", "match_date", "stage", "team_abbr", "hp_ban", 
                            "hp_pick", "snd_ban", "snd_pick", "ctrl_ban", "ctrl_pick"]]
     
     # Rename columns
     vetoes_df = vetoes_df.rename(columns = {
+        "match_id": "Match ID",
         "match_date": "Date", 
         "stage": "Stage", 
         "team_abbr": "Team", 
