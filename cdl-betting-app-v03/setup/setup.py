@@ -394,3 +394,39 @@ def build_1_thru_3_totals(cdlDF_input: pd.DataFrame):
     adj_1_thru_3_totals_df["match_date"] = pd.to_datetime(adj_1_thru_3_totals_df['match_date'])
     
     return adj_1_thru_3_totals_df
+
+
+# Function to load vetoes
+def load_vetoes():
+    
+    # Read in data
+    vetoes = pd.read_excel("data/vetoes.xlsx")
+
+    # Pivot and sort
+    vetoes = pd.melt(
+        vetoes, 
+        id_vars = ['match_id', 'match_date', 'stage', 'team'], 
+        value_vars = ['hp_ban', 'hp_pick', 'snd_ban', 'snd_pick', 'ctrl_ban', 'ctrl_pick'], 
+        var_name = "select", 
+        value_name = "map_name"
+    ).sort_values(["match_id", "team"], ignore_index = True)
+
+    # Split var_name column into gamemode and select columns
+    vetoes[['gamemode', 'select']] = vetoes['select'].str.split('_', expand=True)
+
+    # Reorder columns
+    vetoes = vetoes[[
+        'match_id', 'match_date', 'stage', 'team', 
+        'gamemode', 'select', 'map_name'
+    ]]
+
+    # Expand gamemode names in gamemode column
+    gamemode_mapping = {
+        'hp': 'Hardpoint',
+        'snd': 'Search & Destroy',
+        'ctrl': 'Control'
+    }
+    vetoes['gamemode'] = vetoes['gamemode'].replace(gamemode_mapping)
+
+    # Return
+    return vetoes

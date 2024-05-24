@@ -109,6 +109,9 @@ team_summaries_DF = build_team_summaries(cdlDF).copy()
 # Build rosters
 rostersDF = build_rosters(cdlDF).copy()
 
+# Load vetoes
+
+
 # Compute CDL Standings for Major III Qualifiers
 current_standings = \
     cdlDF[(cdlDF["match_date"] >= start_date)] \
