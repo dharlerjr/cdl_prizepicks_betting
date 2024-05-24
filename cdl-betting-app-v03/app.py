@@ -43,22 +43,6 @@ team_logos = {
     "Toronto Ultra": "\\team_logos\\TOR.webp"
 }
 
-# Dictionary of team abbreviations by team name
-team_abbrs = {
-    "Atlanta FaZe": "ATL",
-    "Boston Breach": "BOS",
-    "Carolina Royal Ravens": "CAR", 
-    "Las Vegas Legion": "LV",
-    "Los Angeles Guerrillas": "LAG", 
-    "Los Angeles Thieves": "LAT", 
-    "Miami Heretics": "MIA", 
-    "Minnesota ROKKR": "MIN", 
-    "New York Subliners": "NYSL",
-    "OpTic Texas": "TX", 
-    "Seattle Surge": "SEA", 
-    "Toronto Ultra": "TOR"
-}
-
 # Dictionary of team icons by team name
 team_icons = {
     "Atlanta FaZe": "FaZe",
@@ -109,8 +93,9 @@ team_summaries_DF = build_team_summaries(cdlDF).copy()
 # Build rosters
 rostersDF = build_rosters(cdlDF).copy()
 
-# Load vetoes
-vetoes = load_vetoes()
+# Load and pivot vetoes
+vetoes_wide = load_vetoes()
+vetoes_df = pivot_vetoes(vetoes_wide)
 
 
 # Compute CDL Standings for Major III Qualifiers
@@ -2370,31 +2355,44 @@ def server(input, output, session):
     def p4_team_b_bans_title():
         return f"{team_icons[input.p4_team_b()]} {input.p4_gamemode()} Bans"
     
+    # Dataframe of vetoes
+    @render.data_frame
+    def vetoes():
+        return render.DataGrid(
+            display_vetoes(
+                vetoes_wide, 
+                input.p4_team_a(),
+                input.p4_team_b()
+            ), 
+            filters = True, 
+            summary = False
+        )
+    
     # Function to chart Team A Picks for Selected Gamemode | Page 4 
     @render.plot
     def team_a_picks():
-        return chart_vetoes(vetoes, input.p4_team_a(), "pick", 
+        return chart_vetoes(vetoes_df, input.p4_team_a(), "pick", 
                             input.p4_gamemode(), team_a_color, 
                             input.p4_stage()[0], input.p4_stage()[1])
     
     # Function to chart Team A Bans for Selected Gamemode | Page 4 
     @render.plot
     def team_a_bans():
-        return chart_vetoes(vetoes, input.p4_team_a(), "ban", 
+        return chart_vetoes(vetoes_df, input.p4_team_a(), "ban", 
                             input.p4_gamemode(), team_a_color, 
                             input.p4_stage()[0], input.p4_stage()[1])
     
     # Function to chart Team B Picks for Selected Gamemode | Page 4 
     @render.plot
     def team_b_picks():
-        return chart_vetoes(vetoes, input.p4_team_b(), "pick", 
+        return chart_vetoes(vetoes_df, input.p4_team_b(), "pick", 
                             input.p4_gamemode(), team_b_color, 
                             input.p4_stage()[0], input.p4_stage()[1])
     
     # Function to chart Team B Bans for Selected Gamemode | Page 4 
     @render.plot
     def team_b_bans():
-        return chart_vetoes(vetoes, input.p4_team_b(), "ban", 
+        return chart_vetoes(vetoes_df, input.p4_team_b(), "ban", 
                             input.p4_gamemode(), team_b_color, 
                             input.p4_stage()[0], input.p4_stage()[1])
         

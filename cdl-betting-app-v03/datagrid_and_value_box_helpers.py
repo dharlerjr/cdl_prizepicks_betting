@@ -455,3 +455,59 @@ def player_1_thru_3_ou_streak(
         i += 1
 
     return ou, streak
+
+# Function to display Datagrid of vetoes
+def display_vetoes(vetoes_input: pd.DataFrame, team_x: str, team_y: str):
+    
+    # Create a copy of vetoes_input
+    vetoes_copy = vetoes_input.copy()
+
+    # Get match_ids 
+    match_ids = vetoes_copy[
+        (vetoes_copy["team"] == team_x) |
+        (vetoes_copy["team"] == team_y)
+    ]["match_id"]
+
+    # Get vetoes
+    vetoes_df = vetoes_copy[vetoes_copy["match_id"].isin(match_ids)]
+
+    # Sort
+    vetoes_df = vetoes_df.sort_values(by = ["match_date", "match_id", "ctrl_ban"], ascending = [False, False, True], ignore_index = True)
+
+    # Convert the 'match_date' column to string for display purposes
+    vetoes_df['match_date'] = vetoes_df['match_date'].astype(str)
+    
+    # Drop the match_id and team columns
+    vetoes_df = vetoes_df.drop(["match_id", "team"], axis = 1)
+
+    # Reorder columns
+    vetoes_df = vetoes_df[["match_date", "stage", "team_abbr", "hp_ban", 
+                           "hp_pick", "snd_ban", "snd_pick", "ctrl_ban", "ctrl_pick"]]
+    
+    # Rename columns
+    vetoes_df = vetoes_df.rename(columns = {
+        "match_date": "Date", 
+        "stage": "Stage", 
+        "team_abbr": "Team", 
+        "hp_ban": "HP Ban",
+        "hp_pick": "HP Pick",
+        "snd_ban": "SnD Ban",
+        "snd_pick": "SnD Pick",
+        "ctrl_ban": "Ctrl Ban",
+        "ctrl_pick": "Ctrl Pick"
+    })
+    
+    # # Set the MultiIndex for the columns
+    # vetoes_df.columns = pd.MultiIndex.from_tuples([
+    #     ('', 'match_date'),
+    #     ('', 'stage'),
+    #     ('', 'team'),
+    #     ('Hardpoint', 'Ban'),
+    #     ('Hardpoint', 'Pick'),
+    #     ('Search & Destroy', 'Ban'),
+    #     ('Search & Destroy', 'Pick'),
+    #     ('Control', 'Ban'),
+    #     ('Control', 'Pick')
+    # ])
+
+    return vetoes_df

@@ -22,6 +22,22 @@ changed_players = {
     "Standy": "LV"
 }
 
+# Dictionary of team abbreviations by team name
+team_abbrs = {
+    "Atlanta FaZe": "ATL",
+    "Boston Breach": "BOS",
+    "Carolina Royal Ravens": "CAR", 
+    "Las Vegas Legion": "LV",
+    "Los Angeles Guerrillas": "LAG", 
+    "Los Angeles Thieves": "LAT", 
+    "Miami Heretics": "MIA", 
+    "Minnesota ROKKR": "MIN", 
+    "New York Subliners": "NYSL",
+    "OpTic Texas": "TX", 
+    "Seattle Surge": "SEA", 
+    "Toronto Ultra": "TOR"
+}
+
 # Hardpoint Maps Excluded from Maps 1 - 3 Dataframe Computation
 removed_hp_maps = ['Skidrow', 'Terminal']
 
@@ -395,16 +411,22 @@ def build_1_thru_3_totals(cdlDF_input: pd.DataFrame):
     
     return adj_1_thru_3_totals_df
 
-
 # Function to load vetoes
 def load_vetoes():
-    
-    # Read in data
-    vetoes = pd.read_excel("C:\\Users\\David Harler Jr\\OneDrive\\Desktop\\dataClass\\06-cod-analysis\\03 CDL PrizePicks Betting\\cdl_prizepicks_betting\\cdl-betting-app-v03\\data\\vetoes.xlsx")
+
+    # Read in vetoes
+    vetoes_wide = pd.read_excel("C:\\Users\\David Harler Jr\\OneDrive\\Desktop\\dataClass\\06-cod-analysis\\03 CDL PrizePicks Betting\\cdl_prizepicks_betting\\cdl-betting-app-v03\\data\\vetoes.xlsx")
+    # Left join with team_abbrs
+    vetoes_wide['team_abbr'] = vetoes_wide['team'].map(team_abbrs)
+    # Return
+    return vetoes_wide
+
+# Function to pivot vetoes
+def pivot_vetoes(vetoes_input: pd.DataFrame):
 
     # Pivot and sort
     vetoes = pd.melt(
-        vetoes, 
+        vetoes_input.copy(), 
         id_vars = ['match_id', 'match_date', 'stage', 'team'], 
         value_vars = ['hp_ban', 'hp_pick', 'snd_ban', 'snd_pick', 'ctrl_ban', 'ctrl_pick'], 
         var_name = "select", 
