@@ -1,6 +1,6 @@
-# Shiny Applications for CDL Betting on PrizePicks
+# Shiny Application for CDL Betting on PrizePicks
 
-Two Shiny applications for betting on CDL player props on PrizePicks. Version 1 coded in R, Versions 2 & 3 coded in Python. Data from breakingpoint.gg using my [breakingpoint.gg web scraping project](https://github.com/dharlerjr/bp_web_scraping).
+Multiple versions of the same Shiny application for betting on CDL player props on PrizePicks. Version 1 coded in R, Versions 2 - 4 coded in Python. Data from breakingpoint.gg using my [breakingpoint.gg web scraping project](https://github.com/dharlerjr/bp_web_scraping).
 
 ## Version 1
 
@@ -27,7 +27,7 @@ Two Shiny applications for betting on CDL player props on PrizePicks. Version 1 
 - **scales** for scaling data-colored columns in gt tables
 - **shiny** to build the web app
 
-## Version 2
+## Version 2 (completed April 2024)
 
 - Coded in Python (see below)
 - **User no longer has to manually input player props!!!**
@@ -38,24 +38,52 @@ Two Shiny applications for betting on CDL player props on PrizePicks. Version 1 
   - ggplot_helpers
   - great_tables_helpers
   - pandas_stylers_helpers
-- Completed April 2024
 
 ### Python Packages
 
 - **selenium** to automate a chrome web browser to scrape the PrizePicks website
 - **undetected_chromedriver** to scrape the PrizePicks website undetected
-- **Psycopg** & **sqlio** to load the CDL dataset from the PostgreSQL database into a Python dataframe
+- **Psycopg** & **sqlio** to load the CDL dataset from the PostgreSQL database into a pandas dataframe
   - **sqlalchemy** would have also been a fantastic options
 - **Seaborn** & **Matplotlib** to create Data Visualizations
 - **Shiny** to build the web app and display the reactive dashboard components
 - **Faicons** to add icons to the displayed value boxes
+- **os** for filepaths to team logos
 
-## Version 3
+## Version 3 (completed May 2024)
 
-- Still coded in Python
-- Updated layout from version 2
-- Learned how to plot a seaborn boxplot and a seaborn scatterplot on a single MatPlotLib figure
-- Removed faceted plots
-- Cleaned working directory
+### Major Improvements
+
+- Page 1
+  - Refined layout
+    - Condensed navsets of player cards into one
+    - Combined boxplot and scatterplot into single matplotlib figure by using gridspecs
+  - Added new visualizations
+    - Donut chart to display each team's most-played maps
+    - Histograms, eventually replaced with ridgeline plots, to display series and map differentials for each team
+    - Added Last Match Value Box
+  - Added **app_helpers.py** to condense **app.py** code
+- Added 2nd Page: Player Kills per Maps 1 - 3
+  - Identical format as Page 1, with more user inputs
+- Added 4th Page: Vetoes
+  - Built Excel sheet of map vetoes for each match and loaded into pandas dataframe
+  - Created histograms to visualize pick and ban selections for each team
+  - Loaded vetoes dataset into shiny datagrid
+
+### Minor Improvements
+
+- Styled webpage with Shiny's `ui.include_css` and color arguments of various ui functions (ie. `ui.page_navbar`)
+- Standardized color scheme, fonts, and font sizes
+- Added option to full screen Scoreboards
+- Updated icons
+- Adjusted figure axes to only display integer values
+- Adjusted PrizePicks label to stay visible for all user-input cases
+- Centered team logos within their respective containers
+- Added Tooltips to further explain visualizations
+
+## Version 4 (Completed June 2024)
+
+- Organized project directory
+- Replaced **seaborn** and **matplotlib** charts with interactive **plotly** charts
 
 ## Challenges
