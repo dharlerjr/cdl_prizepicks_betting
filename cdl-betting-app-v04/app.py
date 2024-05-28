@@ -10,13 +10,13 @@ import asyncio
 import os
 
 # Import setup
-from setup.setup import *
+from utils.setup.setup import *
 
 # Import webscraper & helpers
-from webscraper import *
-from seaborn_helpers import *
-from datagrid_and_value_box_helpers import *
-from app_helpers import *
+from utils.webscraper import *
+from utils.seaborn_helpers import *
+from utils.datagrid_and_value_box_helpers import *
+from utils.app_helpers import *
 
 # Dictionary to map map_num to gamemode
 map_nums_to_gamemode = {
@@ -28,19 +28,21 @@ map_nums_to_gamemode = {
 }
 
 # Dictionary of paths to saved team logo images
+team_logo_path = "\\images\\team_logos\\"
+
 team_logos = {
-    "Atlanta FaZe": "\\team_logos\\ATL.webp",
-    "Boston Breach": "\\team_logos\\BOS.webp",
-    "Carolina Royal Ravens": "\\team_logos\\CAR.webp", 
-    "Las Vegas Legion": "\\team_logos\\LV.webp",
-    "Los Angeles Guerrillas": "\\team_logos\\LAG.webp", 
-    "Los Angeles Thieves": "\\team_logos\\LAT.webp", 
-    "Miami Heretics": "\\team_logos\\MIA.webp", 
-    "Minnesota ROKKR": "\\team_logos\\MIN.webp", 
-    "New York Subliners": "\\team_logos\\NYSL.webp",
-    "OpTic Texas": "\\team_logos\\TX.webp", 
-    "Seattle Surge": "\\team_logos\\SEA.webp", 
-    "Toronto Ultra": "\\team_logos\\TOR.webp"
+    "Atlanta FaZe": team_logo_path + "ATL.webp",
+    "Boston Breach": team_logo_path + "BOS.webp",
+    "Carolina Royal Ravens": team_logo_path + "CAR.webp", 
+    "Las Vegas Legion": team_logo_path + "LV.webp",
+    "Los Angeles Guerrillas": team_logo_path + "LAG.webp", 
+    "Los Angeles Thieves": team_logo_path + "LAT.webp", 
+    "Miami Heretics": team_logo_path + "MIA.webp", 
+    "Minnesota ROKKR": team_logo_path + "MIN.webp", 
+    "New York Subliners": team_logo_path + "NYSL.webp",
+    "OpTic Texas": team_logo_path + "TX.webp", 
+    "Seattle Surge": team_logo_path + "SEA.webp", 
+    "Toronto Ultra": team_logo_path + "TOR.webp"
 }
 
 # Dictionary of team icons by team name

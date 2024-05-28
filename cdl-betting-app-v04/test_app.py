@@ -4,11 +4,14 @@ from shiny import App, reactive, render, ui
 import shinyswatch
 
 # Import setup
-from setup.setup import *
+from utils.setup.setup import *
 
-# Import helpers
-from seaborn_helpers import *
-from datagrid_and_value_box_helpers import *
+# Import other utils
+from utils.seaborn_helpers import *
+from utils.datagrid_and_value_box_helpers import *
+
+# Import player modules
+from player import *
 
 # Dictionary to map map_num to gamemode
 map_nums_to_gamemode = {
@@ -80,8 +83,14 @@ app_ui = ui.page_navbar(
 
                 # Player cards
                 ui.navset_card_pill(
-                    ui.nav_panel("1", ui.output_plot("player_1_plot")),
-                    ui.nav_panel("2", ui.output_plot("player_2_plot")), 
+                    player_panel_ui("p1", 1), 
+                    player_panel_ui("p2", 2), 
+                    player_panel_ui("p3", 3), 
+                    player_panel_ui("p4", 4), 
+                    player_panel_ui("p5", 5), 
+                    player_panel_ui("p6", 6), 
+                    player_panel_ui("p7", 7), 
+                    player_panel_ui("p8", 8), 
                     title = "Player Cards"
                 ),
 
@@ -100,6 +109,9 @@ app_ui = ui.page_navbar(
 
 # Define server logic
 def server(input, output, session):
+
+    # Intialize reactive dataframe of player props
+    player_props_df = reactive.value(initial_player_props)
 
     # Reactive calc to get map_num from map_num input
     @reactive.calc
@@ -124,60 +136,18 @@ def server(input, output, session):
             map_list = ['All', 'Highrise', 'Invasion', 'Karachi']
 
         ui.update_select("map_name", choices = map_list, selected = "All")
+    
+    # Team A Player Cards
+    [player_panel_server(
+        "p" + str(player_num), cdlDF, rostersDF, player_props_df, input.team_a,
+        player_num, map_num, team_a_color, gamemode, input.map_name, input.x_axis
+    ) for player_num in range(1, 5)]
 
-    # Player One Line
-    @reactive.Calc
-    def player_1_line():
-        return get_line(initial_player_props, input.team_a(), 1, map_num())
-    
-    # Player Two Line
-    @reactive.Calc
-    def player_2_line():
-        return get_line(initial_player_props, input.team_a(), 2, map_num())
-    
-    # Player One Plot
-    @render.plot
-    def player_1_plot():
-        if input.x_axis() == "Time":
-            return player_kills_vs_time(
-                cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],
-                team_a_color,
-                gamemode(), 
-                player_1_line(),
-                input.map_name()
-            )
-        else:
-            return player_kills_vs_score_diff(
-                cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[0]['player'],
-                team_a_color,
-                gamemode(), 
-                player_1_line(),
-                input.map_name()
-            )
-        
-    # Player Two Plot
-    @render.plot
-    def player_2_plot():
-        if input.x_axis() == "Time":
-            return player_kills_vs_time(
-                cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],
-                team_a_color,
-                gamemode(), 
-                player_2_line(),
-                input.map_name()
-            )
-        else:
-            return player_kills_vs_score_diff(
-                cdlDF, 
-                rostersDF[rostersDF['team'] == input.team_a()].iloc[1]['player'],
-                team_a_color,
-                gamemode(), 
-                player_2_line(),
-                input.map_name()
-            )
+    # Team B Player Cards
+    [player_panel_server(
+        "p" + str(player_num + 4), cdlDF, rostersDF, player_props_df, input.team_b,
+        player_num, map_num, team_b_color, gamemode, input.map_name, input.x_axis
+    ) for player_num in range(1, 5)]
         
 
 # Run app

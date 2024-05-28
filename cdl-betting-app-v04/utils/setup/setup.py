@@ -7,7 +7,7 @@ import numpy as np
 import psycopg2
 
 # Import db password from config
-from setup.config import db_password
+from utils.setup.config import db_password
 
 # List of players that have been dropped
 dropped_players = [
