@@ -544,7 +544,7 @@ app_ui = ui.page_navbar(
                 # Column Widths
                 col_widths = [6, 3, 3]
 
-            ), 
+            )
         )
     ),
 

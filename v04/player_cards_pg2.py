@@ -48,10 +48,10 @@ def player_card_ui_pg2(player_num: int):
     )
 
 @module.server
-def player_card_server_pg1(
+def player_card_server_pg2(
     input, output, session, cdlDF: pd.DataFrame, maps_1_thru_3_df: pd.DataFrame,
     rostersDF: pd.DataFrame, propsDF, team_input, player_num: int, 
-    team_color: str, gamemode_input, map_one, map_two, map_three, x_axis
+    team_color: str, map_one, map_two, map_three, x_axis
     ):
 
     # Player Name
@@ -91,9 +91,9 @@ def player_card_server_pg1(
                 cdlDF, 
                 player(),
                 "Hardpoint",
-                map_3_line()
+                map_1_line()
             )
-        elif input.p2_x_axis() == "Control Map":
+        elif x_axis() == "Control Map":
             return player_kills_by_map(
                 cdlDF, 
                 player(),
