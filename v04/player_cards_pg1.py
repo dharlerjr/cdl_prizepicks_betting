@@ -8,33 +8,23 @@ import faicons as fa
 # Import utils
 from utils.seaborn_helpers import *
 from utils.datagrid_and_value_box_helpers \
-    import get_line, player_ou, player_over_under_streak
+    import get_line, compute_player_ou, compute_player_ou_streak
 
 # String containing value for Icon Height in Pixels
 icon_height = "48px"
 
 # Dictionary of faicons for value boxes
-ICONS = {
-    "crosshairs": fa.icon_svg("crosshairs", height = icon_height, ),
-    "headset": fa.icon_svg("headset", height = icon_height), 
-    "plus": fa.icon_svg("plus", height = icon_height), 
-    "minus": fa.icon_svg("minus", height = icon_height), 
+player_card_icons = {
     "chevron_up": fa.icon_svg("chevron-up", height = icon_height, 
                               fill = prizepicks_color, fill_opacity = 0.85),
     "chevron_down": fa.icon_svg("chevron-down", height = icon_height,
                                 fill = prizepicks_color, fill_opacity = 0.85),
-    "calendar": fa.icon_svg("calendar", height = icon_height), 
     "crown": fa.icon_svg("crown", height = icon_height, 
-                         fill = prizepicks_color, fill_opacity = 0.85),
-    "check": fa.icon_svg("circle-check", height = icon_height), 
-    "exclamation": fa.icon_svg("circle-exclamation", height = icon_height), 
-    "flag": fa.icon_svg("flag", height = icon_height), 
-    "mound": fa.icon_svg("mound", height = icon_height), 
-    "circle_question": fa.icon_svg("circle-question", height = "16px"), 
+                         fill = prizepicks_color, fill_opacity = 0.85)
 }
 
 @module.ui
-def player_panel_ui(player_num: int):
+def player_card_ui_pg1(player_num: int):
     return ui.nav_panel(
         str(player_num), 
         ui.output_plot("player_plot"), 
@@ -50,7 +40,7 @@ def player_panel_ui(player_num: int):
             ui.value_box(
                 "O/U Streak", 
                 ui.output_ui("player_ou_streak"), 
-                showcase = ICONS["crown"],
+                showcase = player_card_icons["crown"],
                 showcase_layout = "left center", 
                 max_height = "100px"
             )
@@ -58,7 +48,7 @@ def player_panel_ui(player_num: int):
     )
 
 @module.server
-def player_panel_server(
+def player_card_server_pg1(
     input, output, session, cdlDF: pd.DataFrame, rostersDF: pd.DataFrame,
     propsDF, team_input, player_num: int, map_num, 
     team_color: str, gamemode_input, map_input, x_axis
@@ -97,3 +87,43 @@ def player_panel_server(
                 player_line(),
                 map_input()
             )
+        
+    # Player O/U Stats
+    @reactive.calc
+    def player_ou_stats():
+        return compute_player_ou(
+            cdlDF, 
+            player(),
+            gamemode_input(), 
+            player_line(),
+            map_input()
+            )
+    
+    # Player O/U %
+    @output
+    @render.text
+    def player_ou():
+        over_under, percentage, overs, unders, hooks = player_ou_stats()
+        if over_under == "Never Played":
+            return over_under
+        return f"{over_under} {percentage}%\n({overs} - {unders} - {hooks})"
+    
+    # Player O/U Icon
+    @output
+    @render.ui
+    def player_ou_icon():
+        over_under = player_ou_stats()[0]
+        return player_card_icons["chevron_up"] if over_under == "Over" else player_card_icons["chevron_down"]
+    
+    # Player O/U Streak
+    @output
+    @render.ui
+    def player_ou_streak():
+        ou, streak = compute_player_ou_streak(
+            cdlDF, 
+            player(),
+            gamemode_input(), 
+            player_line(), 
+            map_input()
+        )
+        return f"{ou} {streak}"

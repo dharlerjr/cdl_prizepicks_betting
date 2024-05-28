@@ -11,7 +11,7 @@ from utils.seaborn_helpers import *
 from utils.datagrid_and_value_box_helpers import *
 
 # Import player modules
-from player import *
+from player_cards_pg1 import *
 
 # Dictionary to map map_num to gamemode
 map_nums_to_gamemode = {
@@ -82,14 +82,14 @@ app_ui = ui.page_navbar(
 
                 # Player cards
                 ui.navset_card_pill(
-                    player_panel_ui("p1", 1), 
-                    player_panel_ui("p2", 2), 
-                    player_panel_ui("p3", 3), 
-                    player_panel_ui("p4", 4), 
-                    player_panel_ui("p5", 5), 
-                    player_panel_ui("p6", 6), 
-                    player_panel_ui("p7", 7), 
-                    player_panel_ui("p8", 8), 
+                    player_card_ui_pg1("p1", 1), 
+                    player_card_ui_pg1("p2", 2), 
+                    player_card_ui_pg1("p3", 3), 
+                    player_card_ui_pg1("p4", 4), 
+                    player_card_ui_pg1("p5", 5), 
+                    player_card_ui_pg1("p6", 6), 
+                    player_card_ui_pg1("p7", 7), 
+                    player_card_ui_pg1("p8", 8), 
                     title = "Player Cards"
                 ),
 
@@ -137,13 +137,13 @@ def server(input, output, session):
         ui.update_select("map_name", choices = map_list, selected = "All")
     
     # Team A Player Cards
-    [player_panel_server(
+    [player_card_server_pg1(
         "p" + str(player_num), cdlDF, rostersDF, player_props_df, input.team_a,
         player_num, map_num, team_a_color, gamemode, input.map_name, input.x_axis
     ) for player_num in range(1, 5)]
 
     # Team B Player Cards
-    [player_panel_server(
+    [player_card_server_pg1(
         "p" + str(player_num + 4), cdlDF, rostersDF, player_props_df, input.team_b,
         player_num, map_num, team_b_color, gamemode, input.map_name, input.x_axis
     ) for player_num in range(1, 5)]

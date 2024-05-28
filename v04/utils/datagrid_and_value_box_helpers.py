@@ -261,7 +261,7 @@ def compute_h2h_series_record(cdlDF_input: pd.DataFrame, team_x: str, team_y: st
             return f"{wins} - {losses}"
         
 # Function to compute player over/under %
-def player_ou(
+def compute_player_ou(
         cdlDF_input: pd.DataFrame, player_input: str, 
         gamemode_input: str, cur_line: float, map_input = "All"
 ):
@@ -307,7 +307,7 @@ def player_ou(
         return "Under", str(under_percentage), str(overs), str(unders), str(hooks)
 
 # Function to compete O/U streak
-def player_over_under_streak(
+def compute_player_ou_streak(
         cdlDF_input: pd.DataFrame, player_input: str, 
         gamemode_input: str, cur_line: float, map_input = "All"):
     
@@ -389,7 +389,7 @@ def get_match_ids(
     return player_match_ids['match_id'].to_list()
 
 # Function to compute player maps 1 - 3 kills over/under %
-def player_1_thru_3_ou(     
+def compute_player_1_thru_3_ou(     
     maps_1_thru_3_DF_input: pd.DataFrame, player_input: str, cur_line: float, 
 ):
             
@@ -418,7 +418,7 @@ def player_1_thru_3_ou(
         return "Under", str(under_percentage), str(overs), str(unders), str(hooks)
 
 # Function to compute Player O/U Streak
-def player_1_thru_3_ou_streak(
+def compute_player_1_thru_3_ou_streak(
         maps_1_thru_3_DF_input: pd.DataFrame, 
         player_input: str, cur_line: float):
 
