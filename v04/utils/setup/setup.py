@@ -415,7 +415,7 @@ def build_1_thru_3_totals(cdlDF_input: pd.DataFrame):
 def load_vetoes():
 
     # Read in vetoes
-    vetoes_wide = pd.read_excel("C:\\Users\\David Harler Jr\\OneDrive\\Desktop\\dataClass\\06-cod-analysis\\03 CDL PrizePicks Betting\\cdl_prizepicks_betting\\cdl-betting-app-v03\\data\\vetoes.xlsx")
+    vetoes_wide = pd.read_excel("C:\\Users\\David Harler Jr\\OneDrive\\Desktop\\dataClass\\06-cod-analysis\\03 CDL PrizePicks Betting\\cdl_prizepicks_betting_apps\\v04\\data\\vetoes.xlsx")
     # Left join with team_abbrs
     vetoes_wide['team_abbr'] = vetoes_wide['team'].map(team_abbrs)
     # Return

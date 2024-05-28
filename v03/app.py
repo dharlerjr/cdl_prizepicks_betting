@@ -75,7 +75,7 @@ team_b_color = theme_color_dark
 # Major 3 Qualifiers Start Date (String)
 start_date = '2024-04-12' 
 
-# Load in four instance of cdl data for testing
+# Load in cdl data
 cdlDF = load_and_clean_cdl_data()
 
 # Build Maps 1 - 3 Totals Dataframe
@@ -338,7 +338,7 @@ app_ui = ui.page_navbar(
             # Import CSS Styling
             ui.include_css(
                 os.path.dirname(__file__) + "\\styles.css"
-            ),    
+            )
         )
     ), 
 
@@ -1801,7 +1801,7 @@ def server(input, output, session):
                 adj_1_thru_3_totals,
                 rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[0]['player'],
                 team_a_color,
-                p2_player_1_line(),
+                p2_player_1_line()
             )
         elif input.p2_x_axis() == "Hardpoint Map":
             return player_kills_by_map(
@@ -1834,7 +1834,7 @@ def server(input, output, session):
                 adj_1_thru_3_totals,
                 rostersDF[rostersDF['team'] == input.p2_team_a()].iloc[1]['player'],
                 team_a_color,
-                p2_player_1_line(),
+                p2_player_1_line()
             )
         elif input.p2_x_axis() == "Hardpoint Map":
             return player_kills_by_map(

@@ -8,7 +8,7 @@ import faicons as fa
 # Import utils
 from utils.seaborn_helpers import *
 from utils.datagrid_and_value_box_helpers \
-    import get_line, compute_player_ou, compute_player_ou_streak
+    import get_line, compute_player_1_thru_3_ou, compute_player_1_thru_3_ou_streak
 
 # String containing value for Icon Height in Pixels
 icon_height = "48px"
@@ -24,22 +24,22 @@ player_card_icons = {
 }
 
 @module.ui
-def player_card_ui_pg1(player_num: int):
+def player_card_ui_pg2(player_num: int):
     return ui.nav_panel(
         str(player_num), 
-        ui.output_plot("player_plot"), 
+        ui.output_plot("player_plot_pg2"), 
         ui.layout_columns(),
         ui.layout_columns(
             ui.value_box(
                 "O/U",
-                ui.output_text("player_ou"),
-                showcase = ui.output_ui("player_ou_icon"), 
+                ui.output_text("player_ou_pg2"),
+                showcase = ui.output_ui("player_ou_icon_pg2"), 
                 showcase_layout = "left center", 
                 max_height = "100px"
             ), 
             ui.value_box(
                 "O/U Streak", 
-                ui.output_ui("player_ou_streak"), 
+                ui.output_ui("player_ou_streak_pg2"), 
                 showcase = player_card_icons["crown"],
                 showcase_layout = "left center", 
                 max_height = "100px"
@@ -49,9 +49,9 @@ def player_card_ui_pg1(player_num: int):
 
 @module.server
 def player_card_server_pg1(
-    input, output, session, cdlDF: pd.DataFrame, rostersDF: pd.DataFrame,
-    propsDF, team_input, player_num: int, map_num, 
-    team_color: str, gamemode_input, map_input, x_axis
+    input, output, session, cdlDF: pd.DataFrame, maps_1_thru_3_df: pd.DataFrame,
+    rostersDF: pd.DataFrame, propsDF, team_input, player_num: int, 
+    team_color: str, gamemode_input, map_one, map_two, map_three, x_axis
     ):
 
     # Player Name
@@ -60,70 +60,87 @@ def player_card_server_pg1(
         return rostersDF[rostersDF['team'] == team_input()].iloc[player_num - 1]['player']
 
     
-    # Player Line
+    # Player Maps 1 - 3 Line
     @reactive.Calc
     def player_line():
-        return get_line(propsDF(), player(), map_num())
+        return get_line(propsDF(), player(), 0)
+    
+    # Player Map 1 Line
+    @reactive.Calc
+    def map_1_line():
+        return get_line(propsDF(), player(), 1)
+    
+    # Player Map 3 Line
+    @reactive.Calc
+    def map_3_line():
+        return get_line(propsDF(), player(), 3)
 
     # Player Plot
     @output
     @render.plot
-    def player_plot():
+    def player_plot_pg2():
         if x_axis() == "Time":
-            return player_kills_vs_time(
-                cdlDF, 
+            return player_1_thru_3_kills_vs_time(
+                maps_1_thru_3_df,
                 player(),
                 team_color,
-                gamemode_input(), 
-                player_line(),
-                map_input()
+                player_line()
             )
-        else:
-            return player_kills_vs_score_diff(
+        elif x_axis() == "Hardpoint Map":
+            return player_kills_by_map(
                 cdlDF, 
                 player(),
-                team_color, 
-                gamemode_input(), 
-                player_line(),
-                map_input()
+                "Hardpoint",
+                map_3_line()
+            )
+        elif input.p2_x_axis() == "Control Map":
+            return player_kills_by_map(
+                cdlDF, 
+                player(),
+                "Control",
+                map_3_line()
+            )
+        else:
+            return player_kills_by_mapset(
+                cdlDF, 
+                player(),
+                map_one(),
+                map_two(),
+                map_three()
             )
         
-    # Player O/U Stats
+    # Player Maps 1 - 3 O/U Stats
     @reactive.calc
-    def player_ou_stats():
-        return compute_player_ou(
-            cdlDF, 
+    def player_ou_stats_pg2():
+        return compute_player_1_thru_3_ou(
+            maps_1_thru_3_df, 
             player(),
-            gamemode_input(), 
-            player_line(),
-            map_input()
+            player_line()
             )
     
-    # Player O/U %
+    # Player Maps 1 - 3 O/U %
     @output
     @render.text
-    def player_ou():
-        over_under, percentage, overs, unders, hooks = player_ou_stats()
+    def player_ou_pg2():
+        over_under, percentage, overs, unders, hooks = player_ou_stats_pg2()
         if over_under == "Never Played":
             return over_under
-        return f"{over_under} {percentage}%\n({overs} - {unders} - {hooks})"
+        return f"{over_under} {percentage}% ({overs} - {unders} - {hooks})"
     
     # Player O/U Icon
     @output
     @render.ui
-    def player_ou_icon():
-        over_under = player_ou_stats()[0]
+    def player_ou_icon_pg2():
+        over_under = player_ou_stats_pg2()[0]
         return player_card_icons["chevron_up"] if over_under == "Over" else player_card_icons["chevron_down"]
     
     # Player O/U Streak
     @output
     @render.ui
-    def player_ou_streak():
-        ou, streak = compute_player_ou_streak(
-            cdlDF, 
+    def player_ou_streak_pg2():
+        ou, streak = compute_player_1_thru_3_ou_streak(
+            maps_1_thru_3_df, 
             player(),
-            gamemode_input(), 
-            player_line(), 
-            map_input()
+            player_line()
         )
         return f"{ou} {streak}"
