@@ -1,5 +1,5 @@
 
-# Import shiny faicons
+# Import shiny and faicons
 from shiny import ui
 import faicons as fa
 

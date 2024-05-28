@@ -72,7 +72,6 @@ app_ui = ui.page_navbar(
                                 ]), 
                 ui.input_select(id = "map_name", label = "Map", selected = "All", 
                                 choices = ['All', '6 Star', 'Karachi', 'Rio', 'Sub Base', 'Vista']),
-                                #choices = ["All"] + sorted(filter_maps(cdlDF)['map_name'].unique())), 
                 ui.input_select(id = "x_axis", label = "Player Card X-Axis", selected = "Time",
                                 choices = ["Time", "Score Differential"]),
 
