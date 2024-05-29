@@ -556,7 +556,8 @@ app_ui = ui.page_navbar(
             # Sidebar with Dataframe of Matches
             ui.sidebar(
                 ui.output_data_frame("match_df"), 
-                width = 400
+                width = 400, 
+                title = "Select a match"
             ), 
 
             # Row 1: Team Logos and Date of Last Match
@@ -570,12 +571,27 @@ app_ui = ui.page_navbar(
                 ), 
                 ui.layout_columns(ui.output_image("p3_team_b_logo", width = "120px", height = "120px"), 
                                   class_ = "d-flex justify-content-center"), 
-                col_widths = [5, 2, 5],
-                max_height = "120px"
+                max_height = "120px",
+                col_widths = [5, 2, 5]
             ),
 
-            # Row 2: Map Summaries
-            # map_summaries_ui_p3("map_summaries")
+            # Row 2: Map Summaries 
+            ui.layout_columns(
+                map_value_box_ui_p3("m1"), 
+                map_value_box_ui_p3("m2"), 
+                map_value_box_ui_p3("m3"), 
+                ui.output_ui("conditional_m4"), 
+                ui.output_ui("conditional_m5"), 
+                height = "120px"
+            ), 
+
+            # Row 3: Map Scoreboards
+            ui.layout_columns(
+                ui.navset_card_pill(
+                    title = "Scoreboards"
+                ),
+                col_widths = [-2, 8, 2]
+            )
         )        
     ),
 
@@ -1260,25 +1276,6 @@ def server(input, output, session):
         data_selected = match_df.data_view(selected = True)
         req(not data_selected.empty)
         return data_selected
-
-    
-    # Team A Logo | Page 3
-    @render.image
-    def p3_team_a_logo():
-        img: ImgData = \
-        {"src": os.path.dirname(__file__) + 
-         team_logos[team_names[cur_match_df().reset_index(drop = True).at[0, "Team"]]], 
-                        "width": "120px", "height": "120px"}
-        return img
-    
-    # Team B Logo | Page 3
-    @render.image
-    def p3_team_b_logo():
-        img: ImgData = \
-        {"src": os.path.dirname(__file__) + 
-         team_logos[team_names[cur_match_df().reset_index(drop = True).at[0, "Opponent"]]], 
-                        "width": "120px", "height": "120px"}
-        return img
     
     # Reactive Value containing the current Match ID | Page 3
     @reactive.calc
@@ -1288,24 +1285,55 @@ def server(input, output, session):
     # Reactive value containing number of maps for selected match | Page 3
     @reactive.calc
     def number_of_maps():
-        return len(cdlDF[(cdlDF["match_id"] == cur_match_id)]["map_num"].unique())
+        return len(og_cdlDF[(og_cdlDF["match_id"] == cur_match_id())]["map_num"].unique())
     
-    # Map Summaries | Page 3
-    # map_summaries_server_p3("map_summaries", cdlDF, cur_match_id)
-    # @render.ui
-    # def p3_map_summaries():
-    #     return ui.layout_columns(
-    #         [map_summary_ui(
-    #             "m" + str(map_num), 
-    #             map_num
-    #             ) for map_num in range(1, number_of_maps() + 1)
-    #         ]
-    #     )
+    # Reactive Calc containing Team A Abbr | Page 3
+    def cur_team_a():
+        return cur_match_df().reset_index(drop = True).at[0, "Team"]
+    
+    # Reactive Calc containing Team B Abbr | Page 3
+    def cur_team_b():
+        return cur_match_df().reset_index(drop = True).at[0, "Opponent"]
+
+    # Team A Logo | Page 3
+    @render.image
+    def p3_team_a_logo():
+        img: ImgData = \
+        {"src": os.path.dirname(__file__) + 
+         team_logos[team_names[cur_team_a()]], "width": "120px", "height": "120px"}
+        return img
+    
+    # Team B Logo | Page 3
+    @render.image
+    def p3_team_b_logo():
+        img: ImgData = \
+        {"src": os.path.dirname(__file__) + 
+         team_logos[team_names[cur_team_b()]], "width": "120px", "height": "120px"}
+        return img
     
     # Match Date | Page 3
     @render.ui
     def p3_match_date():
         return cur_match_df().reset_index(drop = True).at[0, "Date"]
+    
+    # Maps 1 - 5 Summaries | Page 3
+    map_value_box_server_p3("m1", og_cdlDF.copy(), cur_match_id, 1, cur_team_a, cur_team_b, number_of_maps)
+    map_value_box_server_p3("m2", og_cdlDF.copy(), cur_match_id, 2, cur_team_a, cur_team_b, number_of_maps)
+    map_value_box_server_p3("m3", og_cdlDF.copy(), cur_match_id, 3, cur_team_a, cur_team_b, number_of_maps)
+    map_value_box_server_p3("m4", og_cdlDF.copy(), cur_match_id, 4, cur_team_a, cur_team_b, number_of_maps)
+    map_value_box_server_p3("m5", og_cdlDF.copy(), cur_match_id, 5, cur_team_a, cur_team_b, number_of_maps)
+
+    # Map 4 Summary | Page 3
+    @render.ui
+    def conditional_m4():
+        if number_of_maps() >= 4:
+            return map_value_box_ui_p3("m4")
+        
+    # Map 5 Summary | Page 3
+    @render.ui
+    def conditional_m5():
+        if number_of_maps() >= 5:
+            return map_value_box_ui_p3("m5")
     
     # Team A Logo | Page 4
     @render.image
