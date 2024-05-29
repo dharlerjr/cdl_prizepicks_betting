@@ -511,3 +511,17 @@ def display_vetoes(vetoes_input: pd.DataFrame, team_x: str, team_y: str):
     # ])
 
     return vetoes_df
+
+# Function to display dataframe of matches
+def display_matches(cdlDF_input: pd.DataFrame):
+    
+    match_df = cdlDF_input[["match_id", "match_date", "team_abbr", "opp_abbr"]].drop_duplicates("match_id", ignore_index = True)
+    match_df = match_df.sort_values(["match_date", "match_id"], ascending = [False, False])
+    match_df = match_df.rename(columns = {
+        "match_id": "Match ID",
+        "match_date": "Date", 
+        "team_abbr": "Team", 
+        "opp_abbr": "Opponent"
+    })
+    match_df['Date'] = match_df['Date'].astype(str)
+    return match_df

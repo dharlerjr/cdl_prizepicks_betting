@@ -38,6 +38,22 @@ team_abbrs = {
     "Toronto Ultra": "TOR"
 }
 
+# Dictionary of team names by team abbreviation
+team_names = {
+    "ATL": "Atlanta FaZe",
+    "BOS": "Boston Breach",
+    "CAR": "Carolina Royal Ravens",
+    "LV": "Las Vegas Legion", 
+    "LAG": "Los Angeles Guerrillas", 
+    "LAT": "Los Angeles Thieves", 
+    "MIA": "Miami Heretics", 
+    "MIN": "Minnesota ROKKR", 
+    "NYSL": "New York Subliners", 
+    "TX": "OpTic Texas", 
+    "SEA": "Seattle Surge", 
+    "TOR": "Toronto Ultra"
+}
+
 # Hardpoint Maps Excluded from Maps 1 - 3 Dataframe Computation
 removed_hp_maps = ['Skidrow', 'Terminal']
 

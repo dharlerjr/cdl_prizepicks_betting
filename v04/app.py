@@ -1,6 +1,6 @@
 
 # Import shiny, shinyswatch, faicons, and asyncio
-from shiny import App, reactive, render, ui
+from shiny import App, reactive, render, ui, req
 from shiny.types import ImgData
 import shinyswatch
 import asyncio
@@ -19,10 +19,11 @@ from utils.datagrid_and_value_box_helpers import *
 # Import player card modules
 from player_cards_pg1 import *
 from player_cards_pg2 import *
+from map_summaries_pg3 import *
 
 # Dictionary of faicons for value boxes
 ICONS = {
-    "crosshairs": fa.icon_svg("crosshairs", height = icon_height, ),
+    "crosshairs": fa.icon_svg("crosshairs", height = icon_height),
     "headset": fa.icon_svg("headset", height = icon_height), 
     "plus": fa.icon_svg("plus", height = icon_height), 
     "minus": fa.icon_svg("minus", height = icon_height), 
@@ -94,16 +95,16 @@ start_date = '2024-04-12'
 
 
 # Load in cdl data
-cdlDF = load_and_clean_cdl_data()
+og_cdlDF = load_and_clean_cdl_data()
 
 # Build Maps 1 - 3 Totals Dataframe
-adj_1_thru_3_totals = build_1_thru_3_totals(cdlDF)
+adj_1_thru_3_totals = build_1_thru_3_totals(og_cdlDF)
 
 # Build series summaries
-series_score_diffs = build_series_summaries(cdlDF).copy()
+series_score_diffs = build_series_summaries(og_cdlDF).copy()
 
 # Filter maps from cdlDF
-cdlDF = filter_maps(cdlDF)
+cdlDF = filter_maps(og_cdlDF).copy()
 
 # Build team summaries
 team_summaries_DF = build_team_summaries(cdlDF).copy()
@@ -546,7 +547,39 @@ app_ui = ui.page_navbar(
         )        
     ),
 
-# 4th Page: Map Vetoes
+    # 3rd Page: Match Analysis Page
+    ui.nav_panel("Match Analysis",
+                 
+        # Sidebar Layout
+        ui.layout_sidebar(
+
+            # Sidebar with Dataframe of Matches
+            ui.sidebar(
+                ui.output_data_frame("match_df"), 
+                width = 400
+            ), 
+
+            # Row 1: Team Logos and Date of Last Match
+            ui.layout_columns(
+                ui.layout_columns(ui.output_image("p3_team_a_logo", width = "120px", height = "120px"), 
+                                  class_ = "d-flex justify-content-center"), 
+                ui.value_box(
+                    title = "Match Date",
+                    value = ui.output_ui("p3_match_date"),
+                    showcase = ICONS["calendar"]
+                ), 
+                ui.layout_columns(ui.output_image("p3_team_b_logo", width = "120px", height = "120px"), 
+                                  class_ = "d-flex justify-content-center"), 
+                col_widths = [5, 2, 5],
+                max_height = "120px"
+            ),
+
+            # Row 2: Map Summaries
+            # map_summaries_ui_p3("map_summaries")
+        )        
+    ),
+
+    # 4th Page: Map Vetoes
     ui.nav_panel("Vetoes",
 
         # Sidebar Layout
@@ -566,9 +599,16 @@ app_ui = ui.page_navbar(
 
             # Row 1 of 3: Team Logos
             ui.layout_columns(
-                ui.output_image("p4_team_a_logo", width = "120px", height = "120px"), 
-                ui.output_image("p4_team_b_logo", width = "120px", height = "120px"), 
-                class_ = "d-flex justify-content-around", 
+                ui.layout_columns(ui.output_image("p4_team_a_logo", width = "120px", height = "120px"), 
+                                  class_ = "d-flex justify-content-center"), 
+                ui.value_box(
+                    title = "Last H2H Match",
+                    value = ui.output_ui("p4_last_match_date"),
+                    showcase = ICONS["calendar"]
+                ), 
+                ui.layout_columns(ui.output_image("p4_team_b_logo", width = "120px", height = "120px"), 
+                                  class_ = "d-flex justify-content-center"), 
+                col_widths = [5, 2, 5],
                 height = "120px"
             ),
 
@@ -627,6 +667,28 @@ def server(input, output, session):
     @reactive.effect
     @reactive.event(input.scrape)
     async def scrape_props():
+        with ui.Progress(min = 1, max = 15) as p:
+            p.set(message = "Scraping PrizePicks", detail = "Please wait...")
+            
+            newVal = merge_player_props(
+                player_props_df(), 
+                scrape_prizepicks(), 
+                rostersDF
+            )
+            player_props_df.set(newVal)
+
+            for i in range(1, 15):
+                if i <= 10:
+                    p.set(i, message = "Scraping PrizePicks")
+                else:
+                    p.set(i, message = "Finished")
+                await asyncio.sleep(0.1)
+
+    # Reactive event to update player props dataframe
+    # Displays progress bar while scraping
+    @reactive.effect
+    @reactive.event(input.p2_scrape)
+    async def p2_scrape_props():
         with ui.Progress(min = 1, max = 15) as p:
             p.set(message = "Scraping PrizePicks", detail = "Please wait...")
             
@@ -1182,7 +1244,69 @@ def server(input, output, session):
 
     ) for player_num in range(1, 5)]
 
- 
+    # Dataframe of All Matches | Page 3
+    @render.data_frame
+    def match_df():
+        return render.DataGrid(
+            data = display_matches(og_cdlDF),
+            filters = True, 
+            summary = False, 
+            selection_mode = "row"
+        )
+    
+    # Reactive Dataframe containing the current match | Page 3
+    @reactive.calc
+    def cur_match_df():
+        data_selected = match_df.data_view(selected = True)
+        req(not data_selected.empty)
+        return data_selected
+
+    
+    # Team A Logo | Page 3
+    @render.image
+    def p3_team_a_logo():
+        img: ImgData = \
+        {"src": os.path.dirname(__file__) + 
+         team_logos[team_names[cur_match_df().reset_index(drop = True).at[0, "Team"]]], 
+                        "width": "120px", "height": "120px"}
+        return img
+    
+    # Team B Logo | Page 3
+    @render.image
+    def p3_team_b_logo():
+        img: ImgData = \
+        {"src": os.path.dirname(__file__) + 
+         team_logos[team_names[cur_match_df().reset_index(drop = True).at[0, "Opponent"]]], 
+                        "width": "120px", "height": "120px"}
+        return img
+    
+    # Reactive Value containing the current Match ID | Page 3
+    @reactive.calc
+    def cur_match_id():
+        return cur_match_df().reset_index(drop = True).at[0, "Match ID"]
+    
+    # Reactive value containing number of maps for selected match | Page 3
+    @reactive.calc
+    def number_of_maps():
+        return len(cdlDF[(cdlDF["match_id"] == cur_match_id)]["map_num"].unique())
+    
+    # Map Summaries | Page 3
+    # map_summaries_server_p3("map_summaries", cdlDF, cur_match_id)
+    # @render.ui
+    # def p3_map_summaries():
+    #     return ui.layout_columns(
+    #         [map_summary_ui(
+    #             "m" + str(map_num), 
+    #             map_num
+    #             ) for map_num in range(1, number_of_maps() + 1)
+    #         ]
+    #     )
+    
+    # Match Date | Page 3
+    @render.ui
+    def p3_match_date():
+        return cur_match_df().reset_index(drop = True).at[0, "Date"]
+    
     # Team A Logo | Page 4
     @render.image
     def p4_team_a_logo():
@@ -1196,6 +1320,11 @@ def server(input, output, session):
         img: ImgData = {"src": os.path.dirname(__file__) + team_logos[input.p4_team_b()], 
                         "width": "120px", "height": "120px"}
         return img
+    
+   # Date of Last Match | Page 4
+    @render.ui
+    def p4_last_match_date():
+        return compute_last_match(cdlDF, input.p4_team_a(), input.p4_team_b())
     
     # Title for Team A Picks Bar Chart | Page 4
     @render.text
