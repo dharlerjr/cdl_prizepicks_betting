@@ -36,6 +36,18 @@ gamemode_abbrs = {
     "Control": "Control"
 }
 
+# Helper function to take a map_summary_df as input and return a scoreboard as output
+def display_map_scoreboard(map_summary_df: pd.DataFrame):
+    scoreboard = map_summary_df[["player", "kills", "deaths", "kd", "dmg"]]
+    scoreboard = scoreboard.rename(columns = {
+        "player": "Player",
+        "kills": "Kills", 
+        "deaths": "Deaths", 
+        "kd": "K/D", 
+        "dmg": "Damage"
+    })
+    return scoreboard
+
 @module.ui
 def map_value_box_ui_p3():
     return ui.value_box(
@@ -45,9 +57,13 @@ def map_value_box_ui_p3():
 
     )
 
+@module.ui
+def map_scoreboard_ui_pg3():
+    return ui.output_data_frame("map_scoreboard")
+
 
 @module.server
-def map_value_box_server_p3(
+def map_summary_server_p3(
     input, output, session, cdlDF_input: pd.DataFrame, match_id: int, map_num: int, 
     team_a_abbr, team_b_abbr, total_maps
     ):
@@ -85,3 +101,16 @@ def map_value_box_server_p3(
     def gamemode_icon():
         if map_num <= total_maps():
             return map_num_icons[map_num]
+        
+    # Map Scoreboard
+    @output
+    @render.data_frame
+    def map_scoreboard():
+         if map_num <= total_maps():
+            return render.DataGrid(
+                display_map_scoreboard(
+                    map_summary_df()
+                ),
+                filters = True, 
+                summary = False
+            )

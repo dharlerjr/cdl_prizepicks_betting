@@ -25,6 +25,11 @@ body {
     text-align: center;
 }
 
+.sidebar-title {
+    font-family: 'Segoe UI', sans-serif; 
+    color: #495057; 
+}
+
 .navbar-brand {
     font-size: 28px;
 }

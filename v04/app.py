@@ -547,8 +547,8 @@ app_ui = ui.page_navbar(
         )        
     ),
 
-    # 3rd Page: Match Analysis Page
-    ui.nav_panel("Match Analysis",
+    # 3rd Page: Match Summary Page
+    ui.nav_panel("Match Summaries",
                  
         # Sidebar Layout
         ui.layout_sidebar(
@@ -571,7 +571,7 @@ app_ui = ui.page_navbar(
                 ), 
                 ui.layout_columns(ui.output_image("p3_team_b_logo", width = "120px", height = "120px"), 
                                   class_ = "d-flex justify-content-center"), 
-                max_height = "120px",
+                height = "120px",
                 col_widths = [5, 2, 5]
             ),
 
@@ -580,17 +580,23 @@ app_ui = ui.page_navbar(
                 map_value_box_ui_p3("m1"), 
                 map_value_box_ui_p3("m2"), 
                 map_value_box_ui_p3("m3"), 
-                ui.output_ui("conditional_m4"), 
-                ui.output_ui("conditional_m5"), 
+                ui.output_ui("conditional_m4_value_box"), 
+                ui.output_ui("conditional_m5_value_box"), 
                 height = "120px"
             ), 
 
             # Row 3: Map Scoreboards
             ui.layout_columns(
                 ui.navset_card_pill(
+                    ui.nav_panel(1, map_scoreboard_ui_pg3("m1")), 
+                    ui.nav_panel(2, map_scoreboard_ui_pg3("m2")), 
+                    ui.nav_panel(3, map_scoreboard_ui_pg3("m3")),
+                    ui.nav_panel(4, ui.output_ui("conditional_m4_scoreboard")),
+                    ui.nav_panel(5, ui.output_ui("conditional_m5_scoreboard")),
                     title = "Scoreboards"
                 ),
-                col_widths = [-2, 8, 2]
+                height = "440px",
+                col_widths = [-3, 6, -3]
             )
         )        
     ),
@@ -1317,23 +1323,35 @@ def server(input, output, session):
         return cur_match_df().reset_index(drop = True).at[0, "Date"]
     
     # Maps 1 - 5 Summaries | Page 3
-    map_value_box_server_p3("m1", og_cdlDF.copy(), cur_match_id, 1, cur_team_a, cur_team_b, number_of_maps)
-    map_value_box_server_p3("m2", og_cdlDF.copy(), cur_match_id, 2, cur_team_a, cur_team_b, number_of_maps)
-    map_value_box_server_p3("m3", og_cdlDF.copy(), cur_match_id, 3, cur_team_a, cur_team_b, number_of_maps)
-    map_value_box_server_p3("m4", og_cdlDF.copy(), cur_match_id, 4, cur_team_a, cur_team_b, number_of_maps)
-    map_value_box_server_p3("m5", og_cdlDF.copy(), cur_match_id, 5, cur_team_a, cur_team_b, number_of_maps)
+    map_summary_server_p3("m1", og_cdlDF.copy(), cur_match_id, 1, cur_team_a, cur_team_b, number_of_maps)
+    map_summary_server_p3("m2", og_cdlDF.copy(), cur_match_id, 2, cur_team_a, cur_team_b, number_of_maps)
+    map_summary_server_p3("m3", og_cdlDF.copy(), cur_match_id, 3, cur_team_a, cur_team_b, number_of_maps)
+    map_summary_server_p3("m4", og_cdlDF.copy(), cur_match_id, 4, cur_team_a, cur_team_b, number_of_maps)
+    map_summary_server_p3("m5", og_cdlDF.copy(), cur_match_id, 5, cur_team_a, cur_team_b, number_of_maps)
 
     # Map 4 Summary | Page 3
     @render.ui
-    def conditional_m4():
+    def conditional_m4_value_box():
         if number_of_maps() >= 4:
             return map_value_box_ui_p3("m4")
         
     # Map 5 Summary | Page 3
     @render.ui
-    def conditional_m5():
+    def conditional_m5_value_box():
         if number_of_maps() >= 5:
             return map_value_box_ui_p3("m5")
+        
+    # Map 4 Scoreboard | Page 3
+    @render.ui
+    def conditional_m4_scoreboard():
+        if number_of_maps() >= 4:
+            return map_scoreboard_ui_pg3("m4")
+        
+    # Map 5 Scoreboard | Page 3
+    @render.ui
+    def conditional_m5_scoreboard():
+        if number_of_maps() >= 5:
+            return map_scoreboard_ui_pg3("m5")
     
     # Team A Logo | Page 4
     @render.image
