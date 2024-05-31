@@ -45,7 +45,6 @@ map_nums_to_gamemode = {
 }
 
 # Dictionary of paths to saved team logo images
-# team_logo_path = "/images/team_logos/"
 team_logo_path = "\images\\team_logos\\"
 team_logos = {
     "Atlanta FaZe": team_logo_path + "ATL.webp",

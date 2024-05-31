@@ -62,8 +62,19 @@ def scrape_prizepicks():
         # Get index of the COD tab in the league_buttons list
         cod_index = league_buttons.index("COD") + 1
         
-        # Navigate to COD tab using the COD index
-        driver.find_element(By.XPATH, "//*[@id='scrollable-area']/button[" + str(cod_index) + "]").click()
+        # Navigate to COD tab using COD index, clicking right arrow if necessary
+        if cod_index <= 12:
+            driver.find_element(By.XPATH, "//*[@id='scrollable-area']/button[" + str(cod_index) + "]").click()
+        elif cod_index <= 15:
+            driver.find_element(By.XPATH, "//*[@id='board']/nav[1]/button[2]").click() # Right arrow
+            time.sleep(5)
+            driver.find_element(By.XPATH, "//*[@id='scrollable-area']/button[" + str(cod_index) + "]").click()
+        elif cod_index <= 18:
+            driver.find_element(By.XPATH, "//*[@id='board']/nav[1]/button[2]").click() # Right arrow
+            time.sleep(5)
+            driver.find_element(By.XPATH, "//*[@id='board']/nav[1]/button[2]").click() # Right arrow
+            time.sleep(5)
+            driver.find_element(By.XPATH, "//*[@id='scrollable-area']/button[" + str(cod_index) + "]").click()
         time.sleep(5)
 
         # Initilize an empty list to hold the player props
