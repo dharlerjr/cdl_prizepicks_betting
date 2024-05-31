@@ -13,13 +13,13 @@ from utils.setup.setup import *
 
 # Import other utils
 from utils.webscraper import *
-from utils.seaborn_helpers import *
-from utils.datagrid_and_value_box_helpers import *
+from utils.plots import *
+from utils.datagrids_and_value_boxes import *
 
 # Import player card modules
-from player_cards_pg1 import *
-from player_cards_pg2 import *
-from map_summaries_pg3 import *
+from shiny_modules.pg1_player_cards import * 
+from shiny_modules.pg2_player_cards import *
+from shiny_modules.pg3_map_summaries import *
 
 # Dictionary of faicons for value boxes
 ICONS = {
@@ -113,7 +113,7 @@ team_summaries_DF = build_team_summaries(cdlDF).copy()
 rostersDF = build_rosters(cdlDF).copy()
 
 # Load and pivot vetoes
-vetoes_wide = load_vetoes()
+vetoes_wide = load_vetoes("v04\data\\vetoes.xlsx")
 vetoes_df = pivot_vetoes(vetoes_wide)
 
 # Compute CDL Standings for Major III Qualifiers

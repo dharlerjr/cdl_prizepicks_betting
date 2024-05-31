@@ -111,6 +111,6 @@ def map_summary_server_p3(
                 display_map_scoreboard(
                     map_summary_df()
                 ),
-                filters = True, 
+                filters = False, 
                 summary = False
             )

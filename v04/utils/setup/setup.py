@@ -60,13 +60,13 @@ removed_hp_maps = ['Skidrow', 'Terminal']
 # Function to load and clean cdl data and return as pandas dataframe
 def load_and_clean_cdl_data():
 
-    #establishing the connection
+    # Connect to AWS Database
     conn = psycopg2.connect(
-    database = "cdl_db", 
-    user = 'postgres', 
-    password = db_password,
-    host = '127.0.0.1', 
-    port= '5432'
+        database = "postgres", 
+        user = "postgres", 
+        password = db_password, 
+        host = "cdl-data-mw-three.ct40oheubil2.us-west-1.rds.amazonaws.com",
+        port = "5432"
     )
 
     # Load data into a pandas dataframe
@@ -428,10 +428,10 @@ def build_1_thru_3_totals(cdlDF_input: pd.DataFrame):
     return adj_1_thru_3_totals_df
 
 # Function to load vetoes
-def load_vetoes():
+def load_vetoes(filepath: str):
 
     # Read in vetoes
-    vetoes_wide = pd.read_excel("C:\\Users\\David Harler Jr\\OneDrive\\Desktop\\dataClass\\06-cod-analysis\\03 CDL PrizePicks Betting\\cdl_prizepicks_betting_apps\\v04\\data\\vetoes.xlsx")
+    vetoes_wide = pd.read_excel(filepath)
     # Left join with team_abbrs
     vetoes_wide['team_abbr'] = vetoes_wide['team'].map(team_abbrs)
     # Return

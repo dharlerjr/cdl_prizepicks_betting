@@ -1,0 +1,12 @@
+{
+    "https://api.shinyapps.io": {
+        "server_url": "https://api.shinyapps.io",
+        "filename": "C:\\Users\\David Harler Jr\\OneDrive\\Desktop\\dataClass\\06-cod-analysis\\03 CDL PrizePicks Betting\\cdl_prizepicks_betting_apps\\v04",
+        "app_url": "https://david-harler-jr.shinyapps.io/cdl-player-props-app/",
+        "app_id": 12100101,
+        "app_guid": null,
+        "title": "cdl-player-props-app",
+        "app_mode": "python-shiny",
+        "app_store_version": 1
+    }
+}

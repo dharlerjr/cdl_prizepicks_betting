@@ -6,8 +6,8 @@ from shiny import module, ui, render, reactive
 import faicons as fa
 
 # Import utils
-from utils.seaborn_helpers import *
-from utils.datagrid_and_value_box_helpers \
+from utils.plots import *
+from utils.datagrids_and_value_boxes \
     import get_line, compute_player_1_thru_3_ou, compute_player_1_thru_3_ou_streak
 
 # String containing value for Icon Height in Pixels
