@@ -45,7 +45,8 @@ map_nums_to_gamemode = {
 }
 
 # Dictionary of paths to saved team logo images
-team_logo_path = "\\images\\team_logos\\"
+# team_logo_path = "/images/team_logos/"
+team_logo_path = "\images\\team_logos\\"
 team_logos = {
     "Atlanta FaZe": team_logo_path + "ATL.webp",
     "Boston Breach": team_logo_path + "BOS.webp",
@@ -339,7 +340,7 @@ app_ui = ui.page_navbar(
 
             # Import CSS Styling
             ui.include_css(
-                os.path.dirname(__file__) + "\\styles\\styles.css"
+                os.path.dirname(__file__) + "/styles/styles.css"
             )
         )
     ), 
