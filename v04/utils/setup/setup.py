@@ -60,13 +60,13 @@ removed_hp_maps = ['Skidrow', 'Terminal']
 # Function to load and clean cdl data and return as pandas dataframe
 def load_and_clean_cdl_data():
 
-    # Connect to AWS Database
+    # establishing the connection
     conn = psycopg2.connect(
-        database = "postgres", 
-        user = "postgres", 
-        password = db_password, 
-        host = "cdl-data-mw-three.ct40oheubil2.us-west-1.rds.amazonaws.com",
-        port = "5432"
+        database = "cdl_db", 
+        user = 'postgres', 
+        password = db_password,
+        host = '127.0.0.1', 
+        port = '5433'
     )
 
     # Load data into a pandas dataframe
