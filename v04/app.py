@@ -90,8 +90,8 @@ theme_color_dark = "#1b6ead"
 team_a_color = theme_color_light
 team_b_color = theme_color_dark
 
-# Major 3 Qualifiers Start Date (String)
-start_date = '2024-04-12' 
+# Major 4 Qualifiers Start Date (String)
+start_date = '2024-05-31' 
 
 
 # Load in cdl data
@@ -213,7 +213,7 @@ app_ui = ui.page_navbar(
                 
                 # Team A Standing
                 ui.value_box(
-                    title = "Major III Standing",
+                    title = "Major IV Standing",
                     value = ui.output_ui("team_a_standing"),
                     showcase = ICONS["headset"]
                 ),
@@ -248,7 +248,7 @@ app_ui = ui.page_navbar(
 
                 # Team B Standing
                 ui.value_box(
-                    title = "Major III Standing",
+                    title = "Major IV Standing",
                     value = ui.output_ui("team_b_standing"),
                     showcase = ICONS["headset"]
                 ), 
@@ -416,7 +416,7 @@ app_ui = ui.page_navbar(
                 
                 # Team A Standing
                 ui.value_box(
-                    title = "Major III Standing",
+                    title = "Major IV Standing",
                     value = ui.output_ui("p2_team_a_standing"),
                     showcase = ICONS["headset"]
                 ),
@@ -451,7 +451,7 @@ app_ui = ui.page_navbar(
 
                 # Team B Standing
                 ui.value_box(
-                    title = "Major III Standing",
+                    title = "Major IV Standing",
                     value = ui.output_ui("p2_team_b_standing"),
                     showcase = ICONS["headset"]
                 ), 
@@ -779,7 +779,7 @@ def server(input, output, session):
     def last_match_date():
         return compute_last_match(cdlDF, input.team_a(), input.team_b())
     
-    # Team A Series Record for Major 3 Quals
+    # Team A Series Record for Major 4 Quals
     @render.ui
     def team_a_standing():
         wins = current_standings.loc[current_standings['team'] == input.team_a(), 'wins'].reset_index(drop=True)[0]
@@ -787,7 +787,7 @@ def server(input, output, session):
         return f"{wins} - {losses}"
     
 
-    # Team B Series Record for Major 3 Quals
+    # Team B Series Record for Major 4 Quals
     @render.ui
     def team_b_standing():
         wins = current_standings.loc[current_standings['team'] == input.team_b(), 'wins'].reset_index(drop=True)[0]
@@ -1033,14 +1033,14 @@ def server(input, output, session):
     def p2_last_match_date():
         return compute_last_match(cdlDF, input.p2_team_a(), input.p2_team_b())
     
-    # Team A Series Record for Major 3 Quals | Page 2
+    # Team A Series Record for Major 4 Quals | Page 2
     @render.ui
     def p2_team_a_standing():
         wins = current_standings.loc[current_standings['team'] == input.p2_team_a(), 'wins'].reset_index(drop=True)[0]
         losses = current_standings.loc[current_standings['team'] == input.p2_team_a(), 'losses'].reset_index(drop=True)[0]
         return f"{wins} - {losses}"
 
-    # Team B Series Record for Major 3 Quals | Page 2
+    # Team B Series Record for Major 4 Quals | Page 2
     @render.ui
     def p2_team_b_standing():
         wins = current_standings.loc[current_standings['team'] == input.p2_team_b(), 'wins'].reset_index(drop=True)[0]
