@@ -28,8 +28,8 @@ ICONS = {
     "plus": fa.icon_svg("plus", height = icon_height), 
     "minus": fa.icon_svg("minus", height = icon_height), 
     "calendar": fa.icon_svg("calendar", height = icon_height), 
-    "check": fa.icon_svg("circle-check", height = icon_height), 
-    "exclamation": fa.icon_svg("circle-exclamation", height = icon_height), 
+    "hot": fa.icon_svg("fire-flame-curved", height = icon_height), 
+    "cold": fa.icon_svg("snowflake", height = icon_height), 
     "flag": fa.icon_svg("flag", height = icon_height), 
     "mound": fa.icon_svg("mound", height = icon_height), 
     "circle_question": fa.icon_svg("circle-question", height = "16px"), 
@@ -934,13 +934,13 @@ def server(input, output, session):
     @render.ui
     def change_team_a_win_streak_icon():
         win_streak = compute_team_a_win_streak()
-        return ICONS["check"] if win_streak > 0 else ICONS["exclamation"]
+        return ICONS["hot"] if win_streak > 0 else ICONS["cold"]
     
     # Change Win Streak Icon Based on Sign of Win Streak
     @render.ui
     def change_team_b_win_streak_icon():
         win_streak = compute_team_b_win_streak()
-        return ICONS["check"] if win_streak > 0 else ICONS["exclamation"]
+        return ICONS["hot"] if win_streak > 0 else ICONS["cold"]
     
     # Ridgeline Plots of Score Diffs
     @render.plot
