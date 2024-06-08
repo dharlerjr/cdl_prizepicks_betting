@@ -456,7 +456,7 @@ def compute_player_1_thru_3_ou_streak(
     return ou, streak
 
 # Function to display Datagrid of vetoes
-def display_vetoes(vetoes_input: pd.DataFrame, team_x: str, team_y: str):
+def display_vetoes(vetoes_input: pd.DataFrame, team_x: str, team_y: str, stage_min: int, stage_max: int):
     
     # Create a copy of vetoes_input
     vetoes_copy = vetoes_input.copy()
@@ -472,6 +472,12 @@ def display_vetoes(vetoes_input: pd.DataFrame, team_x: str, team_y: str):
 
     # Sort
     vetoes_df = vetoes_df.sort_values(by = ["match_date", "match_id", "ctrl_ban"], ascending = [False, False, True], ignore_index = True)
+
+    # Filter by stage
+    vetoes_df = vetoes_df[
+        (vetoes_df["stage"] <= stage_min) &
+        (vetoes_df["stage"] >= stage_max)
+    ]
 
     # Convert the 'match_date' column to string for display purposes
     vetoes_df['match_date'] = vetoes_df['match_date'].astype(str)

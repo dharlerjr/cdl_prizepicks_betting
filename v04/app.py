@@ -1398,8 +1398,8 @@ def server(input, output, session):
         return render.DataGrid(
             display_vetoes(
                 vetoes_wide, 
-                input.p4_team_a(),
-                input.p4_team_b()
+                input.p4_team_a(), input.p4_team_b(), 
+                input.p4_stage()[0], input.p4_stage()[1]
             ), 
             filters = True, 
             summary = False
