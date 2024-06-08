@@ -475,8 +475,8 @@ def display_vetoes(vetoes_input: pd.DataFrame, team_x: str, team_y: str, stage_m
 
     # Filter by stage
     vetoes_df = vetoes_df[
-        (vetoes_df["stage"] <= stage_min) &
-        (vetoes_df["stage"] >= stage_max)
+        (vetoes_df["stage"] >= stage_min) &
+        (vetoes_df["stage"] <= stage_max)
     ]
 
     # Convert the 'match_date' column to string for display purposes
