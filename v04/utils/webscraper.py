@@ -48,10 +48,14 @@ def scrape_prizepicks():
 
         # Visit PrizePicks Website
         driver.get("https://app.prizepicks.com/")
-        time.sleep(5)
+        time.sleep(15)
+
+        # Revisit PrizePicks Website to close initial pop-up
+        # driver.get("https://app.prizepicks.com/")
+        # time.sleep(30)
 
         # Close initial pop-up
-        WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "close")))
+        WebDriverWait(driver, 15).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "close")))
         time.sleep(15)
         driver.find_element(By.XPATH, "/html/body/div[3]/div[3]/div/div/button").click()
         time.sleep(5)
@@ -75,7 +79,7 @@ def scrape_prizepicks():
             driver.find_element(By.XPATH, "//*[@id='board']/nav[1]/button[2]").click() # Right arrow
             time.sleep(5)
             driver.find_element(By.XPATH, "//*[@id='scrollable-area']/button[" + str(cod_index) + "]").click()
-        time.sleep(5)
+        time.sleep(15)
 
         # Initilize an empty list to hold the player props
         player_props = []
@@ -84,9 +88,11 @@ def scrape_prizepicks():
         stat_container = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
         categories = driver.find_element(By.CSS_SELECTOR, ".stat-container").text.split('\n')
 
-        # Remove Maps 1 - 3 Kills (Combo)
+        # Remove Maps 1 - 3 Kills (Combo) & Popular Picks
         if "MAPS 1-3 Kills (Combo)" in categories:
             categories.remove("MAPS 1-3 Kills (Combo)")
+        if "Popular 🔥" in categories:
+            categories.remove("Popular 🔥")
 
         # Get player projections
 
@@ -108,8 +114,7 @@ def scrape_prizepicks():
                 player = projectionsPP[i].find_element(By.ID, "test-player-name").text
                 team_abbr = projectionsPP[i].find_element(By.ID, "test-team-position").text.split(" - ")[0]
                 player_line = float(driver.find_element(
-                    By.XPATH, 
-                    '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(i + 1) + ']/div[3]/div/div/div/div[1]'
+                    By.XPATH, '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(i + 1) + ']/div[3]/div/div/div/div[1]'
                 ).text)
 
                 # Append prop to our list
