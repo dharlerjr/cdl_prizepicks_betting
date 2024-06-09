@@ -48,7 +48,7 @@ def scrape_prizepicks():
 
         # Visit PrizePicks Website
         driver.get("https://app.prizepicks.com/")
-        time.sleep(15)
+        time.sleep(5)
 
         # Revisit PrizePicks Website to close initial pop-up
         # driver.get("https://app.prizepicks.com/")
@@ -56,7 +56,7 @@ def scrape_prizepicks():
 
         # Close initial pop-up
         WebDriverWait(driver, 15).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "close")))
-        time.sleep(15)
+        time.sleep(5)
         driver.find_element(By.XPATH, "/html/body/div[3]/div[3]/div/div/button").click()
         time.sleep(5)
 
@@ -79,13 +79,13 @@ def scrape_prizepicks():
             driver.find_element(By.XPATH, "//*[@id='board']/nav[1]/button[2]").click() # Right arrow
             time.sleep(5)
             driver.find_element(By.XPATH, "//*[@id='scrollable-area']/button[" + str(cod_index) + "]").click()
-        time.sleep(15)
+        time.sleep(5)
 
         # Initilize an empty list to hold the player props
         player_props = []
 
         # Get the stat container and various stats 
-        stat_container = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
+        stat_container = WebDriverWait(driver, 15).until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
         categories = driver.find_element(By.CSS_SELECTOR, ".stat-container").text.split('\n')
 
         # Remove Maps 1 - 3 Kills (Combo) & Popular Picks
@@ -99,13 +99,24 @@ def scrape_prizepicks():
         # Loop through categories
         for category in categories:
             driver.find_element(By.XPATH, f"//div[text()='{category}']").click()
-            time.sleep(5)
+            time.sleep(10)
 
-            # Test print statement
+            # Print category for testing
             print(f"{category}")
             
             # Get list of all projections for current category
             projectionsPP = driver.find_elements(By.ID, "test-projection-li")
+
+            # Wait for final player line to exist
+            # wait = WebDriverWait(driver, 15)
+            # last_player_line = wait.until(EC.presence_of_element_located(
+            #     (By.XPATH, 
+            #      '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(len(projectionsPP)) + ']/div[3]/div/div/div/div[1]')
+            #     )
+            # )
+
+            # Print "Found final player line" for testing
+            # print("Found final player line!")
 
             # Loop through current list of projections
             for i in range(len(projectionsPP)):
@@ -114,7 +125,8 @@ def scrape_prizepicks():
                 player = projectionsPP[i].find_element(By.ID, "test-player-name").text
                 team_abbr = projectionsPP[i].find_element(By.ID, "test-team-position").text.split(" - ")[0]
                 player_line = float(driver.find_element(
-                    By.XPATH, '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(i + 1) + ']/div[3]/div/div/div/div[1]'
+                    By.XPATH, 
+                    '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(i + 1) + ']/div[3]/div/div/div/div[1]'
                 ).text)
 
                 # Append prop to our list
