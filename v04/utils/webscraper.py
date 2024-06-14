@@ -85,7 +85,7 @@ def scrape_prizepicks():
         player_props = []
 
         # Get the stat container and various stats 
-        stat_container = WebDriverWait(driver, 15).until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
+        stat_container = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
         categories = driver.find_element(By.CSS_SELECTOR, ".stat-container").text.split('\n')
 
         # Remove Maps 1 - 3 Kills (Combo) & Popular Picks
@@ -108,12 +108,13 @@ def scrape_prizepicks():
             projectionsPP = driver.find_elements(By.ID, "test-projection-li")
 
             # Wait for final player line to exist
-            # wait = WebDriverWait(driver, 15)
-            # last_player_line = wait.until(EC.presence_of_element_located(
-            #     (By.XPATH, 
-            #      '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(len(projectionsPP)) + ']/div[3]/div/div/div/div[1]')
-            #     )
-            # )
+            wait = WebDriverWait(driver, 45)
+            last_player_line = wait.until(EC.presence_of_element_located(
+                (By.XPATH, 
+                 '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(len(projectionsPP)) + ']/div[3]/div/div/div/div[1]')
+                 # '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[1]/div[3]/div/div/div/div[1]')
+                )
+            )
 
             # Print "Found final player line" for testing
             # print("Found final player line!")
