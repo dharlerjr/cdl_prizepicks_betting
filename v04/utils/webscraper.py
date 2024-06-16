@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoSuchElementException
 
 # Import undetected chromedriver
 import undetected_chromedriver as uc
@@ -50,10 +52,6 @@ def scrape_prizepicks():
         driver.get("https://app.prizepicks.com/")
         time.sleep(5)
 
-        # Revisit PrizePicks Website to close initial pop-up
-        # driver.get("https://app.prizepicks.com/")
-        # time.sleep(30)
-
         # Close initial pop-up
         WebDriverWait(driver, 15).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "close")))
         time.sleep(5)
@@ -84,7 +82,7 @@ def scrape_prizepicks():
         # Initilize an empty list to hold the player props
         player_props = []
 
-        # Get the stat container and various stats 
+        # Find categories
         stat_container = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, "stat-container")))
         categories = driver.find_element(By.CSS_SELECTOR, ".stat-container").text.split('\n')
 
@@ -107,28 +105,23 @@ def scrape_prizepicks():
             # Get list of all projections for current category
             projectionsPP = driver.find_elements(By.ID, "test-projection-li")
 
-            # Wait for final player line to exist
-            wait = WebDriverWait(driver, 45)
-            last_player_line = wait.until(EC.presence_of_element_located(
-                (By.XPATH, 
-                 '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(len(projectionsPP)) + ']/div[3]/div/div/div/div[1]')
-                 # '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[1]/div[3]/div/div/div/div[1]')
-                )
-            )
-
-            # Print "Found final player line" for testing
-            # print("Found final player line!")
-
             # Loop through current list of projections
             for i in range(len(projectionsPP)):
 
                 # Get line info for each player prop
                 player = projectionsPP[i].find_element(By.ID, "test-player-name").text
                 team_abbr = projectionsPP[i].find_element(By.ID, "test-team-position").text.split(" - ")[0]
-                player_line = float(driver.find_element(
-                    By.XPATH, 
-                    '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(i + 1) + ']/div[3]/div/div/div/div[1]'
-                ).text)
+                try: 
+                    player_line = float(driver.find_element(
+                        By.XPATH, 
+                        '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(i + 1) + ']/div[3]/div/div/div/div[1]'
+                    ).text)
+                except NoSuchElementException: # try a different XPath when timer is next to player's name
+                    player_line = float(driver.find_element(
+                        By.XPATH, 
+                        '/html/body/div[1]/div/div[3]/div[1]/div/main/div/div/div[1]/div[3]/ul/li[' + str(i + 1) + ']/div[4]/div/div/div/div[1]'
+                    ).text)
+
 
                 # Append prop to our list
                 player_props.append({
