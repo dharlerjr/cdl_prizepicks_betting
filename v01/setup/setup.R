@@ -20,7 +20,7 @@ source("setup/config.R")
 
 conTest <- dbCanConnect(RPostgres::Postgres(),
                         dbname = "cdl_db", 
-                        port = 5432, 
+                        port = 5433, 
                         user = "postgres", 
                         password = db_password)
 
@@ -30,7 +30,7 @@ conTest
 
 con <- dbConnect(RPostgres::Postgres(),
                  dbname = "cdl_db", 
-                 port = 5432, 
+                 port = 5433, 
                  user = "postgres", 
                  password = db_password)
 
