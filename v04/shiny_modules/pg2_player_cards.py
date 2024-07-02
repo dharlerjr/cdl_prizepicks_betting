@@ -70,6 +70,11 @@ def player_card_server_pg2(
     def map_1_line():
         return get_line(propsDF(), player(), 1)
     
+    # Player Map 2 Line
+    @reactive.Calc
+    def map_2_line():
+        return get_line(propsDF(), player(), 2)
+    
     # Player Map 3 Line
     @reactive.Calc
     def map_3_line():
@@ -92,6 +97,13 @@ def player_card_server_pg2(
                 player(),
                 "Hardpoint",
                 map_1_line()
+            )
+        elif x_axis() == "SnD Map":
+            return player_kills_by_map(
+                cdlDF, 
+                player(),
+                "Search & Destroy",
+                map_2_line()
             )
         elif x_axis() == "Control Map":
             return player_kills_by_map(

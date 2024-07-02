@@ -366,7 +366,7 @@ app_ui = ui.page_navbar(
                 ui.input_select(id = "p2_map_three", label = "Map 3", selected = "All",
                                 choices = ["All", "Highrise", "Invasion", "Karachi"]), 
                 ui.input_select(id = "p2_x_axis", label = "Player Card X-Axis", selected = "Time",
-                                choices = ["Time", "Mapset", "Hardpoint Map", "Control Map"]), 
+                                choices = ["Time", "Mapset", "Hardpoint Map", "SnD Map", "Control Map"]), 
                 ui.input_action_button(id = "p2_reset_maps", label = "Reset maps")
                 
             ), 
