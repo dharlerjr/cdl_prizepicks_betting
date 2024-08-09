@@ -1,6 +1,6 @@
 # Shiny Application for CDL Betting on PrizePicks
 
-Multiple versions of the same Shiny application for betting on CDL player props on PrizePicks. Version 1 coded in R, Versions 2 - 4 coded in Python. Data from breakingpoint.gg using my [breakingpoint.gg web scraping project](https://github.com/dharlerjr/bp_web_scraping).
+Multiple versions of the same Shiny application for betting on Call of Duty League (CDL) player props on PrizePicks. Version 1 coded in R, Versions 2 - 4 coded in Python. Data from breakingpoint.gg using my [breakingpoint.gg web scraping project](https://github.com/dharlerjr/bp_web_scraping).
 
 ## Version 1
 
@@ -65,6 +65,8 @@ Multiple versions of the same Shiny application for betting on CDL player props 
   - Added **app_helpers.py** to condense **app.py** code
 - Added 2nd Page: Player Kills per Maps 1 - 3
   - Identical format as Page 1, with more user inputs, and visualizations focused on the Kills per Maps 1 - 3 statistic
+- Added 3rd Page: Match Summaries
+  - Users can select a CDL match from a DataFrame of matches, then view the match summary and scoreboards
 - Added 4th Page: Vetoes
   - Built Excel sheet of map vetoes for each match and loaded into pandas dataframe
   - Created histograms to visualize pick and ban selections for each team
@@ -84,6 +86,7 @@ Multiple versions of the same Shiny application for betting on CDL player props 
 ## Version 4 (Completed June 2024)
 
 - Organized project directory
-- Replaced **seaborn** and **matplotlib** charts with interactive **plotly** charts
+- Updated PrizePicks webscraping algorithm
+- Accounted for dropped players and players who switched teams
 
 ## Challenges
