@@ -89,4 +89,3 @@ Multiple versions of the same Shiny application for betting on Call of Duty Leag
 - Updated PrizePicks webscraping algorithm
 - Accounted for dropped players and players who switched teams
 
-## Challenges
